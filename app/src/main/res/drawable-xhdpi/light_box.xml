@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <corners android:radius="100dp">
+
+    </corners>
+
+    <solid android:color="@color/colorPrimaryTranslucent">
+        <!--<gradient-->
+        <!--android:color="#@color/colorPrimaryTranslucent"-->
+        <!--android:centerColor="#404040"-->
+        <!--/>-->
+
+    </solid>
+    <!--<stroke-->
+        <!--android:width="2dp"-->
+        <!--android:color="#404040"></stroke>-->
+    <!---->
+    <stroke
+        android:width="2dp"
+        android:color="@color/colorPrimary"></stroke>
+
+</shape>

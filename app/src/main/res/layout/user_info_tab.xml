@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_vertical_margin">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/euser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:hint="@string/Username"
+                android:inputType="textShortMessage"
+                android:text="@string/blank"
+                android:textSize="@dimen/text_size" />
+
+            <!--<requestFocus />-->
+
+            <EditText
+                android:id="@+id/epass"
+                android:textSize="@dimen/text_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/euser"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:hint="@string/passwordHint"
+                android:inputType="textPassword" />
+
+            <CheckBox
+                android:id="@+id/checkBoxPass"
+                android:textSize="@dimen/text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/epass"
+                android:layout_marginTop="5dp"
+                android:onClick="clickShowPassword"
+                android:text="@string/ShowPassword" />
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

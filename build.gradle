@@ -1,0 +1,26 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+
+buildscript {
+    repositories {
+//        maven { url 'http://nexus.prod.uci.cu/repository/maven-all/' }
+        maven {url "https://jitpack.io"}
+        maven {url 'https://oss.sonatype.org/content/repositories/ksoap2-android-releases/'}
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.0'
+    }
+}
+
+
+allprojects {
+    repositories {
+//        maven { url 'http://nexus.prod.uci.cu/repository/maven-all/' }
+        maven {url 'https://jitpack.io'}
+        maven {url 'https://oss.sonatype.org/content/repositories/ksoap2-android-releases/'}
+        jcenter()
+    }
+}
+
+

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WifiProxy 1.0</string>
+    <string name="description">Proxy ntlm pour Android</string>
+    <string name="action_settings">Préférences</string>
+    <string name="user">Utilisateur</string>
+    <string name="blank"></string>
+    <string name="Username">Nom d\'utilisateur</string>
+    <string name="Password">Mot de passe</string>
+    <string name="ShowPassword">Voir mot de passe</string>
+    <string name="Domain">Domaine</string>
+    <string name="Server">Serveur</string>
+    <string name="InputPort">Port d\'entrée</string>
+    <string name="OutputPort">Port de départ</string>
+    <string name="domainHint">uci.cu</string>
+    <string name="portHint">8080</string>
+    <string name="run">démarrage</string>
+    <string name="stop">arrêter</string>
+    <string name="notif1">UCIntlm est en cours d\'exécution…</string>
+    <string name="notif2">UCIntlm est en cours d\'exécution pour l\'utilisateur: </string>
+    <string name="notif3">UCIntlm a été arrêté…</string>
+    <string name="AdvancedOptions">Options Avancées</string>
+    <string name="passwordHint">Mot de passe</string>
+    <string name="started">UCIntlm initié</string>
+    <string name="stopped">UCIntlm arrêté</string>
+    <!--TODO: Modify this to match english string-->
+    <string name="nodata">Les données ne sont pas suffisantes pour s\'authentifier.</string>
+    <string name="Bypass">Sauter proxy pour</string>
+    <string name="BypassHint">127.0.0.1,localhost,*example.cu</string>
+
+    <string name="OnProxy">WiFi Configuration pour une utilisation Proxy</string>
+    <string name="OnNoProxy">Configuration WiFi pour Aucune utilisation Proxy</string>
+    <string name="Connected">Connecté au WiFi</string>
+    <string name="GlobalProxy">Definir comme Proxy global</string>
+</resources>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/prefLinearLayout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/globCheckBox"
+                android:textSize="@dimen/text_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/GlobalProxy"/>
+
+            <TextView
+                android:id="@+id/authSchemeTv"
+                android:layout_marginTop="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:text="@string/selectProxy" />
+
+
+            <Spinner
+                android:id="@+id/authSchemeSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size">
+
+            </Spinner>
+
+
+
+            <TextView
+                android:id="@+id/ServerTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:textSize="@dimen/text_size"
+                android:text="@string/Server" />
+
+            <EditText
+                android:id="@+id/eserver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textUri"
+                android:textSize="@dimen/text_size"
+                android:hint="@string/serverHint" />
+
+            <TextView
+                android:id="@+id/InputPortTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:text="@string/InputPort" />
+
+            <EditText
+                android:id="@+id/einputport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/portHint"
+                android:textSize="@dimen/text_size"
+                android:inputType="numberSigned" />
+
+            <TextView
+                android:id="@+id/OutputPortTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:text="@string/OutputPort" />
+
+            <EditText
+                android:id="@+id/eoutputport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/portHint"
+                android:textSize="@dimen/text_size"
+                android:inputType="numberSigned" />
+
+
+            <TextView
+                android:id="@+id/BypassTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:text="@string/Bypass" />
+
+            <EditText
+                android:id="@+id/ebypass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:textSize="@dimen/text_size"
+                android:hint="@string/BypassHint" />
+
+            <TextView
+                android:id="@+id/appTheme"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:text="@string/theme"/>
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinnerTheme"
+                android:textSize="@dimen/text_size"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="uci.wifiproxy">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!--<uses-permission android:name="android.permission.WRITE_SETTINGS"/>-->
+    <!--<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>-->
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="24" />
+
+    <application
+
+        android:allowBackup="true"
+        android:description="@string/description"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name="uci.wifiproxy.ui.ui.MainActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="uci.wifiproxy.service.service.ProxyService"
+            android:icon="@mipmap/ic_launcher"
+            android:label="UCIntlmService"
+            android:launchMode="singleTop"
+            android:stopWithTask="false">
+            <!--android:process=":UCIntlmService"-->
+        </service>
+
+    </application>
+
+</manifest>
