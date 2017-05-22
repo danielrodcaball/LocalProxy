@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity
             }
             alertDialog.setTitle(getResources().getString(R.string.createdBy));
             alertDialog.setMessage("Daniel A. Rodriguez Caballero: \n" +
-                    "darodriguez@estudiantes.uci.cu,\n" + "Miguel Morciego Varona:\nmmorciego@uci.cu");
+                    "darodriguez@estudiantes.uci.cu,\n" + "danielrodcaball@gmail.com");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {

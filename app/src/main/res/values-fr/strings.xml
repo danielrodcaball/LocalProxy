@@ -13,7 +13,7 @@
     <string name="Server">Serveur</string>
     <string name="InputPort">Port d\'entrée</string>
     <string name="OutputPort">Port de départ</string>
-    <string name="domainHint">uci.cu</string>
+    <string name="domainHint">example.com</string>
     <string name="portHint">8080</string>
     <string name="run">démarrage</string>
     <string name="stop">arrêter</string>

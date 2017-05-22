@@ -135,16 +135,22 @@ public class ProxyService extends Service {
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, i, 0);
 
 
-        Notification notification = new Notification.Builder(this)
+        Notification.Builder builder = new Notification.Builder(this)
                 .setContentTitle(getApplicationContext().getString(R.string.app_name))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentText(getApplicationContext().getString(R.string.notif2) + " " + user)
                 .setWhen(System.currentTimeMillis())
-                .setContentIntent(contentIntent)
-                .build();
+                .setContentIntent(contentIntent);
+
+        Notification notification;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            notification = builder.getNotification();
+        } else {
+            notification = builder.build();
+            notification.priority = Notification.PRIORITY_MAX;
+        }
 
         notification.flags |= Notification.FLAG_NO_CLEAR;
-        notification.priority = Notification.PRIORITY_MAX;
 
         startForeground(NOTIFICATION, notification);
     }

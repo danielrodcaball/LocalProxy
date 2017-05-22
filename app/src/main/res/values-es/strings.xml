@@ -13,7 +13,7 @@
     <string name="Server">Servidor</string>
     <string name="InputPort">Puerto de entrada</string>
     <string name="OutputPort">Puerto de salida</string>
-    <string name="domainHint">uci.cu</string>
+    <string name="domainHint">ejemplo.com</string>
     <string name="serverHint">proxy.ejemplo.cu o 10.0.0.1</string>
     <string name="portHint">8080</string>
     <string name="run">iniciar</string>
