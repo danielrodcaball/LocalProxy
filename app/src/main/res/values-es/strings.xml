@@ -51,7 +51,7 @@
     <string name="setGlobalProxyConfiguration">Establecer Configuración Global del Proxy</string>
     <string name="notFunctional">Esta funcionalidad no esta suportada por su dispositivo</string>
     <string name="wifiSettings">Configuración de Wi-fi</string>
-    <string name="wifiSettingsText">Con el objetivo de configurar el proxy de la Wi-fi, hagalo de la siguiente manera:</string>
+    <string name="wifiSettingsText">Con el objetivo de configurar el proxy de la Wi-fi, hágalo de la siguiente manera:</string>
     <string name="wifiSettingsCheck">No mostrar de nuevo</string>
     <string name="wifiSettingsPositiveButton">Ir a opciones de la Wi-fi</string>
     <string name="wifiSettingsNegativeButton">Cancelar</string>
