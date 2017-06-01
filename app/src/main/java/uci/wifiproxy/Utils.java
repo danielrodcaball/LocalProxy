@@ -175,7 +175,8 @@ public class Utils {
 
             //save the settings
             manager.updateNetwork(config);
-            manager.reassociate();
+            manager.disconnect();
+            manager.reconnect();
             Log.i("Proxy details after set", getUserProxy(context)[0] + ":" + getUserProxy(context)[1]);
         } catch (Exception e) {
         }
@@ -210,7 +211,8 @@ public class Utils {
 
             //save the config
             manager.updateNetwork(config);
-            manager.reassociate();
+            manager.disconnect();
+            manager.reconnect();
             Log.i("Proxy details after unset", getUserProxy(context)[0] + ":" + getUserProxy(context)[1]);
         } catch (Exception e) {
         }
