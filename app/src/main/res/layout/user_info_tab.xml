@@ -37,12 +37,19 @@
                 android:hint="@string/passwordHint"
                 android:inputType="textPassword" />
 
+            <uci.wifiproxy.ui.ui.fontAwesome.ButtonAwesome
+                android:id="@+id/buttonClean"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/epass"
+                android:text="@string/fa_eraser"/>
+
             <CheckBox
                 android:id="@+id/checkBoxPass"
                 android:textSize="@dimen/text_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/epass"
+                android:layout_below="@+id/buttonClean"
                 android:layout_marginTop="5dp"
                 android:onClick="clickShowPassword"
                 android:text="@string/ShowPassword" />

@@ -16,7 +16,8 @@ import java.util.concurrent.Executors;
 
 import uci.wifiproxy.R;
 import uci.wifiproxy.Utils;
-import uci.wifiproxy.ntlm.core.HttpForwarder;
+//import uci.wifiproxy.ntlm.core.HttpForwarder;
+import uci.wifiproxy.ntlm.core.HttpForwarder1;
 import uci.wifiproxy.ui.ui.MainActivity;
 
 
@@ -33,7 +34,7 @@ public class ProxyService extends Service {
     private int outputport = 8080;
     private String bypass = "";
 //    private ServerTask s;
-    private HttpForwarder proxyThread;
+    private HttpForwarder1 proxyThread;
     private boolean set_global_proxy;
 
     private int NOTIFICATION = 1337;
@@ -110,7 +111,7 @@ public class ProxyService extends Service {
 //        s = new ServerTask(user, pass, domain, server, inputport, outputport, bypass, authScheme);
 //        s.execute();
         try {
-            proxyThread = new HttpForwarder(server, inputport, domain, user, pass, outputport, true, bypass, authScheme);
+            proxyThread = new HttpForwarder1(server, inputport, domain, user, pass, outputport, true, bypass, authScheme);
         } catch (IOException e) {
             Log.e(getClass().getName(), "The proxy thread can not be started: "  + e.getMessage());
             return START_NOT_STICKY;

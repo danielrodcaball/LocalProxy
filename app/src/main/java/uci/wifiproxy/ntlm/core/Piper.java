@@ -37,7 +37,7 @@ public class Piper
                 this.os.write(this.buffer, 0, read);
             }
         } catch (IOException e) {
-            Log.i("ERROR", e.getMessage());
+            e.printStackTrace();
         }
         close();
     }
@@ -62,12 +62,13 @@ public class Piper
         try {
             this.is.close();
         } catch (Exception ex) {
-
+            ex.printStackTrace();
         }
         try {
+            //esto provoca que se cierre el socket que esta por debajo del stream hacia donde se esta copiando.
             this.os.close();
         } catch (Exception ex) {
-
+            ex.printStackTrace();
         }
     }
 }

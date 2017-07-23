@@ -1,6 +1,7 @@
 package uci.wifiproxy.ntlm.core;
 
-import org.apache.commons.httpclient.Header;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.message.BasicHeader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -88,7 +89,7 @@ public class HttpParser extends InputStream {
             if (header.length != 2) {
                 throw new IOException("Bad Header:" + headerLines[i]);
             }
-            Header h = this.headers[(i - 1)] = new Header(header[0], header[1]);
+            Header h = this.headers[(i - 1)] = new BasicHeader(header[0], header[1]);
 
             if (h.getName().equals("Content-Type")) {
                 this.contentType = h.getValue();

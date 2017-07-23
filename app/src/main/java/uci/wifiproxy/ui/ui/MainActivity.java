@@ -18,7 +18,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ContextThemeWrapper;
+import android.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
@@ -31,7 +31,7 @@ import android.widget.Toast;
 
 
 import uci.wifiproxy.R;
-import uci.wifiproxy.ntlm.core.HttpForwarder;
+import uci.wifiproxy.ntlm.core.HttpForwarder1;
 import uci.wifiproxy.service.service.ProxyService;
 import uci.wifiproxy.ui.Security.Encripter;
 import uci.wifiproxy.ui.ui.fontAwesome.DrawableAwesome;
@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         userInfoTab = new UserInfoTab(this);
+        userInfoTab.buttonClean.setTextColor(iconsColor);
         preferencesTab = new PreferencesTab(this);
 
         pageAdapter = new CustomPageAdapter(TABS_NUMBER);
@@ -336,13 +337,13 @@ public class MainActivity extends AppCompatActivity
         proxyIntent.putExtra("bypass", preferencesTab.bypass.getText().toString());
         switch (preferencesTab.authSchemeSpinner.getSelectedItemPosition()){
             case 0:
-                proxyIntent.putExtra("authScheme", HttpForwarder.BASIC_SCHEME);
+                proxyIntent.putExtra("authScheme", HttpForwarder1.BASIC_SCHEME);
                 break;
             case 1:
-                proxyIntent.putExtra("authScheme", HttpForwarder.NTLM_SCHEME);
+                proxyIntent.putExtra("authScheme", HttpForwarder1.NTLM_SCHEME);
                 break;
             case 2:
-                proxyIntent.putExtra("authScheme", HttpForwarder.DIGEST_SCHEME);
+                proxyIntent.putExtra("authScheme", HttpForwarder1.DIGEST_SCHEME);
                 break;
         }
 
