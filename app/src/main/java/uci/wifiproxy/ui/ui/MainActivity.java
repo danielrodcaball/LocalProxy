@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about_us) {
             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-            if (themeId == this.DARK_THEME) {
+            if (themeId == MainActivity.DARK_THEME) {
                 alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.AlertDialogCustom)).create();
             }
             alertDialog.setTitle(getResources().getString(R.string.createdBy));
@@ -144,6 +144,14 @@ public class MainActivity extends AppCompatActivity
         return color;
     }
 
+    private int fetchAccentColor() {
+        TypedValue typedValue = new TypedValue();
+        TypedArray a = obtainStyledAttributes(typedValue.data, new int[]{R.attr.colorAccent});
+        int color = a.getColor(0, 0);
+        a.recycle();
+        return color;
+    }
+
     private void initUi() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setLogo(getApplicationContext().getResources().getDrawable(R.mipmap.ic_launcher));
@@ -154,7 +162,7 @@ public class MainActivity extends AppCompatActivity
 
         //this is a very ugly solution for set the icons color
         int iconsColor;
-        if (themeId == MainActivity.this.DARK_THEME) {
+        if (themeId == MainActivity.DARK_THEME) {
             iconsColor = Color.WHITE;
         } else {
             iconsColor = fetchPrimaryColor();
@@ -168,6 +176,7 @@ public class MainActivity extends AppCompatActivity
 
         userInfoTab = new UserInfoTab(this);
         userInfoTab.buttonClean.setTextColor(iconsColor);
+//        userInfoTab.buttonViewPass.setTextColor(fetchAccentColor());
         preferencesTab = new PreferencesTab(this);
 
         pageAdapter = new CustomPageAdapter(TABS_NUMBER);
@@ -210,7 +219,7 @@ public class MainActivity extends AppCompatActivity
         preferencesTab.bypass.setText(settings.getString("bypass", ""));
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            ((CheckBox) preferencesTab.globalCheckBox).setChecked(settings.getBoolean("global_proxy", true));
+            (preferencesTab.globalCheckBox).setChecked(settings.getBoolean("global_proxy", true));
         }
 
         preferencesTab.spinnerTheme.setSelection(themeId);
@@ -238,7 +247,7 @@ public class MainActivity extends AppCompatActivity
         editor.putString("bypass", preferencesTab.bypass.getText().toString());
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            editor.putBoolean("global_proxy", ((CheckBox) preferencesTab.globalCheckBox).isChecked());
+            editor.putBoolean("global_proxy", (preferencesTab.globalCheckBox).isChecked());
         }
 
         editor.putInt("authSchemeSelectedPos", preferencesTab.authSchemeSpinner.getSelectedItemPosition());
@@ -355,16 +364,6 @@ public class MainActivity extends AppCompatActivity
 
         startService(proxyIntent);
         disableAll();
-    }
-
-    public void clickShowPassword(View arg0) {
-        //show password
-        if (userInfoTab.checkBoxShowPassword.isChecked()) {
-            userInfoTab.pass.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-        } else {
-            userInfoTab.pass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-        userInfoTab.pass.setSelection(userInfoTab.pass.length());
     }
 
     private static boolean isProxyServiceRunning(Context context) {

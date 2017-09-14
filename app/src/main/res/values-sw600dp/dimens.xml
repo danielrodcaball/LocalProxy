@@ -5,6 +5,6 @@
          screen margins) for sw600dp devices (e.g. 7" tablets) here.
     -->
     <dimen name="quota_state_text_size">65sp</dimen>
-    <dimen name="text_size">35sp</dimen>
+    <!--<dimen name="text_size">35sp</dimen>-->
 
 </resources>

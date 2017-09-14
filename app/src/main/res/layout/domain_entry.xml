@@ -12,12 +12,19 @@
         android:text="@string/Domain"
         android:tag="3"/>
 
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <EditText
         android:id="@+id/edomain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:textSize="@dimen/text_size"
-        android:hint="@string/domainHint" />
+        android:hint="@string/domainHint"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:imeOptions="actionUnspecified"/>
+    </android.support.design.widget.TextInputLayout>
 
 </LinearLayout>

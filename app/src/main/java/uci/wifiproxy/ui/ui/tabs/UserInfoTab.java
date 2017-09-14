@@ -2,27 +2,25 @@ package uci.wifiproxy.ui.ui.tabs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 
 import uci.wifiproxy.R;
 import uci.wifiproxy.ui.ui.fontAwesome.ButtonAwesome;
 
-/**
- * Created by daniel on 23/02/17.
- */
 
 public class UserInfoTab {
 
-    public Context context;
+    Context context;
     public View rootView;
 
-    public CheckBox checkBoxShowPassword;
     public EditText username;
     public EditText pass;
     public ButtonAwesome buttonClean;
+    ButtonAwesome buttonViewPass;
 
 
     public UserInfoTab(Context context) {
@@ -36,7 +34,6 @@ public class UserInfoTab {
     private void loadUi(){
         username = (EditText) rootView.findViewById(R.id.euser);
         pass = (EditText) rootView.findViewById(R.id.epass);
-        checkBoxShowPassword = (CheckBox) rootView.findViewById(R.id.checkBoxPass);
         buttonClean = (ButtonAwesome) rootView.findViewById(R.id.buttonClean);
         buttonClean.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +46,19 @@ public class UserInfoTab {
                 editor.apply();
                 username.setText("");
                 pass.setText("");
+            }
+        });
+        buttonViewPass = (ButtonAwesome) rootView.findViewById(R.id.buttonViewPass);
+        buttonViewPass.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+                    pass.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP){
+                    pass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+                return false;
             }
         });
     }
