@@ -48,7 +48,7 @@ public class PreferencesTab {
     //V21
     public Button wiffiSettingsButton;
 
-    public static CheckBox dontShowCheckBox;
+    public CheckBox dontShowCheckBox;
 
     public PreferencesTab(Context context) {
         this.context = context;
@@ -87,7 +87,7 @@ public class PreferencesTab {
                             Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putInt("theme", position);
-                    editor.commit();
+                    editor.apply();
                     appCompatActivity.recreate();
                 }
             }
@@ -107,7 +107,7 @@ public class PreferencesTab {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 1) {
-                    prefLinearLayout.addView(domainEntry, 3);
+                    prefLinearLayout.addView(domainEntry, 2);
                 }
                 else{
                     prefLinearLayout.removeView(domainEntry);
@@ -163,7 +163,7 @@ public class PreferencesTab {
                             Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = settings.edit();
                     editor.putInt("theme", position);
-                    editor.commit();
+                    editor.apply();
                     appCompatActivity.recreate();
                 }
             }
@@ -182,7 +182,7 @@ public class PreferencesTab {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 1) {
-                    prefLinearLayout.addView(domainEntry, 3);
+                    prefLinearLayout.addView(domainEntry, 2);
                 }
                 else{
                     prefLinearLayout.removeView(domainEntry);

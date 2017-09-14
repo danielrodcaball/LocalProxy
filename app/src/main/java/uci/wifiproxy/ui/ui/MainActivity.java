@@ -223,6 +223,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         preferencesTab.spinnerTheme.setSelection(themeId);
+
         if (userInfoTab.username.getText().toString().equals("")) {
             userInfoTab.username.requestFocus();
         } else {
