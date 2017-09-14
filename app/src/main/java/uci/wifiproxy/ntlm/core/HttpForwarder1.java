@@ -158,11 +158,13 @@ public class HttpForwarder1 extends Thread {
                 .setDefaultCredentialsProvider(credentials)
                 .disableRedirectHandling()
                 .disableCookieManagement()
+                .disableAuthCaching()
                 .build();
 
         this.noDelegateClient = HttpClientBuilder.create()
                 .setConnectionManager(manager)
                 .disableRedirectHandling()
+                .disableCookieManagement()
                 .build();
 
         while (running) {
@@ -171,7 +173,7 @@ public class HttpForwarder1 extends Thread {
 //                    Log.e(getClass().getName(), "The proxy task was interrupted");
 //                }
                 Socket s = this.ssocket.accept();
-                listaSockets.add(s);
+//                listaSockets.add(s);
                 this.threadPool.execute(new HttpForwarder1.Handler(s));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -182,7 +184,23 @@ public class HttpForwarder1 extends Thread {
     public void halt() {
         Log.e(getClass().getName(), "Stoping proxy");
         running = false;
-        terminate();
+//        terminate();
+        try {
+            this.delegateClient.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            this.noDelegateClient.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            this.ssocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         manager.shutdown();
     }
@@ -492,12 +510,16 @@ public class HttpForwarder1 extends Thread {
                     if (response.getEntity() != null) {
                         new Piper(response.getEntity().getContent(), os).run();
                     }
-
-                    this.localSocket.close();
                 }
 //                }
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    this.localSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
