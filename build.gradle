@@ -1,6 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-
 buildscript {
     repositories {
 //        maven { url 'http://nexus.prod.uci.cu/repository/maven-all/' }
@@ -10,9 +9,18 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.0'
+
     }
 }
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.realm:realm-gradle-plugin:3.7.2"
+    }
+}
 
 allprojects {
     repositories {
