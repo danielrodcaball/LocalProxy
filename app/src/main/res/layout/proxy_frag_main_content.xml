@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/userInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/euser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/Username"
+                android:inputType="textVisiblePassword"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:completionThreshold="1"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <!--<requestFocus />-->
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/passInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/userInput">
+
+            <EditText
+                android:id="@+id/epass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/passwordHint"
+                android:imeActionId="@+id/login"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <uci.wifiproxy.util.fontAwesome.ButtonAwesome
+            android:id="@+id/buttonViewPass"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignBottom="@+id/passInput"
+            android:layout_alignEnd="@id/passInput"
+            android:layout_alignRight="@id/passInput"
+            android:background="@android:color/transparent"
+            android:text="@string/fa_eye" />
+
+    </RelativeLayout>
+
+    <CheckBox
+        android:id="@+id/check_rem_pass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/remember_password" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:textSize="@dimen/text_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_label" />
+
+        <Spinner
+            android:id="@+id/spinner_profiles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"/>
+
+        <Button
+            android:id="@+id/add_profile_button"
+            android:text="@string/add_profile_text"
+            android:background="@drawable/touchFeedback"
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

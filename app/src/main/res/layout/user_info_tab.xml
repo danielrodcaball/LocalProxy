@@ -58,7 +58,7 @@
 
                 </android.support.design.widget.TextInputLayout>
 
-            <uci.wifiproxy.ui.ui.fontAwesome.ButtonAwesome
+            <uci.wifiproxy.util.fontAwesome.ButtonAwesome
                 android:id="@+id/buttonViewPass"
                 android:background="@android:color/transparent"
                 android:layout_width="45dp"
@@ -79,7 +79,7 @@
                 <!--android:hint="@string/passwordHint"-->
                 <!--android:inputType="textPassword" />-->
 
-            <uci.wifiproxy.ui.ui.fontAwesome.ButtonAwesome
+            <uci.wifiproxy.util.fontAwesome.ButtonAwesome
                 android:id="@+id/buttonClean"
                 android:layout_width="45dp"
                 android:layout_height="45dp"

@@ -8,5 +8,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="quota_state_text_size">25sp</dimen>
     <dimen name="text_size">15sp</dimen>
+    <dimen name="list_item_padding">8dp</dimen>
 
 </resources>

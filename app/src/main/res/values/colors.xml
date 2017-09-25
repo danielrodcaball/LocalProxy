@@ -9,4 +9,6 @@
     <color name="colorPrimaryBlack">#000000</color>
     <color name="colorPrimaryDarkRed">#D32F2F</color>
     <color name="colorAccentRed">#3F51B5</color>
+
+    <drawable name="touchFeedback">#CFD8DC</drawable>
 </resources>

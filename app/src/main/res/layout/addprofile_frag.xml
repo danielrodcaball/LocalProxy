@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/nameEntry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/ename"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/name_hint"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textUri"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textSize="@dimen/text_size" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <TextView
+            android:id="@+id/authSchemeTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/authScheme"
+            android:textSize="@dimen/text_size" />
+
+
+        <Spinner
+            android:id="@+id/authSchemeSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size"></Spinner>
+
+        <LinearLayout
+            android:id="@+id/domainEntryLL"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/DomainTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:tag="3"
+                android:text="@string/Domain"
+                android:textSize="@dimen/text_size" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/edomain"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/domainHint"
+                    android:imeOptions="actionUnspecified"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textSize="@dimen/text_size" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/ServerTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/Server"
+            android:textSize="@dimen/text_size" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/serverEntry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/eserver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/serverHint"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textUri"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textSize="@dimen/text_size" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <TextView
+            android:id="@+id/InputPortTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/InputPort"
+            android:textSize="@dimen/text_size" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/einputport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/portHint"
+                android:imeOptions="actionUnspecified"
+                android:inputType="numberSigned"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textSize="@dimen/text_size" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/OutputPortTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/OutputPort"
+            android:textSize="@dimen/text_size" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/eoutputport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/portHint"
+                android:imeOptions="actionUnspecified"
+                android:inputType="numberSigned"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textSize="@dimen/text_size" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/BypassTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Bypass"
+            android:textSize="@dimen/text_size" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/ebypass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/BypassHint"
+                android:imeOptions="actionUnspecified"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textSize="@dimen/text_size" />
+
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+</ScrollView>

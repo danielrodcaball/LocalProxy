@@ -6,13 +6,13 @@
     <string name="action_settings">Settings</string>
     <string name="user">User</string>
     <string name="blank"></string>
-    <string name="Username">Username</string>
+    <string name="Username">user</string>
     <string name="Password">Password</string>
     <string name="ShowPassword">Show password</string>
-    <string name="Domain">Domain</string>
-    <string name="Server">Server</string>
-    <string name="InputPort">Input Port</string>
-    <string name="OutputPort">Output Port</string>
+    <string name="Domain">Domain:</string>
+    <string name="Server">Server:</string>
+    <string name="InputPort">Input Port:</string>
+    <string name="OutputPort">Output Port:</string>
     <string name="domainHint">example.com</string>
     <string name="serverHint">proxy.example.cu or 10.0.0.1</string>
     <string name="portHint">8080</string>
@@ -22,11 +22,11 @@
     <string name="notif2">Running UCIntlm for user: </string>
     <string name="notif3">UCIntlm was stopped…</string>
     <string name="AdvancedOptions">Advanced Options</string>
-    <string name="passwordHint">Password</string>
+    <string name="passwordHint">password</string>
     <string name="started">UCIntlm started</string>
     <string name="stopped">UCIntlm stopped</string>
     <string name="nodata">There is no enough data to start the service</string>
-    <string name="Bypass">Bypass proxy for</string>
+    <string name="Bypass">Bypass proxy for:</string>
     <string name="BypassHint">127.0.0.1,localhost,*example.cu</string>
     <string name="OnProxy">Configuring WiFi for Proxy use</string>
     <string name="OnNoProxy">Configuring WiFi for No Proxy use</string>
@@ -59,5 +59,26 @@
     <string name="NTLMProxy">NTLM</string>
     <string name="BasicProxy">Basic</string>
     <string name="DigestProxy">Digest</string>
-    <string name="selectProxy">Select the authentication scheme:</string>
+    <string name="authScheme">Authentication scheme:</string>
+    <string name="no_profiles_all">You have no Profiles</string>
+    <string name="no_profiles_add">Add a Profile item +</string>
+    <string name="successfully_saved_profile_message">Profile saved</string>
+    <string name="profiles_title">Profiles</string>
+    <string name="name_hint">Name</string>
+    <string name="empty_task_message">Profiles cannot be empty</string>
+    <string name="add_profile">New Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="name">Name:</string>
+    <string name="missing_profile_message">No data</string>
+    <string name="successfully_profile_updated_message">Profile updated</string>
+    <string name="menu_delete_profile">Delete</string>
+    <string name="remember_password">Remember password</string>
+    <string name="profile_label">Profile:</string>
+    <string name="username_empty_error">username cannot be empty</string>
+    <string name="password_empty_error">password cannot be empty</string>
+    <string name="profile_empty_error">please select a profile</string>
+    <string name="add_profile_text">Add profile +</string>
+    <string name="no_profile_selected_error">Please select a profile</string>
+
+
 </resources>

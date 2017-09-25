@@ -6,7 +6,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,10 +14,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import uci.wifiproxy.R;
-import uci.wifiproxy.Utils;
+import uci.wifiproxy.util.WifiUtils;
 //import uci.wifiproxy.ntlm.core.HttpForwarder;
-import uci.wifiproxy.ntlm.core.HttpForwarder1;
-import uci.wifiproxy.ui.ui.MainActivity;
+import uci.wifiproxy.proxy.core.HttpForwarder1;
+import uci.wifiproxy.proxy.ProxyActivity;
 
 
 public class ProxyService extends Service {
@@ -65,7 +64,7 @@ public class ProxyService extends Service {
 //        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && set_global_proxy) {
-            Utils.unsetWifiProxySettings(this);
+            WifiUtils.unsetWifiProxySettings(this);
             Toast.makeText(this, getString(R.string.OnNoProxy), Toast.LENGTH_LONG).show();
         }
 
@@ -75,7 +74,6 @@ public class ProxyService extends Service {
         super.onDestroy();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (android.os.Debug.isDebuggerConnected()) {
@@ -98,12 +96,8 @@ public class ProxyService extends Service {
 
         System.out.println("global_proxy: " + String.valueOf(set_global_proxy));
         if (set_global_proxy) {
-            Utils.setWifiProxySettings(this, outputport, "");
+            WifiUtils.setWifiProxySettings(this, outputport, "");
             Toast.makeText(this, getString(R.string.OnProxy), Toast.LENGTH_LONG).show();
-//            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
-//                IntentFilter intentFilterWifiAutoConfig = new IntentFilter("android.net.wifi.STATE_CHANGE");
-//                registerReceiver(wifiAutoConfigReceiver, intentFilterWifiAutoConfig);
-//            }
         }
 
         Log.i(getClass().getName(), "Starting for user " + user + "@" + domain + ", server " + server + ", input port " + String.valueOf(inputport) + ", output port" + String.valueOf(outputport) + " and bypass string: " + bypass);
@@ -125,13 +119,12 @@ public class ProxyService extends Service {
         return START_REDELIVER_INTENT;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void notifyit() {
         /*
          * Este método asegura que el servicio permanece en el área de notificación
 		 * */
 
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, ProxyActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, i, 0);
 
