@@ -71,16 +71,6 @@ public class ProfileDetailsPresenter implements ProfileDetailsContract.Presenter
         }
 
         mProfilesDetailsView.showName(profile.getName());
-
-        AuthScheme authScheme = profile.getAuthScheme();
-        mProfilesDetailsView.showAuthScheme(authScheme);
-        if(authScheme != AuthScheme.NTLM){
-            mProfilesDetailsView.hideDomain();
-        }
-        else{
-            mProfilesDetailsView.showDomain(profile.getDomain());
-        }
-
         mProfilesDetailsView.showServer(profile.getServer());
         mProfilesDetailsView.showInPort(profile.getInPort());
         mProfilesDetailsView.showOutPort(profile.getOutPort());

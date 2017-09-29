@@ -65,8 +65,8 @@ public class ProxyPresenter implements ProxyContract.Presenter {
                 @Override
                 public void onProfileLoaded(Profile profile) {
                     mProxyView.startProxyService(username, password,
-                            profile.getDomain(), profile.getServer(), profile.getInPort(),
-                            profile.getOutPort(), profile.getBypass(), profile.getAuthScheme(), setGlobalProxy);
+                            profile.getServer(), profile.getInPort(),
+                            profile.getOutPort(), profile.getBypass(), setGlobalProxy);
                 }
 
                 @Override

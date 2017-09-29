@@ -27,12 +27,6 @@ public interface ProfileDetailsContract {
 
         void showName(String name);
 
-        void showAuthScheme(AuthScheme authScheme);
-
-        void showDomain(String domain);
-
-        void hideDomain();
-
         void showServer(String server);
 
         void showInPort(int inPort);

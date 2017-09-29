@@ -37,10 +37,6 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
 
     private TextView mDetailName;
 
-    private TextView mDetailAuthScheme;
-
-    private TextView mDetailDomain;
-
     private TextView mDetailServer;
 
     private TextView mDetailInPort;
@@ -48,8 +44,6 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
     private TextView mDetailOutPort;
 
     private TextView mDetailBypass;
-
-    private LinearLayout mdomainEntryLL;
 
     public ProfileDetailsFragment(){
 
@@ -70,13 +64,10 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.profile_details_frag, container, false);
         mDetailName = (TextView) root.findViewById(R.id.nameTv);
-        mDetailAuthScheme = (TextView) root.findViewById(R.id.authSchemeTv);
-        mDetailDomain = (TextView) root.findViewById(R.id.domainTv);
         mDetailServer = (TextView) root.findViewById(R.id.serverTv);
         mDetailInPort = (TextView) root.findViewById(R.id.inPortTv);
         mDetailOutPort = (TextView) root.findViewById(R.id.outPortTv);
         mDetailBypass = (TextView) root.findViewById(R.id.bypassTv);
-        mdomainEntryLL = (LinearLayout) root.findViewById(R.id.domainEntryLL);
 
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_edit_profile);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -121,22 +112,6 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
     @Override
     public void showName(String name) {
         mDetailName.setText(name);
-    }
-
-    @Override
-    public void showAuthScheme(AuthScheme authScheme) {
-        mDetailAuthScheme.setText(authScheme.name());
-    }
-
-    @Override
-    public void showDomain(String domain) {
-        mdomainEntryLL.setVisibility(View.VISIBLE);
-        mDetailDomain.setText(domain);
-    }
-
-    @Override
-    public void hideDomain() {
-        mdomainEntryLL.setVisibility(View.GONE);
     }
 
     @Override

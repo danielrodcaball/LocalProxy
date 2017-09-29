@@ -67,23 +67,19 @@ public class HttpForwarder1 extends Thread {
     private String addr = "";
     private String user;
     private String pass;
-    private String domain;
     private String bypass;
-    private String authScheme;
     public boolean running = true;
     private LinkedList<Socket> listaSockets = new LinkedList<Socket>();
 
     private CredentialsProvider credentials = null;
 
-    public HttpForwarder1(String addr, int inport, String domain, String user,
-                          String pass, int outport, boolean onlyLocal, String bypass, String authScheme) throws IOException {
+    public HttpForwarder1(String addr, int inport, String user,
+                          String pass, int outport, boolean onlyLocal, String bypass) throws IOException {
         this.addr = addr;
         this.inport = inport;
         this.user = user;
         this.pass = pass;
-        this.domain = domain;
         this.bypass = bypass;
-        this.authScheme = authScheme;
 
         if (onlyLocal) {
             this.ssocket = new ServerSocket(outport, 0,
@@ -99,11 +95,14 @@ public class HttpForwarder1 extends Thread {
         credentials = new BasicCredentialsProvider();
 
 
-        Log.e(getClass().getName(), "Starting proxy with " + authScheme + " scheme");
+        Log.e(getClass().getName(), "Starting proxy");
     }
 
     public void run() {
         try {
+            //NTCredentials extends from UsernamePasswordCredential which means that can resolve
+            //Basic, Digest and NTLM authentication schemes. The field of domain act like an realm,
+            //it can be null and it'll works correctly
             credentials.setCredentials(new AuthScope(AuthScope.ANY),
                     new NTCredentials(this.user, this.pass, InetAddress.getLocalHost().getHostName(),
                             null));

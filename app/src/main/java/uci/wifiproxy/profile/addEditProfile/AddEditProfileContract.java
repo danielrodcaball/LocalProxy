@@ -20,10 +20,6 @@ public interface AddEditProfileContract {
 
         void setName(String name);
 
-        void setAuthScheme(AuthScheme authScheme);
-
-        void setDomain(String domain);
-
         void setServer(String server);
 
         void setInPort(String inPort);
@@ -38,8 +34,6 @@ public interface AddEditProfileContract {
 
         void setNameEmptyError();
 
-        void setDomainEmptyError();
-
         void setServerEmptyError();
 
         void setInPortEmptyError();
@@ -48,14 +42,11 @@ public interface AddEditProfileContract {
 
         void setBypassSyntaxError();
 
-        void showDomainEntry();
-
-        void hideDomainEntry();
     }
 
     interface Presenter extends BasePresenter{
 
-        void saveProfile(String name, AuthScheme authScheme, String domain, String server,
+        void saveProfile(String name, String server,
                          String inPort, String outPort, String bypass);
 
         void populateProfile();
@@ -64,6 +55,5 @@ public interface AddEditProfileContract {
 
         void onDestroy();
 
-        void onAuthSchemeSpinnerItemSelected(@NonNull int position);
     }
 }

@@ -31,54 +31,6 @@
 
         </android.support.design.widget.TextInputLayout>
 
-
-        <TextView
-            android:id="@+id/authSchemeTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/authScheme"
-            android:textSize="@dimen/text_size" />
-
-
-        <Spinner
-            android:id="@+id/authSchemeSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size"></Spinner>
-
-        <LinearLayout
-            android:id="@+id/domainEntryLL"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/DomainTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:tag="3"
-                android:text="@string/Domain"
-                android:textSize="@dimen/text_size" />
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/edomain"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/domainHint"
-                    android:imeOptions="actionUnspecified"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textSize="@dimen/text_size" />
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
-
         <TextView
             android:id="@+id/ServerTextView"
             android:layout_width="wrap_content"

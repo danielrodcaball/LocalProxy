@@ -47,12 +47,12 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
     }
 
     @Override
-    public void saveProfile(String name, AuthScheme authScheme, String domain, String server,
+    public void saveProfile(String name, String server,
                             String inPort, String outPort, String bypass) {
         if (isNewProfile() && isDataMissing) {
-            createProfile(name, authScheme, domain, server, inPort, outPort, bypass);
+            createProfile(name, server, inPort, outPort, bypass);
         } else {
-            updateProfile(name, authScheme, domain, server, inPort, outPort, bypass);
+            updateProfile(name, server, inPort, outPort, bypass);
         }
     }
 
@@ -67,8 +67,6 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
                 if (!mAddProfileView.isActive()) return;
 
                 mAddProfileView.setName(profile.getName());
-                mAddProfileView.setAuthScheme(profile.getAuthScheme());
-                mAddProfileView.setDomain(profile.getDomain());
                 mAddProfileView.setServer(profile.getServer());
                 mAddProfileView.setBypass(profile.getBypass());
                 mAddProfileView.setInPort(String.valueOf(profile.getInPort()));
@@ -93,28 +91,19 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
         mProfilesDataSource.releaseResources();
     }
 
-    @Override
-    public void onAuthSchemeSpinnerItemSelected(@NonNull int position) {
-        AuthScheme authScheme = AuthScheme.values()[position];
-        if (authScheme == AuthScheme.NTLM)
-            mAddProfileView.showDomainEntry();
-        else
-            mAddProfileView.hideDomainEntry();
-    }
-
     private boolean isNewProfile() {
         return mProfileId == null;
     }
 
-    private void createProfile(String name, AuthScheme authScheme, String domain, String server,
+    private void createProfile(String name, String server,
                                String inPort, String outPort, String bypass) {
 
-        boolean isValidData = validateData(name, authScheme, domain, server,
+        boolean isValidData = validateData(name, server,
                 inPort, outPort, bypass);
 
         if (!isValidData) return;
 
-        Profile profile = Profile.newProfile(name, authScheme, domain, server,
+        Profile profile = Profile.newProfile(name, server,
                 Integer.parseInt(inPort), Integer.parseInt(outPort), bypass);
 
         mProfilesDataSource.saveProfile(profile, new ProfilesDataSource.SaveProfileCallback() {
@@ -133,15 +122,15 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
 
     }
 
-    private void updateProfile(String name, AuthScheme authScheme, String domain, String server,
+    private void updateProfile(String name, String server,
                                String inPort, String outPort, String bypass) {
 
-        boolean isValidData = validateData(name, authScheme, domain, server,
+        boolean isValidData = validateData(name, server,
                 inPort, outPort, bypass);
 
         if (!isValidData) return;
 
-        Profile profile = Profile.newProfile(mProfileId,name, authScheme, domain, server,
+        Profile profile = Profile.newProfile(mProfileId, name, server,
                 Integer.parseInt(inPort), Integer.parseInt(outPort), bypass);
 
         mProfilesDataSource.updateProfile(profile, new ProfilesDataSource.UpdateProfileCallback() {
@@ -159,7 +148,7 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
         });
     }
 
-    private boolean validateData(String name, AuthScheme authScheme, String domain, String server,
+    private boolean validateData(String name, String server,
                                  String inPort, String outPort, String bypass) {
         boolean isValid = true;
 
@@ -168,10 +157,6 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
             isValid = false;
         }
 
-        if (authScheme != null && authScheme == AuthScheme.NTLM && Strings.isNullOrEmpty(domain)) {
-            mAddProfileView.setDomainEmptyError();
-            isValid = false;
-        }
         if (Strings.isNullOrEmpty(server)) {
             mAddProfileView.setServerEmptyError();
             isValid = false;

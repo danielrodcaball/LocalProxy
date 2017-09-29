@@ -27,7 +27,6 @@ public class ProxyService extends Service {
      * */
     private String user = "";
     private String pass = "";
-    private String domain = "";
     private String server = "";
     private int inputport = 8080;
     private int outputport = 8080;
@@ -37,8 +36,6 @@ public class ProxyService extends Service {
     private boolean set_global_proxy;
 
     private int NOTIFICATION = 1337;
-
-    private String authScheme;
 
     private ExecutorService executor;
 
@@ -86,13 +83,11 @@ public class ProxyService extends Service {
 
         user = intent.getStringExtra("user");
         pass = intent.getStringExtra("pass");
-        domain = intent.getStringExtra("domain");
         server = intent.getStringExtra("server");
         inputport = Integer.valueOf(intent.getStringExtra("inputport"));
         outputport = Integer.valueOf(intent.getStringExtra("outputport"));
         set_global_proxy = intent.getBooleanExtra("set_global_proxy", true);
         bypass = intent.getStringExtra("bypass");
-        authScheme = intent.getStringExtra("authScheme");
 
         System.out.println("global_proxy: " + String.valueOf(set_global_proxy));
         if (set_global_proxy) {
@@ -100,12 +95,12 @@ public class ProxyService extends Service {
             Toast.makeText(this, getString(R.string.OnProxy), Toast.LENGTH_LONG).show();
         }
 
-        Log.i(getClass().getName(), "Starting for user " + user + "@" + domain + ", server " + server + ", input port " + String.valueOf(inputport) + ", output port" + String.valueOf(outputport) + " and bypass string: " + bypass);
+        Log.i(getClass().getName(), "Starting for user " + user  + ", server " + server + ", input port " + String.valueOf(inputport) + ", output port" + String.valueOf(outputport) + " and bypass string: " + bypass);
 
 //        s = new ServerTask(user, pass, domain, server, inputport, outputport, bypass, authScheme);
 //        s.execute();
         try {
-            proxyThread = new HttpForwarder1(server, inputport, domain, user, pass, outputport, true, bypass, authScheme);
+            proxyThread = new HttpForwarder1(server, inputport, user, pass, outputport, true, bypass);
         } catch (IOException e) {
             Log.e(getClass().getName(), "The proxy thread can not be started: "  + e.getMessage());
             return START_NOT_STICKY;

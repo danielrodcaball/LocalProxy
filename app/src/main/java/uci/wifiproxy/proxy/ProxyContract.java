@@ -72,9 +72,8 @@ public interface ProxyContract {
 
         void stopProxyService();
 
-        void startProxyService(String username, String password, String domain, String server,
-                              int inputport, int outputport, String bypass, AuthScheme authScheme,
-                               boolean setGlobProxy);
+        void startProxyService(String username, String password, String server,
+                              int inputport, int outputport, String bypass, boolean setGlobProxy);
 
         void showWifiConfDialog();
 

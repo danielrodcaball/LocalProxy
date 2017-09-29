@@ -29,13 +29,7 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
 
     private AddEditProfileContract.Presenter mPresenter;
 
-    private LinearLayout domainEntryLL;
-
     private TextView mName;
-
-    private Spinner mAuthScheme;
-
-    private TextView mDomain;
 
     private TextView mServer;
 
@@ -69,8 +63,6 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
             public void onClick(View v) {
                 mPresenter.saveProfile(
                         mName.getText().toString(),
-                        (AuthScheme) mAuthScheme.getSelectedItem(),
-                        mDomain.getText().toString(),
                         mServer.getText().toString(),
                         mInPort.getText().toString(),
                         mOutPort.getText().toString(),
@@ -86,24 +78,6 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
         super.onCreateView(inflater, container, savedInstanceState);
         View root = inflater.inflate(R.layout.addprofile_frag, container, false);
         mName = (TextView) root.findViewById(R.id.ename);
-
-        domainEntryLL = (LinearLayout) root.findViewById(R.id.domainEntryLL);
-        mAuthScheme = (Spinner) root.findViewById(R.id.authSchemeSpinner);
-        mAuthScheme.setAdapter(new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_spinner_dropdown_item, AuthScheme.values()));
-        mAuthScheme.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    mPresenter.onAuthSchemeSpinnerItemSelected(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        mDomain = (TextView) root.findViewById(R.id.edomain);
         mServer = (TextView) root.findViewById(R.id.eserver);
         mInPort = (TextView) root.findViewById(R.id.einputport);
         mOutPort = (TextView) root.findViewById(R.id.eoutputport);
@@ -142,16 +116,6 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
     }
 
     @Override
-    public void setAuthScheme(AuthScheme authScheme) {
-        mAuthScheme.setSelection(authScheme.ordinal(), true);
-    }
-
-    @Override
-    public void setDomain(String domain) {
-        mDomain.setText(domain);
-    }
-
-    @Override
     public void setServer(String server) {
         mServer.setText(server);
     }
@@ -187,11 +151,6 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
     }
 
     @Override
-    public void setDomainEmptyError() {
-        mDomain.setError("Domain cannot be empty");
-    }
-
-    @Override
     public void setServerEmptyError() {
         mServer.setError("Server cannot be empty");
     }
@@ -209,16 +168,6 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
     @Override
     public void setBypassSyntaxError() {
         mBypass.setError("Bypass syntax error");
-    }
-
-    @Override
-    public void showDomainEntry() {
-        domainEntryLL.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideDomainEntry() {
-        domainEntryLL.setVisibility(View.GONE);
     }
 
 }

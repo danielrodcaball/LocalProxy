@@ -23,12 +23,6 @@ public class Profile extends RealmObject {
     private String name;
 
     @Required
-    private String authScheme;
-
-    @Required
-    private String domain;
-
-    @Required
     private String server;
 
     private int inPort;
@@ -37,13 +31,11 @@ public class Profile extends RealmObject {
 
     private String bypass;
 
-    public static Profile newProfile(String name, AuthScheme authScheme, String domain,
-                                     String server, int inPort, int outPort, String bypass){
+    public static Profile newProfile(String name, String server,
+                                     int inPort, int outPort, String bypass){
         Profile p = new Profile();
         p.setId(UUID.randomUUID().toString());
         p.setName(name);
-        p.setAuthScheme(authScheme);
-        p.setDomain(domain);
         p.setServer(server);
         p.setInPort(inPort);
         p.setOutPort(outPort);
@@ -52,13 +44,11 @@ public class Profile extends RealmObject {
         return p;
     }
 
-    public static Profile newProfile(String profileId, String name, AuthScheme authScheme, String domain,
+    public static Profile newProfile(String profileId, String name,
                                      String server, int inPort, int outPort, String bypass){
         Profile p = new Profile();
         p.setId(profileId);
         p.setName(name);
-        p.setAuthScheme(authScheme);
-        p.setDomain(domain);
         p.setServer(server);
         p.setInPort(inPort);
         p.setOutPort(outPort);
@@ -77,22 +67,6 @@ public class Profile extends RealmObject {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public AuthScheme getAuthScheme() {
-        return AuthScheme.valueOf(authScheme);
-    }
-
-    public void setAuthScheme(AuthScheme authScheme) {
-        this.authScheme = authScheme.name();
-    }
-
-    public String getDomain() {
-        return domain;
-    }
-
-    public void setDomain(String domain) {
-        this.domain = domain;
     }
 
     public String getServer() {

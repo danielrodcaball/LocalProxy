@@ -336,30 +336,17 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     }
 
     @Override
-    public void startProxyService(String username, String password, String domain, String server,
-                                  int inputport, int outputport, String bypass, AuthScheme authScheme,
+    public void startProxyService(String username, String password, String server,
+                                  int inputport, int outputport, String bypass,
                                   boolean setGlobProxy) {
         Intent proxyIntent = new Intent(getActivity(), ProxyService.class);
         proxyIntent.putExtra("user", username);
         proxyIntent.putExtra("pass", password);
-        proxyIntent.putExtra("domain", domain);
         proxyIntent.putExtra("server", server);
         proxyIntent.putExtra("inputport", inputport + "");
         proxyIntent.putExtra("outputport", outputport + "");
         proxyIntent.putExtra("bypass", bypass);
         proxyIntent.putExtra("set_global_proxy", setGlobProxy);
-        switch (authScheme){
-            case NTLM:
-                proxyIntent.putExtra("authScheme", HttpForwarder1.NTLM_SCHEME);
-                break;
-            case BASIC:
-                proxyIntent.putExtra("authScheme", HttpForwarder1.BASIC_SCHEME);
-                break;
-            case DIGEST:
-                proxyIntent.putExtra("authScheme", HttpForwarder1.DIGEST_SCHEME);
-                break;
-        }
-
         getActivity().startService(proxyIntent);
     }
 

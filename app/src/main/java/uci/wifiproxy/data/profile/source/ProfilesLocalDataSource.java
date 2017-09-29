@@ -77,8 +77,6 @@ public class ProfilesLocalDataSource implements ProfilesDataSource {
         else {
             realm.beginTransaction();
             profileToUpdate.setName(profile.getName());
-            profileToUpdate.setAuthScheme(profile.getAuthScheme());
-            profileToUpdate.setDomain(profile.getDomain());
             profileToUpdate.setServer(profile.getServer());
             profileToUpdate.setBypass(profile.getBypass());
             profileToUpdate.setInPort(profile.getInPort());
