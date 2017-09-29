@@ -38,7 +38,11 @@ public interface AddEditProfileContract {
 
         void setInPortEmptyError();
 
+        void setInputPortOutOfRangeError();
+
         void setOutPortEmptyError();
+
+        void setOutputPortOutOfRangeError();
 
         void setBypassSyntaxError();
 

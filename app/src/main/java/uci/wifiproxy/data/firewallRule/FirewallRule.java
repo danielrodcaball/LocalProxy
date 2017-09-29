@@ -30,7 +30,6 @@ public class FirewallRule extends RealmObject {
 
     private String description;
 
-    @Required
     private boolean isChecked;
 
     public static FirewallRule newInstance(@NonNull String firewallRuleId, @NonNull String rule,

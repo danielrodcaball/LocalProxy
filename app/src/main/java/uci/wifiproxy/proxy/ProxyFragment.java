@@ -273,14 +273,17 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     @Override
     public void setSpinnerProfileSelected(String profileId) {
         if (mProfileSpinner.getVisibility() == View.VISIBLE) {
-            int pos = 0;
+            int pos = -1;
             for (int i = 0; i < mProfileArrayAdapter.getCount(); i++) {
                 if (mProfileArrayAdapter.getItem(i).getId().equals(profileId)) {
                     pos = i;
                     break;
                 }
             }
-            mProfileSpinner.setSelection(pos, false);
+
+            if (pos >= 0) {
+                mProfileSpinner.setSelection(pos, false);
+            }
         }
     }
 

@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 import uci.wifiproxy.R;
 import uci.wifiproxy.profile.AuthScheme;
 
@@ -161,8 +163,23 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
     }
 
     @Override
+    public void setInputPortOutOfRangeError() {
+        mInPort.setError(
+                String.format(Locale.ENGLISH, "Input port must be between %d and %d",
+                        0, AddEditProfilePresenter.MAX_PORTS_LIMIT)
+        );
+    }
+
+    @Override
     public void setOutPortEmptyError() {
         mOutPort.setError("OutputPOrt cannot be empty");
+    }
+
+    @Override
+    public void setOutputPortOutOfRangeError() {
+        mOutPort.setError(String.format(Locale.ENGLISH, "Output port must be between %d and %d",
+                AddEditProfilePresenter.MAX_SYSTEM_PORTS_LIMIT,
+                AddEditProfilePresenter.MAX_PORTS_LIMIT));
     }
 
     @Override

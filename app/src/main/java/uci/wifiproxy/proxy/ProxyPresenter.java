@@ -158,17 +158,16 @@ public class ProxyPresenter implements ProxyContract.Presenter {
 
     @Override
     public void goToWifiConfDialog() {
-        if (mSharedPreferences.getBoolean(SHARED_PREFERENCES_DONT_SHOW_DIALOG_AGAIN, false)){
+        if (mSharedPreferences.getBoolean(SHARED_PREFERENCES_DONT_SHOW_DIALOG_AGAIN, false)) {
             goToWifiSettings(false);
-        }
-        else{
+        } else {
             mProxyView.showWifiConfDialog();
         }
     }
 
     @Override
     public void goToWifiSettings(boolean dontShowAgain) {
-        if (dontShowAgain){
+        if (dontShowAgain) {
             SharedPreferences.Editor editor = mSharedPreferences.edit();
             editor.putBoolean(SHARED_PREFERENCES_DONT_SHOW_DIALOG_AGAIN, true);
             editor.apply();
@@ -269,7 +268,10 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         }
 
         String profileId = mSharedPreferences.getString(SHARED_PREFERENCES_PROFILE_ID, "");
-        mProxyView.setSpinnerProfileSelected(profileId);
+
+        if (!Strings.isNullOrEmpty(profileId)) {
+            mProxyView.setSpinnerProfileSelected(profileId);
+        }
 
         boolean globProxy = mSharedPreferences.getBoolean(SHARED_PREFERENCES_GLOBAL_PROXY, true);
         mProxyView.setGlobalProxyChecked(globProxy);

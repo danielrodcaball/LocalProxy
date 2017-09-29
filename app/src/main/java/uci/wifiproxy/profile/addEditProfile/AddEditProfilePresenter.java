@@ -18,6 +18,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class AddEditProfilePresenter implements AddEditProfileContract.Presenter {
 
+    public final static int MAX_PORTS_LIMIT = 65535;
+
+    public final static int MAX_SYSTEM_PORTS_LIMIT = 1023;
+
     @NonNull
     private ProfilesLocalDataSource mProfilesDataSource;
 
@@ -165,11 +169,30 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
             mAddProfileView.setInPortEmptyError();
             isValid = false;
         }
+
+        if (!Strings.isNullOrEmpty(inPort) &&
+                (Integer.parseInt(inPort) < 0 ||
+                        Integer.parseInt(inPort) > MAX_PORTS_LIMIT)) {
+
+            mAddProfileView.setInputPortOutOfRangeError();
+            isValid = false;
+
+        }
+
         if (Strings.isNullOrEmpty(outPort)) {
             mAddProfileView.setOutPortEmptyError();
             isValid = false;
         }
-        if (!isValidBypassSyntax(bypass)){
+
+        if (!Strings.isNullOrEmpty(outPort) &&
+                (Integer.parseInt(outPort) <= MAX_SYSTEM_PORTS_LIMIT ||
+                        Integer.parseInt(outPort) > MAX_PORTS_LIMIT)) {
+
+            mAddProfileView.setOutputPortOutOfRangeError();
+            isValid = false;
+        }
+
+        if (!isValidBypassSyntax(bypass)) {
             mAddProfileView.setBypassSyntaxError();
         }
 
@@ -177,7 +200,7 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
     }
 
     //TODO
-    private boolean isValidBypassSyntax(String bypass){
+    private boolean isValidBypassSyntax(String bypass) {
         return true;
     }
 }
