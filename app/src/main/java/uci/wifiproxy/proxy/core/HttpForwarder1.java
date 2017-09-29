@@ -48,17 +48,13 @@ import cz.msebera.android.httpclient.impl.conn.PoolingHttpClientConnectionManage
 
 public class HttpForwarder1 extends Thread {
 
-    static List<String> stripHeadersIn = Arrays.asList(new String[]{
+    private static List<String> stripHeadersIn = Arrays.asList(new String[]{
             "Content-Type", "Content-Length", "Proxy-Connection"});
-    static List<String> stripHeadersOut = Arrays.asList(new String[]{
+    private static List<String> stripHeadersOut = Arrays.asList(new String[]{
             "Proxy-Authentication", "Proxy-Authorization", "Transfer-Encoding"});
 
-
-    public static final String NTLM_SCHEME = "NTLM";
-    public static final String BASIC_SCHEME = "Basic";
-    public static final String DIGEST_SCHEME = "Digest";
     private ServerSocket ssocket;
-    PoolingHttpClientConnectionManager manager;
+    private PoolingHttpClientConnectionManager manager;
     private ExecutorService threadPool = Executors.newCachedThreadPool();
     //    private ExecutorService threadPool = Executors.newSingleThreadExecutor();
     private CloseableHttpClient delegateClient;
@@ -131,7 +127,6 @@ public class HttpForwarder1 extends Thread {
 //                    Log.e(getClass().getName(), "The proxy task was interrupted");
 //                }
                 Socket s = this.ssocket.accept();
-                Log.e("app Address", s.getInetAddress().getHostName());
 //                listaSockets.add(s);
                 this.threadPool.execute(new HttpForwarder1.Handler(s));
             } catch (IOException e) {

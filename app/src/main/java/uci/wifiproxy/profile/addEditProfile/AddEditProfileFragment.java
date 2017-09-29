@@ -43,7 +43,7 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
         // Required empty public constructor
     }
 
-    public static AddEditProfileFragment newInsance() {
+    public static AddEditProfileFragment newInstance() {
         return new AddEditProfileFragment();
     }
 

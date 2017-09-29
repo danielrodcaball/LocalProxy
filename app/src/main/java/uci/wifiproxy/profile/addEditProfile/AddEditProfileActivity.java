@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import uci.wifiproxy.R;
-import uci.wifiproxy.data.profile.source.ProfilesLocalDataSource;
 import uci.wifiproxy.util.ActivityUtils;
 
 /**
@@ -44,7 +43,7 @@ public class AddEditProfileActivity extends AppCompatActivity {
         setToolbarTitle(profileId);
 
         if (addEditProfileFragment == null){
-            addEditProfileFragment = AddEditProfileFragment.newInsance();
+            addEditProfileFragment = AddEditProfileFragment.newInstance();
 
             if (getIntent().hasExtra(AddEditProfileFragment.ARGUMENT_EDIT_TASK_ID)){
                 Bundle bundle = new Bundle();

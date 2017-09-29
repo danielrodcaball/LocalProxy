@@ -49,7 +49,7 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
 
     }
 
-    public static ProfileDetailsFragment newInsatnce(){
+    public static ProfileDetailsFragment newInstance(){
         return new ProfileDetailsFragment();
     }
 

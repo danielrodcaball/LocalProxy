@@ -36,7 +36,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
                 findFragmentById(R.id.contentFrame);
 
         if (profileDetailsFragment == null){
-            profileDetailsFragment = ProfileDetailsFragment.newInsatnce();
+            profileDetailsFragment = ProfileDetailsFragment.newInstance();
             Bundle bundle = new Bundle();
             bundle.putString(ProfileDetailsFragment.ARGUMENT_PROFILE_ID, profileId);
             profileDetailsFragment.setArguments(bundle);
