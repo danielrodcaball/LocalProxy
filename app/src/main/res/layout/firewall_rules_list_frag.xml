@@ -4,54 +4,54 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/profilesContainer"
+        android:id="@+id/firewallRulesContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/profilesLL"
+            android:id="@+id/firewallRulesLL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <ListView
-                android:id="@+id/profiles_list"
+                android:id="@+id/firewallRules_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/noProfiles"
+            android:id="@+id/noFirewallRules"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/noProfilesIcon"
+                android:id="@+id/noFirewallRulesIcon"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_drawer_profiles" />
+                android:src="@drawable/ic_drawer_firewall" />
 
             <TextView
-                android:id="@+id/noProfilesMain"
+                android:id="@+id/noFirewallRulesMain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/no_profiles_all"
+                android:text="@string/no_firewall_rules_all"
                 android:layout_marginBottom="@dimen/list_item_padding" />
 
             <TextView
-                android:id="@+id/noProfilesAdd"
+                android:id="@+id/noFirewallRulesAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:background="@drawable/touch_feedback"
                 android:gravity="center"
-                android:text="@string/no_profiles_add" />
+                android:text="@string/no_firewall_rules_add" />
 
         </LinearLayout>
     </RelativeLayout>

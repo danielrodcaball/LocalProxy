@@ -76,5 +76,8 @@
     <string name="profile_empty_error">por favor seleccione un perfil</string>
     <string name="add_profile_text">Nuevo perfil +</string>
     <string name="no_profile_selected_error">Por favor seleccione un perfil</string>
+    <string name="no_firewall_rules_all">Usted no tine Reglas de Cortafuegos</string>
+    <string name="no_firewall_rules_add">Adicione un Regla de Cortafuegos +</string>
+
 
 </resources>

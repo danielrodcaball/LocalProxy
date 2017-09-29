@@ -5,7 +5,6 @@ import java.util.UUID;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
-import uci.wifiproxy.profile.AuthScheme;
 
 /**
  * Created by daniel on 16/09/17.

@@ -1,10 +1,7 @@
 package uci.wifiproxy.profile.addEditProfile;
 
-import android.support.annotation.NonNull;
-
 import uci.wifiproxy.BasePresenter;
 import uci.wifiproxy.BaseView;
-import uci.wifiproxy.profile.AuthScheme;
 
 /**
  * Created by daniel on 17/09/17.

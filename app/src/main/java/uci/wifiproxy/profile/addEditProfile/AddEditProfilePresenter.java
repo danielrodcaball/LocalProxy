@@ -8,7 +8,6 @@ import com.google.common.base.Strings;
 import uci.wifiproxy.data.profile.Profile;
 import uci.wifiproxy.data.profile.source.ProfilesDataSource;
 import uci.wifiproxy.data.profile.source.ProfilesLocalDataSource;
-import uci.wifiproxy.profile.AuthScheme;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

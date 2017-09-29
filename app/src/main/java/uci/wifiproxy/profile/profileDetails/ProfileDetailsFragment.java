@@ -13,13 +13,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import uci.wifiproxy.R;
 import uci.wifiproxy.profile.addEditProfile.AddEditProfileActivity;
 import uci.wifiproxy.profile.addEditProfile.AddEditProfileFragment;
-import uci.wifiproxy.profile.AuthScheme;
 
 /**
  * Created by daniel on 18/09/17.

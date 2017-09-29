@@ -35,10 +35,6 @@ public class ProfilesListFragment extends Fragment implements ProfilesListContra
 
     private View mNoProfilesView;
 
-    private ImageView mNoProfilesIcon;
-
-    private TextView mNoProfilesMainView;
-
     private TextView mNoProfilesAddView;
 
     private LinearLayout mProfilesView;
@@ -82,9 +78,13 @@ public class ProfilesListFragment extends Fragment implements ProfilesListContra
 
         //Set up no profiles view
         mNoProfilesView = root.findViewById(R.id.noProfiles);
-        mNoProfilesIcon = (ImageView) root.findViewById(R.id.noProfilesIcon);
-        mNoProfilesMainView = (TextView) root.findViewById(R.id.noProfilesMain);
         mNoProfilesAddView = (TextView) root.findViewById(R.id.noProfilesAdd);
+        mNoProfilesAddView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddProfile();
+            }
+        });
 
         // Set up floating action button
         FloatingActionButton fab =
@@ -176,8 +176,6 @@ public class ProfilesListFragment extends Fragment implements ProfilesListContra
             mItemListener = itemListener;
         }
 
-
-
         private void setList(List<Profile> profiles){
             mProfiles = profiles;
         }
@@ -224,8 +222,6 @@ public class ProfilesListFragment extends Fragment implements ProfilesListContra
 
             return rowView;
         }
-
-
     }
 
     public interface ProfileItemListener {

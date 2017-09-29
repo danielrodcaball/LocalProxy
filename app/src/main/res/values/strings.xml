@@ -79,6 +79,10 @@
     <string name="profile_empty_error">please select a profile</string>
     <string name="add_profile_text">Add profile +</string>
     <string name="no_profile_selected_error">Please select a profile</string>
+    <string name="bypassInitText">127.0.0.1,localhost</string>
+    <string name="no_firewall_rules_all">You have not Firewall Rules</string>
+    <string name="no_firewall_rules_add">Add a Firewall Rule item +</string>
+
 
 
 </resources>

@@ -10,16 +10,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.Locale;
 
 import uci.wifiproxy.R;
-import uci.wifiproxy.profile.AuthScheme;
 
 /**
  * Created by daniel on 18/09/17.

@@ -2,7 +2,6 @@ package uci.wifiproxy.profile.profileDetails;
 
 import uci.wifiproxy.BasePresenter;
 import uci.wifiproxy.BaseView;
-import uci.wifiproxy.profile.AuthScheme;
 
 /**
  * Created by daniel on 18/09/17.

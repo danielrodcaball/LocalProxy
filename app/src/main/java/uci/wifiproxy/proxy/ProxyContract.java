@@ -1,8 +1,6 @@
 package uci.wifiproxy.proxy;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.MotionEvent;
 
 import java.util.List;
 
@@ -10,7 +8,6 @@ import uci.wifiproxy.BasePresenter;
 import uci.wifiproxy.BaseView;
 import uci.wifiproxy.data.profile.Profile;
 import uci.wifiproxy.data.user.User;
-import uci.wifiproxy.profile.AuthScheme;
 
 /**
  * Created by daniel on 15/09/17.
