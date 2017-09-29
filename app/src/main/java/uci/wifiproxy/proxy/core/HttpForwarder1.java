@@ -25,7 +25,6 @@ import cz.msebera.android.httpclient.HttpHost;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.auth.AuthScope;
 import cz.msebera.android.httpclient.auth.NTCredentials;
-import cz.msebera.android.httpclient.auth.UsernamePasswordCredentials;
 import cz.msebera.android.httpclient.client.CredentialsProvider;
 import cz.msebera.android.httpclient.client.HttpClient;
 import cz.msebera.android.httpclient.client.methods.HttpDelete;
@@ -50,9 +49,9 @@ import cz.msebera.android.httpclient.impl.conn.PoolingHttpClientConnectionManage
 public class HttpForwarder1 extends Thread {
 
     static List<String> stripHeadersIn = Arrays.asList(new String[]{
-            "Content-Type", "Content-Length", "WifiUtils-Connection"});
+            "Content-Type", "Content-Length", "Proxy-Connection"});
     static List<String> stripHeadersOut = Arrays.asList(new String[]{
-            "WifiUtils-Authentication", "WifiUtils-Authorization", "Transfer-Encoding"});
+            "Proxy-Authentication", "Proxy-Authorization", "Transfer-Encoding"});
 
 
     public static final String NTLM_SCHEME = "NTLM";
@@ -104,27 +103,12 @@ public class HttpForwarder1 extends Thread {
     }
 
     public void run() {
-        Log.e(getClass().getName(), "WifiUtils started");
-        if (authScheme.equals(NTLM_SCHEME)) {
-            try {
-                credentials.setCredentials(
-                        new AuthScope(AuthScope.ANY),
-                        new NTCredentials(this.user, this.pass, InetAddress.getLocalHost()
-                                .getHostName(), this.domain));
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
-        } else if (authScheme.equals(BASIC_SCHEME)) {
-            credentials.setCredentials(
-                    new AuthScope(AuthScope.ANY),
-                    new UsernamePasswordCredentials(this.user, this.pass));
-        } else if (authScheme.equals(DIGEST_SCHEME)) {
-            credentials.setCredentials(
-                    new AuthScope(AuthScope.ANY),
-                    new UsernamePasswordCredentials(this.user, this.pass));
-        } else {
-            Log.e(getClass().getName(), "There is no authentication scheme selected");
-            return;
+        try {
+            credentials.setCredentials(new AuthScope(AuthScope.ANY),
+                    new NTCredentials(this.user, this.pass, InetAddress.getLocalHost().getHostName(),
+                            null));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
         }
 
         this.delegateClient = HttpClientBuilder.create()
@@ -148,6 +132,7 @@ public class HttpForwarder1 extends Thread {
 //                    Log.e(getClass().getName(), "The proxy task was interrupted");
 //                }
                 Socket s = this.ssocket.accept();
+                Log.e("app Address", s.getInetAddress().getHostName());
 //                listaSockets.add(s);
                 this.threadPool.execute(new HttpForwarder1.Handler(s));
             } catch (IOException e) {

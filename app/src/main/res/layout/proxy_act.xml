@@ -40,12 +40,23 @@
                 android:layout_height="match_parent" />
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
+                android:id="@+id/fab_start_proxy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:layout_margin="@dimen/fab_margin"
                 android:src="@drawable/ic_proxy_play"
+                app:fabSize="normal"
+                app:layout_anchor="@id/contentFrame"
+                app:layout_anchorGravity="bottom|right|end"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_stop_proxy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/fab_margin"
+                android:src="@drawable/ic_proxy_stop"
                 app:fabSize="normal"
                 app:layout_anchor="@id/contentFrame"
                 app:layout_anchorGravity="bottom|right|end"/>

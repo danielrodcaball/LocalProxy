@@ -27,11 +27,11 @@ public interface ProxyContract {
 
         void onDestroy();
 
-        void filterUsers(String usernameText);
-
-        void onTouchButtonViewPass(@NonNull int action);
-
         void addNewProfile();
+
+        void goToWifiConfDialog();
+
+        void goToWifiSettings(boolean dontShowAgain);
     }
 
     interface View extends BaseView<Presenter>{
@@ -66,9 +66,19 @@ public interface ProxyContract {
 
         void setUsers(@NonNull List<User> users);
 
-        void setPasswordVisibility(boolean visibility);
-
         void showAddProfile();
+
+        boolean isProxyServiceRunning();
+
+        void stopProxyService();
+
+        void startProxyService(String username, String password, String domain, String server,
+                              int inputport, int outputport, String bypass, AuthScheme authScheme,
+                               boolean setGlobProxy);
+
+        void showWifiConfDialog();
+
+        void startWifiConfActivity();
 
     }
 }

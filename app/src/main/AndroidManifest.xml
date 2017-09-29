@@ -50,7 +50,7 @@
         </activity>
 
         <service
-            android:name="uci.wifiproxy.service.service.ProxyService"
+            android:name="uci.wifiproxy.proxy.service.ProxyService"
             android:icon="@mipmap/ic_launcher"
             android:label="UCIntlmService"
             android:launchMode="singleTop"

@@ -1,43 +1,51 @@
 package uci.wifiproxy.proxy;
 
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.common.base.Strings;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
 import io.realm.RealmResults;
 import uci.wifiproxy.R;
 import uci.wifiproxy.data.profile.Profile;
 import uci.wifiproxy.data.user.User;
+import uci.wifiproxy.profile.AuthScheme;
 import uci.wifiproxy.profile.addEditProfile.AddEditProfileActivity;
+import uci.wifiproxy.proxy.core.HttpForwarder1;
+import uci.wifiproxy.proxy.service.ProxyService;
 import uci.wifiproxy.util.fontAwesome.ButtonAwesome;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -62,7 +70,12 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     @Nullable
     private CheckBox mGlobalProxyCheck;
 
-    private FloatingActionButton fab;
+    @Nullable
+    private Button mWifiSettingsButton;
+
+    private FloatingActionButton mFabStartProxy;
+
+    private FloatingActionButton mFabStopProxy;
 
     private ArrayAdapter<Profile> mProfileArrayAdapter;
 
@@ -99,8 +112,8 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFabStartProxy = (FloatingActionButton) getActivity().findViewById(R.id.fab_start_proxy);
+        mFabStartProxy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String profileId = (mProfileSpinner.getSelectedItem() == null) ? ""
@@ -119,7 +132,14 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
                             mRememberPasswordCheck.isChecked(),
                             false);
                 }
+            }
+        });
 
+        mFabStopProxy = (FloatingActionButton) getActivity().findViewById(R.id.fab_stop_proxy);
+        mFabStopProxy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.stopProxy();
             }
         });
     }
@@ -131,20 +151,21 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
 
         mUsername = (AutoCompleteTextView) root.findViewById(R.id.euser);
         mUsername.setAdapter(mUserArrayAdapter);
-//        mUsername.setOnFocusChangeListener(new View.OnFocusChangeListener(){
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus) {
-//                    mUsername.showDropDown();
-//                }
-//            }
-//        });
 
         mPassword = (TextView) root.findViewById(R.id.epass);
         mRememberPasswordCheck = (CheckBox) root.findViewById(R.id.check_rem_pass);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mGlobalProxyCheck = (CheckBox) root.findViewById(R.id.globCheckBox);
+        }
+        else{
+            mWifiSettingsButton = (Button) root.findViewById(R.id.wifiSettingsButton);
+            mWifiSettingsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mPresenter.goToWifiConfDialog();
+                }
+            });
         }
 
         mProfileSpinner = (Spinner) root.findViewById(R.id.spinner_profiles);
@@ -162,7 +183,11 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         buttonViewPass.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mPresenter.onTouchButtonViewPass(event.getAction());
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    mPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
                 return false;
             }
         });
@@ -179,57 +204,38 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
 
     @Override
     public void enableAllViews() {
-//        //set the form to introduce data and start the service
-//        userInfoTab.username.setEnabled(true);
-//        userInfoTab.pass.setEnabled(true);
-//        preferencesTab.domain.setEnabled(true);
-//        preferencesTab.server.setEnabled(true);
-//        preferencesTab.inputport.setEnabled(true);
-//        preferencesTab.outputport.setEnabled(true);
-//        preferencesTab.spinnerTheme.setEnabled(true);
-//        preferencesTab.bypass.setEnabled(true);
-//
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//            preferencesTab.globalCheckBox.setEnabled(true);
-//        } else {
-//            preferencesTab.wiffiSettingsButton.setEnabled(true);
-//        }
-//
-//        fab.setImageDrawable(new DrawableAwesome(R.string.fa_play, 35, Color.WHITE, false, false, 0, 0, 0, 0, getActivity()));
-//
-//        preferencesTab.authSchemeSpinner.setEnabled(true);
+        mUsername.setEnabled(true);
+        mPassword.setEnabled(true);
+        mRememberPasswordCheck.setEnabled(true);
+        mProfileSpinner.setEnabled(true);
+
+        if (mGlobalProxyCheck != null){
+            mGlobalProxyCheck.setEnabled(true);
+        }
     }
 
     @Override
     public void disableAllViews() {
-//        //set the form to disable all fields and change the button to stop the service
-//        userInfoTab.username.setEnabled(false);
-//        userInfoTab.pass.setEnabled(false);
-//        preferencesTab.domain.setEnabled(false);
-//        preferencesTab.server.setEnabled(false);
-//        preferencesTab.inputport.setEnabled(false);
-//        preferencesTab.outputport.setEnabled(false);
-//        preferencesTab.spinnerTheme.setEnabled(false);
-//        preferencesTab.bypass.setEnabled(false);
-//
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//            preferencesTab.globalCheckBox.setEnabled(false);
-//        } else {
-//            preferencesTab.wiffiSettingsButton.setEnabled(false);
-//        }
-//
-//        fab.setImageDrawable(new DrawableAwesome(R.string.fa_stop, 35, Color.WHITE, false, false, 0, 0, 0, 0, getActivity()));
-//        preferencesTab.authSchemeSpinner.setEnabled(false);
+        mUsername.setEnabled(false);
+        mPassword.setEnabled(false);
+        mRememberPasswordCheck.setEnabled(false);
+        mProfileSpinner.setEnabled(false);
+
+        if (mGlobalProxyCheck != null){
+            mGlobalProxyCheck.setEnabled(false);
+        }
     }
 
     @Override
     public void setPlayView() {
-        fab.setImageResource(R.drawable.ic_proxy_play);
+        mFabStartProxy.setVisibility(View.VISIBLE);
+        mFabStopProxy.setVisibility(View.GONE);
     }
 
     @Override
     public void setStopView() {
-        fab.setImageResource(R.drawable.ic_proxy_stop);
+        mFabStopProxy.setVisibility(View.VISIBLE);
+        mFabStartProxy.setVisibility(View.GONE);
     }
 
     @Override
@@ -280,6 +286,9 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
 
     @Override
     public void showNoProfilesView() {
+        mProfileArrayAdapter.clear();
+        mProfileArrayAdapter.notifyDataSetChanged();
+
         mProfileSpinner.setVisibility(View.GONE);
         mAddProfileButton.setVisibility(View.VISIBLE);
     }
@@ -305,18 +314,96 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     }
 
     @Override
-    public void setPasswordVisibility(boolean visibility) {
-        if (visibility) {
-            mPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-        } else {
-            mPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-    }
-
-    @Override
     public void showAddProfile() {
         Intent intent = new Intent(getContext(), AddEditProfileActivity.class);
         startActivityForResult(intent, AddEditProfileActivity.REQUEST_ADD_TASK);
+    }
+
+
+    @Override
+    public boolean isProxyServiceRunning() {
+        ActivityManager manager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager
+                .getRunningServices(Integer.MAX_VALUE)) {
+            if (ProxyService.class.getName().equals(
+                    service.service.getClassName())) {
+                Log.i(ProxyActivity.class.getName(), "Service running");
+                return true;
+            }
+        }
+        Log.i(ProxyActivity.class.getName(), "Service not running");
+        return false;
+    }
+
+    @Override
+    public void startProxyService(String username, String password, String domain, String server,
+                                  int inputport, int outputport, String bypass, AuthScheme authScheme,
+                                  boolean setGlobProxy) {
+        Intent proxyIntent = new Intent(getActivity(), ProxyService.class);
+        proxyIntent.putExtra("user", username);
+        proxyIntent.putExtra("pass", password);
+        proxyIntent.putExtra("domain", domain);
+        proxyIntent.putExtra("server", server);
+        proxyIntent.putExtra("inputport", inputport + "");
+        proxyIntent.putExtra("outputport", outputport + "");
+        proxyIntent.putExtra("bypass", bypass);
+        proxyIntent.putExtra("set_global_proxy", setGlobProxy);
+        switch (authScheme){
+            case NTLM:
+                proxyIntent.putExtra("authScheme", HttpForwarder1.NTLM_SCHEME);
+                break;
+            case BASIC:
+                proxyIntent.putExtra("authScheme", HttpForwarder1.BASIC_SCHEME);
+                break;
+            case DIGEST:
+                proxyIntent.putExtra("authScheme", HttpForwarder1.DIGEST_SCHEME);
+                break;
+        }
+
+        getActivity().startService(proxyIntent);
+    }
+
+    @Override
+    public void showWifiConfDialog() {
+        createWifiAlertDialog().show();
+    }
+
+    @Override
+    public void startWifiConfActivity() {
+        Intent i = new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK);
+        i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        getContext().startActivity(i);
+    }
+
+    @Override
+    public void stopProxyService() {
+        Intent proxyIntent = new Intent(getActivity(), ProxyService.class);
+        getActivity().stopService(proxyIntent);
+    }
+
+    private AlertDialog createWifiAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = ((AppCompatActivity) getContext()).getLayoutInflater();
+        View view = inflater.inflate(R.layout.wifi_alert_dialog, null);
+        ImageView wifiConfigImage = (ImageView) view.findViewById(R.id.wifiConfigImageView);
+        PhotoViewAttacher mAtacher = new PhotoViewAttacher(wifiConfigImage);
+        final CheckBox dontShowCheckBox = (CheckBox) view.findViewById(R.id.dontShowCheckBox);
+        builder.setTitle(getContext().getResources().getString(R.string.wifiSettings));
+        builder.setView(view);
+        builder.setPositiveButton(R.string.wifiSettingsPositiveButton, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mPresenter.goToWifiSettings(dontShowCheckBox.isChecked());
+            }
+        });
+        builder.setNegativeButton(R.string.wifiSettingsNegativeButton, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        return builder.create();
     }
 
     private class UsersArrayAdapter extends ArrayAdapter<User> {
@@ -405,7 +492,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
                 //This is executed in the UI thread, PERFECT!!!!
                 clear();
                 if (constraint != null && items != null && items.size() > 0) {
-                    addAll(((RealmResults<User>)items).where().beginsWith(User.USERNAME_FIELD,
+                    addAll(((RealmResults<User>) items).where().beginsWith(User.USERNAME_FIELD,
                             constraint.toString().toLowerCase()).findAll());
                 } else {
                     addAll(items);

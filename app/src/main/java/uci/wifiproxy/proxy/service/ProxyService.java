@@ -1,4 +1,4 @@
-package uci.wifiproxy.service.service;
+package uci.wifiproxy.proxy.service;
 
 import android.app.Notification;
 import android.app.PendingIntent;

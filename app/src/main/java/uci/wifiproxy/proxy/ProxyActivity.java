@@ -24,7 +24,7 @@ import android.view.View;
 
 import uci.wifiproxy.R;
 import uci.wifiproxy.profile.profilesList.ProfilesListActivity;
-import uci.wifiproxy.service.service.ProxyService;
+import uci.wifiproxy.proxy.service.ProxyService;
 import uci.wifiproxy.util.ActivityUtils;
 
 public class ProxyActivity extends AppCompatActivity

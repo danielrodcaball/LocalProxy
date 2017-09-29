@@ -34,7 +34,8 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_assignment_turned_in_24dp" />
+                android:alpha="0.49"
+                android:src="@drawable/ic_cast_black_24dp" />
 
             <TextView
                 android:id="@+id/noProfilesMain"
