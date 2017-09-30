@@ -202,7 +202,7 @@ public class ProxyActivity extends AppCompatActivity
 //        preferencesTab.bypass.setText(settings.getString("bypass", ""));
 //
 //        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//            (preferencesTab.globalCheckBox).setChecked(settings.getBoolean("global_proxy", true));
+//            (preferencesTab.globalCheckBox).setActive(settings.getBoolean("global_proxy", true));
 //        }
 //
 //        preferencesTab.spinnerTheme.setSelection(themeId);
@@ -231,7 +231,7 @@ public class ProxyActivity extends AppCompatActivity
 //        editor.putString("bypass", preferencesTab.bypass.getText().toString());
 //
 //        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//            editor.putBoolean("global_proxy", (preferencesTab.globalCheckBox).isChecked());
+//            editor.putBoolean("global_proxy", (preferencesTab.globalCheckBox).isActive());
 //        }
 //
 //        editor.putInt("authSchemeSelectedPos", preferencesTab.authSchemeSpinner.getSelectedItemPosition());
@@ -291,7 +291,7 @@ public class ProxyActivity extends AppCompatActivity
 //        }
 //
 //        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//            proxyIntent.putExtra("set_global_proxy", preferencesTab.globalCheckBox.isChecked());
+//            proxyIntent.putExtra("set_global_proxy", preferencesTab.globalCheckBox.isActive());
 //        } else {
 //            proxyIntent.putExtra("set_global_proxy", false);
 //        }

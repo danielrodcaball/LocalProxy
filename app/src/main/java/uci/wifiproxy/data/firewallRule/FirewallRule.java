@@ -19,7 +19,7 @@ public class FirewallRule extends RealmObject {
 
     public final static String RULE_FILED = "rule";
 
-    public final static String IS_CHECKED_FILED = "isChecked";
+    public final static String IS_CHECKED_FILED = "isActive";
 
 
     @PrimaryKey
@@ -30,7 +30,7 @@ public class FirewallRule extends RealmObject {
 
     private String description;
 
-    private boolean isChecked;
+    private boolean isActive;
 
     public static FirewallRule newInstance(@NonNull String firewallRuleId, @NonNull String rule,
                                            @Nullable String description){
@@ -39,7 +39,7 @@ public class FirewallRule extends RealmObject {
         firewallRule.setId(firewallRuleId);
         firewallRule.setRule(rule);
         firewallRule.setDescription(description);
-        firewallRule.setChecked(true);
+        firewallRule.setActive(true);
 
         return firewallRule;
     }
@@ -50,7 +50,7 @@ public class FirewallRule extends RealmObject {
         firewallRule.setId(UUID.randomUUID().toString());
         firewallRule.setRule(rule);
         firewallRule.setDescription(description);
-        firewallRule.setChecked(true);
+        firewallRule.setActive(true);
 
         return firewallRule;
     }
@@ -71,12 +71,12 @@ public class FirewallRule extends RealmObject {
         this.rule = rule;
     }
 
-    public boolean isChecked() {
-        return isChecked;
+    public boolean isActive() {
+        return isActive;
     }
 
-    public void setChecked(boolean checked) {
-        isChecked = checked;
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public String getDescription() {

@@ -25,6 +25,8 @@ public interface FirewallRulesListContract {
         void openFirewallRuleDetails(@NonNull FirewallRule requestedFirewallRule);
 
         void onDestroy();
+
+        void activateFirewallRule(@NonNull FirewallRule requestedFirewallRule, @NonNull boolean activate);
     }
 
     interface View extends BaseView<Presenter>{
@@ -38,6 +40,10 @@ public interface FirewallRulesListContract {
         void showFirewallRuleDetailsUI(String firewallRuleId);
 
         void showSuccessfullySavedMessage();
+
+        void showFirewallRuleActivated();
+
+        void showFirewallRuleDeactivate();
 
         boolean isActive();
     }

@@ -78,6 +78,8 @@
     <string name="no_profile_selected_error">Por favor seleccione un perfil</string>
     <string name="no_firewall_rules_all">Usted no tine Reglas de Cortafuegos</string>
     <string name="no_firewall_rules_add">Adicione un Regla de Cortafuegos +</string>
-
+    <string name="successfully_saved_firewallRule_message">Regla de cortafuegos guardada</string>
+    <string name="firewall_rule_activated">Regla de cortafuegos activada</string>
+    <string name="firewall_rule_deactivated">Regla de cortafuegos desctivada</string>
 
 </resources>

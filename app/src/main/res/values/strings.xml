@@ -82,6 +82,9 @@
     <string name="bypassInitText">127.0.0.1,localhost</string>
     <string name="no_firewall_rules_all">You have not Firewall Rules</string>
     <string name="no_firewall_rules_add">Add a Firewall Rule item +</string>
+    <string name="successfully_saved_firewallRule_message">Firewall rule saved</string>
+    <string name="firewall_rule_activated">Firewall rule activated</string>
+    <string name="firewall_rule_deactivated">Firewall rule deactivated</string>
 
 
 

@@ -71,4 +71,18 @@ public class FirewallRulesListPresenter implements FirewallRulesListContract.Pre
         mFirewallRulesDataSource.releaseResources();
     }
 
+    @Override
+    public void activateFirewallRule(@NonNull FirewallRule requestedFirewallRule, @NonNull boolean activate) {
+        if (activate){
+            mFirewallRulesDataSource.activateFirewallRule(requestedFirewallRule.getId());
+            mFirewallRulesView.showFirewallRuleActivated();
+        }
+        else {
+            mFirewallRulesDataSource.deactivateFirewallRule(requestedFirewallRule.getId());
+            mFirewallRulesView.showFirewallRuleDeactivate();
+        }
+
+        loadFirewallRules();
+    }
+
 }

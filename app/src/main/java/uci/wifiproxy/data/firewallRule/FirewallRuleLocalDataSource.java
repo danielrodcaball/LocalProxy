@@ -15,11 +15,11 @@ public class FirewallRuleLocalDataSource implements FirewallRuleDataSource {
     private Realm realm;
 
     //Prevent direct instatntiation
-    private FirewallRuleLocalDataSource(){
+    private FirewallRuleLocalDataSource() {
         realm = Realm.getDefaultInstance();
     }
 
-    public static FirewallRuleLocalDataSource newInstance(){
+    public static FirewallRuleLocalDataSource newInstance() {
         return new FirewallRuleLocalDataSource();
     }
 
@@ -32,10 +32,9 @@ public class FirewallRuleLocalDataSource implements FirewallRuleDataSource {
     @Override
     public void getFirewallRules(@NonNull LoadFirewallRulesCallback callback) {
         List<FirewallRule> firewallRuleList = realm.where(FirewallRule.class).findAll();
-        if (!firewallRuleList.isEmpty()){
+        if (!firewallRuleList.isEmpty()) {
             callback.onFirewallRulesLoaded(firewallRuleList);
-        }
-        else{
+        } else {
             callback.onDataNoAvailable();
         }
     }
@@ -43,10 +42,9 @@ public class FirewallRuleLocalDataSource implements FirewallRuleDataSource {
     @Override
     public void getFirewallRule(@NonNull String id, @NonNull GetFirewallRuleCallback callback) {
         FirewallRule firewallRule = realm.where(FirewallRule.class).equalTo(FirewallRule.ID_FILED, id).findFirst();
-        if (firewallRule != null){
+        if (firewallRule != null) {
             callback.onFirewallRuleLoaded(firewallRule);
-        }
-        else {
+        } else {
             callback.onDataNoAvailable();
         }
     }
@@ -62,11 +60,11 @@ public class FirewallRuleLocalDataSource implements FirewallRuleDataSource {
     public void updateFirewallRule(@NonNull FirewallRule firewallRule) {
         FirewallRule firewallRuleToUpdate = realm.where(FirewallRule.class).equalTo(FirewallRule.ID_FILED, firewallRule.getId()).findFirst();
 
-        if (firewallRuleToUpdate != null){
+        if (firewallRuleToUpdate != null) {
             realm.beginTransaction();
             firewallRuleToUpdate.setRule(firewallRule.getRule());
             firewallRuleToUpdate.setDescription(firewallRule.getDescription());
-            firewallRuleToUpdate.setChecked(firewallRule.isChecked());
+            firewallRuleToUpdate.setActive(firewallRule.isActive());
             realm.commitTransaction();
         }
     }
@@ -86,4 +84,27 @@ public class FirewallRuleLocalDataSource implements FirewallRuleDataSource {
         realm.where(FirewallRule.class).findAll().deleteAllFromRealm();
         realm.commitTransaction();
     }
+
+    @Override
+    public void activateFirewallRule(@NonNull String firewallRuleId) {
+        activateDeactivateFirewallRule(firewallRuleId, true);
+    }
+
+    @Override
+    public void deactivateFirewallRule(@NonNull String firewallRuleId) {
+        activateDeactivateFirewallRule(firewallRuleId, false);
+    }
+
+    private void activateDeactivateFirewallRule(String firewallRuleId, boolean activate){
+        FirewallRule firewallRule = realm.where(FirewallRule.class)
+                .equalTo(FirewallRule.ID_FILED, firewallRuleId).findFirst();
+
+        if (firewallRule != null){
+            realm.beginTransaction();
+            firewallRule.setActive(activate);
+            realm.commitTransaction();
+        }
+    }
+
+
 }

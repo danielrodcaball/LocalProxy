@@ -32,4 +32,8 @@ public interface FirewallRuleDataSource {
 
     void deleteAllFirewallRules();
 
+    void activateFirewallRule(@NonNull String firewallRuleId);
+
+    void deactivateFirewallRule(@NonNull String firewallRuleId);
+
 }
