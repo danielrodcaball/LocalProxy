@@ -62,7 +62,7 @@
     <string name="successfully_saved_profile_message">Perfil guardado</string>
     <string name="profiles_title">Perfiles</string>
     <string name="name_hint">Nombre</string>
-    <string name="empty_task_message">Los perfiles no pueden ser vacios</string>
+    <string name="empty_profile_message">Los perfiles no pueden ser vacios</string>
     <string name="add_profile">Nuevo Perfil</string>
     <string name="edit_profile">Editar Perfil</string>
     <string name="name">Nombre:</string>
@@ -81,5 +81,18 @@
     <string name="successfully_saved_firewallRule_message">Regla de cortafuegos guardada</string>
     <string name="firewall_rule_activated">Regla de cortafuegos activada</string>
     <string name="firewall_rule_deactivated">Regla de cortafuegos desctivada</string>
+    <string name="firewall_title">Cortafuegos</string>
+    <string name="firewallRule_rule_tv">Regla:</string>
+    <string name="firewallRule_description_tv">Descripción:</string>
+    <string name="firewallRule_description_hint">Esta es la descripción de mi regla</string>
+    <string name="empty_firewallRule_message">Las reglas de cortafuego no pueden ser vacías</string>
+    <string name="empty_rule_message">La regla no puede ser vacía</string>
+    <string name="new_firewallRule">Nueva Regla de Cortafuegos</string>
+    <string name="edit_firewallRule">Editar Regla de Cortafuegos</string>
+
+
+
+
+
 
 </resources>

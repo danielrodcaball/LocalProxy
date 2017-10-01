@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -133,7 +132,7 @@ public class ProfilesListFragment extends Fragment implements ProfilesListContra
     @Override
     public void showAddProfile() {
         Intent intent = new Intent(getContext(), AddEditProfileActivity.class);
-        startActivityForResult(intent, AddEditProfileActivity.REQUEST_ADD_TASK);
+        startActivityForResult(intent, AddEditProfileActivity.REQUEST_ADD_PROFILE);
     }
 
     @Override

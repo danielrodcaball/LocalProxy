@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import uci.wifiproxy.R;
+import uci.wifiproxy.firewall.firewallRulesList.FirewallRulesListActivity;
 import uci.wifiproxy.proxy.ProxyActivity;
 import uci.wifiproxy.util.ActivityUtils;
 
@@ -88,14 +89,20 @@ public class ProfilesListActivity extends AppCompatActivity {
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        Intent intent = null;
                         switch (menuItem.getItemId()) {
                             case R.id.proxy_navigation_menu_item:
-                                Intent intent = new Intent(ProfilesListActivity.this, ProxyActivity.class);
+                                intent = new Intent(ProfilesListActivity.this, ProxyActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                 startActivity(intent);
                                 break;
                             case R.id.profile_navigation_menu_item:
                                 menuItem.setChecked(true);
+                                break;
+                            case R.id.firewall_navigation_menu_item:
+                                intent = new Intent(ProfilesListActivity.this, FirewallRulesListActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                startActivity(intent);
                                 break;
                             default:
                                 break;

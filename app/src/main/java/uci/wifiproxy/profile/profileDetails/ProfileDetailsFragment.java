@@ -135,7 +135,7 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
     @Override
     public void showEditProfile(String profileId) {
         Intent i = new Intent(getActivity(), AddEditProfileActivity.class);
-        i.putExtra(AddEditProfileFragment.ARGUMENT_EDIT_TASK_ID, profileId);
+        i.putExtra(AddEditProfileFragment.ARGUMENT_EDIT_PROFILE_ID, profileId);
         startActivityForResult(i, REQUEST_EDIT_PROFILE);
     }
 

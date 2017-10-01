@@ -1,4 +1,4 @@
-package uci.wifiproxy.profile.addEditProfile;
+package uci.wifiproxy.firewall.addEditFirewallRule;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,23 +10,23 @@ import uci.wifiproxy.R;
 import uci.wifiproxy.util.ActivityUtils;
 
 /**
- * Created by daniel on 18/09/17.
+ * Created by daniel on 1/10/17.
  */
 
-public class AddEditProfileActivity extends AppCompatActivity {
+public class AddEditFirewallRuleActivity extends AppCompatActivity {
 
-    public static final int REQUEST_ADD_PROFILE = 1;
+    public static final int REQUEST_ADD_FIREWALL_RULE = 1;
 
     public static final String SHOULD_LOAD_DATA_FROM_REPO_KEY = "SHOULD_LOAD_DATA_FROM_REPO_KEY";
 
-    private AddEditProfileContract.Presenter mPresenter;
+    private AddEditFirewallRuleContract.Presenter mPresenter;
 
     private ActionBar mActionBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.addprofile_act);
+        setContentView(R.layout.addfirewallrule_act);
 
         // Set up the toolbar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -35,24 +35,24 @@ public class AddEditProfileActivity extends AppCompatActivity {
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setDisplayShowHomeEnabled(true);
 
-        AddEditProfileFragment addEditProfileFragment = (AddEditProfileFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.contentFrame);
+        AddEditFirewallRuleFragment addEditFirewallRuleFragment = (AddEditFirewallRuleFragment)
+                getSupportFragmentManager().findFragmentById(R.id.contentFrame);
 
-        String profileId = getIntent().getStringExtra(AddEditProfileFragment.ARGUMENT_EDIT_PROFILE_ID);
+        String firewallRuleId = getIntent().getStringExtra(AddEditFirewallRuleFragment.ARGUMENT_EDIT_FIREWALL_RULE_ID);
 
-        setToolbarTitle(profileId);
+        setToolbarTitle(firewallRuleId);
 
-        if (addEditProfileFragment == null){
-            addEditProfileFragment = AddEditProfileFragment.newInstance();
+        if (addEditFirewallRuleFragment == null){
+            addEditFirewallRuleFragment = AddEditFirewallRuleFragment.newInstance();
 
-            if (getIntent().hasExtra(AddEditProfileFragment.ARGUMENT_EDIT_PROFILE_ID)){
+            if (getIntent().hasExtra(AddEditFirewallRuleFragment.ARGUMENT_EDIT_FIREWALL_RULE_ID)){
                 Bundle bundle = new Bundle();
-                bundle.putString(AddEditProfileFragment.ARGUMENT_EDIT_PROFILE_ID, profileId);
-                addEditProfileFragment.setArguments(bundle);
+                bundle.putString(AddEditFirewallRuleFragment.ARGUMENT_EDIT_FIREWALL_RULE_ID, firewallRuleId);
+                addEditFirewallRuleFragment.setArguments(bundle);
             }
 
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    addEditProfileFragment, R.id.contentFrame);
+                    addEditFirewallRuleFragment, R.id.contentFrame);
         }
 
         boolean shouldLoadDataFromRepo = true;
@@ -63,20 +63,13 @@ public class AddEditProfileActivity extends AppCompatActivity {
             shouldLoadDataFromRepo = savedInstanceState.getBoolean(SHOULD_LOAD_DATA_FROM_REPO_KEY);
         }
 
-        // Create the presenter
-        mPresenter = new AddEditProfilePresenter(
-                addEditProfileFragment,
-                profileId,
+        //Create the presenter
+        mPresenter = new AddEditFirewallRulePresenter(
+                addEditFirewallRuleFragment,
+                firewallRuleId,
                 shouldLoadDataFromRepo
         );
-    }
 
-    private void setToolbarTitle(@Nullable String profileId) {
-        if(profileId == null) {
-            mActionBar.setTitle(R.string.add_profile);
-        } else {
-            mActionBar.setTitle(R.string.edit_profile);
-        }
     }
 
     @Override
@@ -85,9 +78,18 @@ public class AddEditProfileActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+    private void setToolbarTitle(@Nullable String firewallRuleId) {
+        if(firewallRuleId == null) {
+            mActionBar.setTitle(R.string.new_firewallRule);
+        } else {
+            mActionBar.setTitle(R.string.edit_firewallRule);
+        }
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
 }
+

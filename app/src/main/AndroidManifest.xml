@@ -39,20 +39,24 @@
         <activity android:name=".profile.addEditProfile.AddEditProfileActivity" />
         <activity android:name=".profile.profileDetails.ProfileDetailsActivity" />
 
+        <activity android:name=".firewall.addEditFirewallRule.AddEditFirewallRuleActivity" />
+
         <activity
             android:name=".profile.profilesList.ProfilesListActivity"
-            android:parentActivityName=".proxy.ProxyActivity"
+            android:launchMode="singleTop"
             tools:ignore="UnusedAttribute">
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".proxy.ProxyActivity" />
+        </activity>
+
+        <activity
+            android:name=".firewall.firewallRulesList.FirewallRulesListActivity"
+            android:launchMode="singleTop"
+            tools:ignore="UnusedAttribute">
         </activity>
 
         <service
             android:name="uci.wifiproxy.proxy.service.ProxyService"
             android:icon="@mipmap/ic_launcher"
-            android:label="UCIntlmService"
+            android:label="WifiProxyService"
             android:launchMode="singleTop"
             android:stopWithTask="false">
             <!--android:process=":UCIntlmService"-->

@@ -30,21 +30,21 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
     @Nullable
     private String mProfileId;
 
-    private boolean isDataMissing;
+    private boolean mIsDataMissing;
 
     public AddEditProfilePresenter(@NonNull AddEditProfileContract.View mAddProfileView,
                                    String mProfileId, boolean shouldLoadDataFromSource) {
         this.mProfilesDataSource = ProfilesLocalDataSource.newInstance();
         this.mAddProfileView = checkNotNull(mAddProfileView);
         this.mProfileId = mProfileId;
-        this.isDataMissing = shouldLoadDataFromSource;
+        this.mIsDataMissing = shouldLoadDataFromSource;
 
         mAddProfileView.setPresenter(this);
     }
 
     @Override
     public void start() {
-        if (!isNewProfile() && isDataMissing) {
+        if (!isNewProfile() && mIsDataMissing) {
             populateProfile();
         }
     }
@@ -52,7 +52,7 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
     @Override
     public void saveProfile(String name, String server,
                             String inPort, String outPort, String bypass) {
-        if (isNewProfile() && isDataMissing) {
+        if (isNewProfile()) {
             createProfile(name, server, inPort, outPort, bypass);
         } else {
             updateProfile(name, server, inPort, outPort, bypass);
@@ -62,7 +62,7 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
     @Override
     public void populateProfile() {
         if (isNewProfile()) {
-            throw new RuntimeException("populateProfile() was called but task is new.");
+            throw new RuntimeException("populateProfile() was called but profile is new.");
         }
         mProfilesDataSource.getProfile(mProfileId, new ProfilesDataSource.GetProfileCallback() {
             @Override
@@ -74,6 +74,8 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
                 mAddProfileView.setBypass(profile.getBypass());
                 mAddProfileView.setInPort(String.valueOf(profile.getInPort()));
                 mAddProfileView.setOutPort(String.valueOf(profile.getOutPort()));
+
+                mIsDataMissing = false;
             }
 
             @Override
@@ -86,7 +88,7 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
 
     @Override
     public boolean isDataMissing() {
-        return isDataMissing;
+        return mIsDataMissing;
     }
 
     @Override

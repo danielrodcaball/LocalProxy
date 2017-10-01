@@ -22,7 +22,7 @@ import uci.wifiproxy.R;
 
 public class AddEditProfileFragment extends Fragment implements AddEditProfileContract.View {
 
-    public static final String ARGUMENT_EDIT_TASK_ID = "EDIT_TASK_ID";
+    public static final String ARGUMENT_EDIT_PROFILE_ID = "EDIT_PROFILE_ID";
 
     private AddEditProfileContract.Presenter mPresenter;
 
@@ -98,7 +98,7 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
 
     @Override
     public void showEmptyProfileError() {
-        Snackbar.make(mName, getString(R.string.empty_task_message), Snackbar.LENGTH_LONG).show();
+        Snackbar.make(mName, getString(R.string.empty_profile_message), Snackbar.LENGTH_LONG).show();
     }
 
     @Override

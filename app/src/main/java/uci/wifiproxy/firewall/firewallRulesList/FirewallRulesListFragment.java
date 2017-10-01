@@ -1,5 +1,6 @@
 package uci.wifiproxy.firewall.firewallRulesList;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -20,7 +21,7 @@ import java.util.List;
 
 import uci.wifiproxy.R;
 import uci.wifiproxy.data.firewallRule.FirewallRule;
-import uci.wifiproxy.profile.profilesList.ProfilesListFragment;
+import uci.wifiproxy.firewall.addEditFirewallRule.AddEditFirewallRuleActivity;
 
 /**
  * Created by daniel on 29/09/17.
@@ -106,6 +107,12 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.result(requestCode, resultCode);
+    }
+
+    @Override
     public void setPresenter(FirewallRulesListContract.Presenter presenter) {
         mPresenter = presenter;
     }
@@ -120,7 +127,8 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
 
     @Override
     public void showAddFirewallRule() {
-        //TODO
+        Intent intent = new Intent(getContext(), AddEditFirewallRuleActivity.class);
+        startActivityForResult(intent, AddEditFirewallRuleActivity.REQUEST_ADD_FIREWALL_RULE);
     }
 
     @Override
@@ -196,7 +204,7 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View rowView = convertView;
-            if (convertView == null) {
+            if (rowView == null) {
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
                 rowView = inflater.inflate(R.layout.firewall_rule_list_item, parent, false);
             }
@@ -207,8 +215,9 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
             ruleTv.setText(firewallRule.getRule());
 
             CheckBox checked = (CheckBox) rowView.findViewById(R.id.active);
+
             checked.setChecked(firewallRule.isActive());
-            if (firewallRule.isActive()){
+            if (!firewallRule.isActive()){
                 rowView.setBackgroundDrawable(parent.getContext()
                         .getResources().getDrawable(R.drawable.list_deactivate_touch_feedback));
             }
@@ -217,14 +226,14 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
                         .getResources().getDrawable(R.drawable.touch_feedback));
             }
 
-            checked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            checked.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mItemListener.onFirewallRuleCheckClick(firewallRule, isChecked);
+                public void onClick(View v) {
+                    mItemListener.onFirewallRuleCheckClick(firewallRule, !firewallRule.isActive());
                 }
             });
 
-            rowView.setOnClickListener(new View.OnClickListener() {
+            ruleTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mItemListener.onFirewallRuleClick(firewallRule);

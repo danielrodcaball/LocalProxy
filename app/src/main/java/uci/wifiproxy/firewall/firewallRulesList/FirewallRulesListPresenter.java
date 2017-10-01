@@ -1,5 +1,6 @@
 package uci.wifiproxy.firewall.firewallRulesList;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -7,6 +8,8 @@ import java.util.List;
 import uci.wifiproxy.data.firewallRule.FirewallRule;
 import uci.wifiproxy.data.firewallRule.FirewallRuleDataSource;
 import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
+import uci.wifiproxy.firewall.addEditFirewallRule.AddEditFirewallRuleActivity;
+import uci.wifiproxy.util.ActivityUtils;
 
 /**
  * Created by daniel on 29/09/17.
@@ -34,7 +37,9 @@ public class FirewallRulesListPresenter implements FirewallRulesListContract.Pre
     @Override
     public void result(int requestCode, int resultCode) {
         // If a profile was successfully added, show snackbar
-        //TODO
+        if (AddEditFirewallRuleActivity.REQUEST_ADD_FIREWALL_RULE == requestCode && Activity.RESULT_OK == resultCode){
+            mFirewallRulesView.showSuccessfullySavedMessage();
+        }
     }
 
     @Override

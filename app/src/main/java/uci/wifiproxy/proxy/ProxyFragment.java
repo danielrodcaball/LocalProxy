@@ -315,7 +315,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     @Override
     public void showAddProfile() {
         Intent intent = new Intent(getContext(), AddEditProfileActivity.class);
-        startActivityForResult(intent, AddEditProfileActivity.REQUEST_ADD_TASK);
+        startActivityForResult(intent, AddEditProfileActivity.REQUEST_ADD_PROFILE);
     }
 
 

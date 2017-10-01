@@ -65,7 +65,7 @@
     <string name="successfully_saved_profile_message">Profile saved</string>
     <string name="profiles_title">Profiles</string>
     <string name="name_hint">Name</string>
-    <string name="empty_task_message">Profiles cannot be empty</string>
+    <string name="empty_profile_message">Profiles cannot be empty</string>
     <string name="add_profile">New Profile</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="name">Name:</string>
@@ -85,6 +85,15 @@
     <string name="successfully_saved_firewallRule_message">Firewall rule saved</string>
     <string name="firewall_rule_activated">Firewall rule activated</string>
     <string name="firewall_rule_deactivated">Firewall rule deactivated</string>
+    <string name="firewall_title">Firewall</string>
+    <string name="firewallRule_rule_hint">service.example.com | *example.com</string>
+    <string name="firewallRule_rule_tv">Rule:</string>
+    <string name="firewallRule_description_tv">Description:</string>
+    <string name="firewallRule_description_hint">This is my rule description</string>
+    <string name="empty_firewallRule_message">Firewall rules cannot be empty</string>
+    <string name="empty_rule_message">Rule cannot be empty</string>
+    <string name="new_firewallRule">New Firewall Rule</string>
+    <string name="edit_firewallRule">Edit Firewall Rule</string>
 
 
 

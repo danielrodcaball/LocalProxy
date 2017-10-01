@@ -38,7 +38,7 @@ public class ProfilesListPresenter implements ProfilesListContract.Presenter {
     @Override
     public void result(int requestCode, int resultCode) {
         // If a profile was successfully added, show snackbar
-        if (AddEditProfileActivity.REQUEST_ADD_TASK == requestCode && Activity.RESULT_OK == resultCode) {
+        if (AddEditProfileActivity.REQUEST_ADD_PROFILE == requestCode && Activity.RESULT_OK == resultCode) {
             mProfilesView.showSuccessfullySavedMessage();
         }
     }

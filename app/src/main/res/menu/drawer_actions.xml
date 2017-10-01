@@ -24,4 +24,8 @@
         android:id="@+id/profile_navigation_menu_item"
         android:icon="@drawable/ic_drawer_profiles"
         android:title="@string/profiles_title" />
+    <item
+        android:id="@+id/firewall_navigation_menu_item"
+        android:icon="@drawable/ic_drawer_firewall"
+        android:title="@string/firewall_title" />
 </menu>

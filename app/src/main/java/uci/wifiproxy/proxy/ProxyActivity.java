@@ -23,6 +23,7 @@ import android.view.View;
 
 
 import uci.wifiproxy.R;
+import uci.wifiproxy.firewall.firewallRulesList.FirewallRulesListActivity;
 import uci.wifiproxy.profile.profilesList.ProfilesListActivity;
 import uci.wifiproxy.proxy.service.ProxyService;
 import uci.wifiproxy.util.ActivityUtils;
@@ -105,6 +106,12 @@ public class ProxyActivity extends AppCompatActivity
                 break;
             case R.id.profile_navigation_menu_item:
                 Intent intent = new Intent(ProxyActivity.this, ProfilesListActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case R.id.firewall_navigation_menu_item:
+                intent = new Intent(ProxyActivity.this, FirewallRulesListActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
                 break;
             default:
