@@ -33,7 +33,7 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
     private boolean mIsDataMissing;
 
     public AddEditProfilePresenter(@NonNull AddEditProfileContract.View mAddProfileView,
-                                   String mProfileId, boolean shouldLoadDataFromSource) {
+                                   @Nullable String mProfileId, boolean shouldLoadDataFromSource) {
         this.mProfilesDataSource = ProfilesLocalDataSource.newInstance();
         this.mAddProfileView = checkNotNull(mAddProfileView);
         this.mProfileId = mProfileId;

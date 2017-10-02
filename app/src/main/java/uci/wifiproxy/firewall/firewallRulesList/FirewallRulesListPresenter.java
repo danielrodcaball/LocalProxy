@@ -19,6 +19,7 @@ public class FirewallRulesListPresenter implements FirewallRulesListContract.Pre
 
     private final FirewallRuleLocalDataSource mFirewallRulesDataSource;
 
+    @NonNull
     private final FirewallRulesListContract.View mFirewallRulesView;
 
     public FirewallRulesListPresenter(@NonNull FirewallRulesListContract.View firewallRulesView){

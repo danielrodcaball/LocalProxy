@@ -44,7 +44,7 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
     private TextView mDetailBypass;
 
     public ProfileDetailsFragment(){
-
+        //Requires an empty public constructor
     }
 
     public static ProfileDetailsFragment newInstance(){
@@ -104,7 +104,7 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
 
     @Override
     public void showMissingProfile() {
-        Snackbar.make(mDetailName, R.string.missing_profile_message, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(mDetailName, R.string.missing_data_message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override

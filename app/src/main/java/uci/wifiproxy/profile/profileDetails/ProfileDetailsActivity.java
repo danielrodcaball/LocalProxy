@@ -15,7 +15,7 @@ import uci.wifiproxy.util.ActivityUtils;
 
 public class ProfileDetailsActivity extends AppCompatActivity {
 
-    public static final String EXTRA_PROFILE_ID = "TASK_ID";
+    public static final String EXTRA_PROFILE_ID = "PROFILE_ID";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

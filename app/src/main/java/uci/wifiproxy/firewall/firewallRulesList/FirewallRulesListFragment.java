@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,6 +21,8 @@ import java.util.List;
 import uci.wifiproxy.R;
 import uci.wifiproxy.data.firewallRule.FirewallRule;
 import uci.wifiproxy.firewall.addEditFirewallRule.AddEditFirewallRuleActivity;
+import uci.wifiproxy.firewall.firewallRuleDetails.FirewallRuleDetailsActivity;
+import uci.wifiproxy.firewall.firewallRuleDetails.FirewallRuleDetailsFragment;
 
 /**
  * Created by daniel on 29/09/17.
@@ -40,7 +41,7 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
     FirewallRuleItemListener mItemListener = new FirewallRuleItemListener() {
         @Override
         public void onFirewallRuleClick(FirewallRule clickedFirewallRule) {
-            //TODO
+            mPresenter.openFirewallRuleDetails(clickedFirewallRule);
         }
 
         @Override
@@ -73,7 +74,7 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.firewall_rules_list_frag, container, false);
+        View root = inflater.inflate(R.layout.firewallrules_list_frag, container, false);
 
         //Set up FirewallRules view
         ListView listView = (ListView) root.findViewById(R.id.firewallRules_list);
@@ -139,7 +140,9 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
 
     @Override
     public void showFirewallRuleDetailsUI(String firewallRuleId) {
-        //TODO
+        Intent intent = new Intent(getContext(), FirewallRuleDetailsActivity.class);
+        intent.putExtra(FirewallRuleDetailsFragment.ARGUMENT_FIREWALL_RULE_ID, firewallRuleId);
+        startActivity(intent);
     }
 
     @Override
@@ -206,7 +209,7 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
             View rowView = convertView;
             if (rowView == null) {
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-                rowView = inflater.inflate(R.layout.firewall_rule_list_item, parent, false);
+                rowView = inflater.inflate(R.layout.firewallrule_list_item, parent, false);
             }
 
             final FirewallRule firewallRule = getItem(position);

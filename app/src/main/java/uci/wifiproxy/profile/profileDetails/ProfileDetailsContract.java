@@ -22,6 +22,7 @@ public interface ProfileDetailsContract {
     }
 
     interface View extends BaseView<Presenter>{
+
         void showMissingProfile();
 
         void showName(String name);

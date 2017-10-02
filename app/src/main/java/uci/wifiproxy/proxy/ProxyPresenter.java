@@ -31,17 +31,19 @@ public class ProxyPresenter implements ProxyContract.Presenter {
 
     private static final String SHARED_PREFERENCES_DONT_SHOW_DIALOG_AGAIN = "dontShowDialogAgain";
 
+    @NonNull
     private ProxyContract.View mProxyView;
 
     private ProfilesLocalDataSource mProfileLocalDataSource;
 
     private UsersLocalDataSource mUsersLocalDataSource;
 
+    @NonNull
     private SharedPreferences mSharedPreferences;
 
 
-    public ProxyPresenter(ProxyContract.View proxyView,
-                          SharedPreferences sharedPreferences) {
+    public ProxyPresenter(@NonNull ProxyContract.View proxyView,
+                          @NonNull SharedPreferences sharedPreferences) {
         mProxyView = proxyView;
         mSharedPreferences = sharedPreferences;
         mProfileLocalDataSource = ProfilesLocalDataSource.newInstance();

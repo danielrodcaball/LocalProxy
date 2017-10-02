@@ -69,7 +69,7 @@
     <string name="add_profile">New Profile</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="name">Name:</string>
-    <string name="missing_profile_message">No data</string>
+    <string name="missing_data_message">No data</string>
     <string name="successfully_profile_updated_message">Profile updated</string>
     <string name="menu_delete_profile">Delete</string>
     <string name="remember_password">Remember password</string>
@@ -94,6 +94,7 @@
     <string name="empty_rule_message">Rule cannot be empty</string>
     <string name="new_firewallRule">New Firewall Rule</string>
     <string name="edit_firewallRule">Edit Firewall Rule</string>
+    <string name="successfully_firewallrule_updated_message">Firewall rule updated</string>
 
 
 

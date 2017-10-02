@@ -20,12 +20,14 @@ public class ProfileDetailsPresenter implements ProfileDetailsContract.Presenter
 
     private final ProfilesLocalDataSource mProfilesLocalDataSource;
 
+    @NonNull
     private final ProfileDetailsContract.View mProfilesDetailsView;
 
     @Nullable
     private String mProfileId;
 
-    public ProfileDetailsPresenter(ProfileDetailsContract.View profilesDetailsView, String profileId) {
+    public ProfileDetailsPresenter(@NonNull ProfileDetailsContract.View profilesDetailsView,
+                                   @Nullable String profileId) {
         mProfilesLocalDataSource = ProfilesLocalDataSource.newInstance();
         mProfilesDetailsView = checkNotNull(profilesDetailsView);
         mProfileId = profileId;

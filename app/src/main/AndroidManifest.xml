@@ -40,6 +40,7 @@
         <activity android:name=".profile.profileDetails.ProfileDetailsActivity" />
 
         <activity android:name=".firewall.addEditFirewallRule.AddEditFirewallRuleActivity" />
+        <activity android:name=".firewall.firewallRuleDetails.FirewallRuleDetailsActivity" />
 
         <activity
             android:name=".profile.profilesList.ProfilesListActivity"
