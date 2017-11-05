@@ -51,11 +51,11 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
 
     @Override
     public void saveProfile(String name, String server,
-                            String inPort, String outPort, String bypass) {
+                            String inPort, String bypass) {
         if (isNewProfile()) {
-            createProfile(name, server, inPort, outPort, bypass);
+            createProfile(name, server, inPort, bypass);
         } else {
-            updateProfile(name, server, inPort, outPort, bypass);
+            updateProfile(name, server, inPort, bypass);
         }
     }
 
@@ -70,10 +70,9 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
                 if (!mAddProfileView.isActive()) return;
 
                 mAddProfileView.setName(profile.getName());
-                mAddProfileView.setServer(profile.getServer());
+                mAddProfileView.setServer(profile.getHost());
                 mAddProfileView.setBypass(profile.getBypass());
                 mAddProfileView.setInPort(String.valueOf(profile.getInPort()));
-                mAddProfileView.setOutPort(String.valueOf(profile.getOutPort()));
 
                 mIsDataMissing = false;
             }
@@ -101,15 +100,15 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
     }
 
     private void createProfile(String name, String server,
-                               String inPort, String outPort, String bypass) {
+                               String inPort, String bypass) {
 
         boolean isValidData = validateData(name, server,
-                inPort, outPort, bypass);
+                inPort, bypass);
 
         if (!isValidData) return;
 
         Profile profile = Profile.newProfile(name, server,
-                Integer.parseInt(inPort), Integer.parseInt(outPort), bypass);
+                Integer.parseInt(inPort), bypass);
 
         mProfilesDataSource.saveProfile(profile, new ProfilesDataSource.SaveProfileCallback() {
             @Override
@@ -128,15 +127,15 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
     }
 
     private void updateProfile(String name, String server,
-                               String inPort, String outPort, String bypass) {
+                               String inPort, String bypass) {
 
         boolean isValidData = validateData(name, server,
-                inPort, outPort, bypass);
+                inPort, bypass);
 
         if (!isValidData) return;
 
         Profile profile = Profile.newProfile(mProfileId, name, server,
-                Integer.parseInt(inPort), Integer.parseInt(outPort), bypass);
+                Integer.parseInt(inPort), bypass);
 
         mProfilesDataSource.updateProfile(profile, new ProfilesDataSource.UpdateProfileCallback() {
             @Override
@@ -154,7 +153,7 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
     }
 
     private boolean validateData(String name, String server,
-                                 String inPort, String outPort, String bypass) {
+                                 String inPort, String bypass) {
         boolean isValid = true;
 
         if (Strings.isNullOrEmpty(name)) {
@@ -178,19 +177,6 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
             mAddProfileView.setInputPortOutOfRangeError();
             isValid = false;
 
-        }
-
-        if (Strings.isNullOrEmpty(outPort)) {
-            mAddProfileView.setOutPortEmptyError();
-            isValid = false;
-        }
-
-        if (!Strings.isNullOrEmpty(outPort) &&
-                (Integer.parseInt(outPort) <= MAX_SYSTEM_PORTS_LIMIT ||
-                        Integer.parseInt(outPort) > MAX_PORTS_LIMIT)) {
-
-            mAddProfileView.setOutputPortOutOfRangeError();
-            isValid = false;
         }
 
         if (!isValidBypassSyntax(bypass)) {

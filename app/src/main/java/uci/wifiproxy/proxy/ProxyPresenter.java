@@ -1,8 +1,6 @@
 package uci.wifiproxy.proxy;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -22,6 +20,9 @@ import uci.wifiproxy.data.user.UsersDataSource;
 import uci.wifiproxy.data.user.UsersLocalDataSource;
 import uci.wifiproxy.util.StringUtils;
 
+import static uci.wifiproxy.profile.addEditProfile.AddEditProfilePresenter.MAX_PORTS_LIMIT;
+import static uci.wifiproxy.profile.addEditProfile.AddEditProfilePresenter.MAX_SYSTEM_PORTS_LIMIT;
+
 /**
  * Created by daniel on 20/09/17.
  */
@@ -35,6 +36,8 @@ public class ProxyPresenter implements ProxyContract.Presenter {
     private static final String SHARED_PREFERENCES_PROFILE_ID = "profile_id";
 
     private static final String SHARED_PREFERENCES_DONT_SHOW_DIALOG_AGAIN = "dontShowDialogAgain";
+
+    private static final String SHARED_PREFERENCES_LOCAL_PORT = "localPort";
 
     @NonNull
     private ProxyContract.View mProxyView;
@@ -62,14 +65,14 @@ public class ProxyPresenter implements ProxyContract.Presenter {
 
     @Override
     public void startProxy(@NonNull final String username, @NonNull final String password, @NonNull final String profileId,
-                           @NonNull boolean rememberPass, @Nullable final boolean setGlobalProxy) {
+                           @NonNull String localPort, @NonNull boolean rememberPass, @Nullable final boolean setGlobalProxy) {
 
-        boolean isValidData = validateData(username, password, profileId);
+        boolean isValidData = validateData(username, password, profileId, localPort);
 
         if (isValidData) {
 
             saveUpdateUser(username, password, rememberPass);
-            saveConfiguration(username, profileId, setGlobalProxy);
+            saveConfiguration(username, profileId, localPort, setGlobalProxy);
 
 
             final Object[] dataLoaded = new Object[2];
@@ -120,8 +123,10 @@ public class ProxyPresenter implements ProxyContract.Presenter {
             Profile profile = (Profile) dataLoaded[0];
             String firewallRulesString = (String) dataLoaded[1];
             mProxyView.startProxyService(username, password,
-                    profile.getServer(), profile.getInPort(),
-                    profile.getOutPort(), profile.getBypass(),
+                    profile.getHost(),
+                    profile.getInPort(),
+                    Integer.parseInt(localPort),
+                    profile.getBypass(),
                     setGlobalProxy,
                     firewallRulesString);
 
@@ -177,7 +182,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
     }
 
 
-    private boolean validateData(String user, String pass, String profileId) {
+    private boolean validateData(String user, String pass, String profileId, String localPort) {
         boolean isValid = true;
         if (Strings.isNullOrEmpty(user)) {
             mProxyView.setUsernameEmptyError();
@@ -189,6 +194,19 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         }
         if (Strings.isNullOrEmpty(profileId)) {
             mProxyView.setProfileNoSelectedError();
+            isValid = false;
+        }
+
+        if (Strings.isNullOrEmpty(localPort)){
+            mProxyView.setLocalPortEmptyError();
+            isValid = false;
+        }
+
+        if (!Strings.isNullOrEmpty(localPort) &&
+                (Integer.parseInt(localPort) <= MAX_SYSTEM_PORTS_LIMIT ||
+                        Integer.parseInt(localPort) > MAX_PORTS_LIMIT)) {
+
+            mProxyView.setLocalPortOutOfRangeError();
             isValid = false;
         }
 
@@ -285,7 +303,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         });
     }
 
-    private void saveConfiguration(String username, final String profileId, final boolean setGlobProxy) {
+    private void saveConfiguration(String username, final String profileId, final String localPort, final boolean setGlobProxy) {
 
         mUsersLocalDataSource.getUserByUsername(username, new UsersDataSource.GetUserCallback() {
             @Override
@@ -293,15 +311,20 @@ public class ProxyPresenter implements ProxyContract.Presenter {
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
                 editor.putString(SHARED_PREFERENCES_USER_ID, user.getId());
                 editor.putString(SHARED_PREFERENCES_PROFILE_ID, profileId);
+                editor.putString(SHARED_PREFERENCES_LOCAL_PORT, localPort);
                 editor.putBoolean(SHARED_PREFERENCES_GLOBAL_PROXY, setGlobProxy);
                 editor.apply();
             }
 
             @Override
             public void onDataNoAvailable() {
+                //Never happens in this scenario, because the user was already saved
+                //at the beginning in the start proxy method, its to say the user always
+                //will be loaded
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
                 editor.putString(SHARED_PREFERENCES_USER_ID, "");
                 editor.putString(SHARED_PREFERENCES_PROFILE_ID, profileId);
+                editor.putString(SHARED_PREFERENCES_LOCAL_PORT, localPort);
                 editor.putBoolean(SHARED_PREFERENCES_GLOBAL_PROXY, setGlobProxy);
                 editor.apply();
             }
@@ -337,9 +360,13 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         }
 
         String profileId = mSharedPreferences.getString(SHARED_PREFERENCES_PROFILE_ID, "");
-
         if (!Strings.isNullOrEmpty(profileId)) {
             mProxyView.setSpinnerProfileSelected(profileId);
+        }
+
+        String localPort  = mSharedPreferences.getString(SHARED_PREFERENCES_LOCAL_PORT, "");
+        if (!Strings.isNullOrEmpty(localPort)){
+            mProxyView.setLocalPort(localPort);
         }
 
         boolean globProxy = mSharedPreferences.getBoolean(SHARED_PREFERENCES_GLOBAL_PROXY, true);

@@ -1,9 +1,6 @@
 package uci.wifiproxy.data.profile.source;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
-
-import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -77,10 +74,9 @@ public class ProfilesLocalDataSource implements ProfilesDataSource {
         else {
             realm.beginTransaction();
             profileToUpdate.setName(profile.getName());
-            profileToUpdate.setServer(profile.getServer());
+            profileToUpdate.setHost(profile.getHost());
             profileToUpdate.setBypass(profile.getBypass());
             profileToUpdate.setInPort(profile.getInPort());
-            profileToUpdate.setOutPort(profile.getOutPort());
             realm.commitTransaction();
 
             callback.onProfileUpdated();

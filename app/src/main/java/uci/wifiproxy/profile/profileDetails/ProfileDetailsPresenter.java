@@ -72,9 +72,8 @@ public class ProfileDetailsPresenter implements ProfileDetailsContract.Presenter
         }
 
         mProfilesDetailsView.showName(profile.getName());
-        mProfilesDetailsView.showServer(profile.getServer());
+        mProfilesDetailsView.showServer(profile.getHost());
         mProfilesDetailsView.showInPort(profile.getInPort());
-        mProfilesDetailsView.showOutPort(profile.getOutPort());
         mProfilesDetailsView.showBypass(profile.getBypass());
     }
 

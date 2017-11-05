@@ -21,8 +21,6 @@ public interface AddEditProfileContract {
 
         void setInPort(String inPort);
 
-        void setOutPort(String outPort);
-
         void setBypass(String bypass);
 
         boolean isActive();
@@ -37,10 +35,6 @@ public interface AddEditProfileContract {
 
         void setInputPortOutOfRangeError();
 
-        void setOutPortEmptyError();
-
-        void setOutputPortOutOfRangeError();
-
         void setBypassSyntaxError();
 
     }
@@ -48,7 +42,7 @@ public interface AddEditProfileContract {
     interface Presenter extends BasePresenter{
 
         void saveProfile(String name, String server,
-                         String inPort, String outPort, String bypass);
+                         String inPort, String bypass);
 
         void populateProfile();
 

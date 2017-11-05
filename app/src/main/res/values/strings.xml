@@ -97,6 +97,8 @@
     <string name="successfully_firewallrule_updated_message">Firewall rule updated</string>
     <string name="firewallRule_application_tv">Application:</string>
     <string name="all_applications">All</string>
+    <string name="local_port_label">Local port:</string>
+
 
 
 </resources>

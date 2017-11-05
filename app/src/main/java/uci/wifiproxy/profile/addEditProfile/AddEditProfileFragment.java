@@ -32,8 +32,6 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
 
     private TextView mInPort;
 
-    private TextView mOutPort;
-
     private TextView mBypass;
 
     public AddEditProfileFragment() {
@@ -62,7 +60,6 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
                         mName.getText().toString(),
                         mServer.getText().toString(),
                         mInPort.getText().toString(),
-                        mOutPort.getText().toString(),
                         mBypass.getText().toString()
                 );
             }
@@ -77,7 +74,6 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
         mName = (TextView) root.findViewById(R.id.ename);
         mServer = (TextView) root.findViewById(R.id.eserver);
         mInPort = (TextView) root.findViewById(R.id.einputport);
-        mOutPort = (TextView) root.findViewById(R.id.eoutputport);
         mBypass = (TextView) root.findViewById(R.id.ebypass);
         mBypass.setText(getString(R.string.bypassInitText));
 
@@ -124,11 +120,6 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
     }
 
     @Override
-    public void setOutPort(String outPort) {
-        mOutPort.setText(outPort);
-    }
-
-    @Override
     public void setBypass(String bypass) {
         mBypass.setText(bypass);
     }
@@ -164,18 +155,6 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
                 String.format(Locale.ENGLISH, "Input port must be between %d and %d",
                         0, AddEditProfilePresenter.MAX_PORTS_LIMIT)
         );
-    }
-
-    @Override
-    public void setOutPortEmptyError() {
-        mOutPort.setError("OutputPOrt cannot be empty");
-    }
-
-    @Override
-    public void setOutputPortOutOfRangeError() {
-        mOutPort.setError(String.format(Locale.ENGLISH, "Output port must be between %d and %d",
-                AddEditProfilePresenter.MAX_SYSTEM_PORTS_LIMIT,
-                AddEditProfilePresenter.MAX_PORTS_LIMIT));
     }
 
     @Override

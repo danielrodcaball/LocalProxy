@@ -22,35 +22,31 @@ public class Profile extends RealmObject {
     private String name;
 
     @Required
-    private String server;
+    private String host;
 
     private int inPort;
-
-    private int outPort;
 
     private String bypass;
 
     public static Profile newProfile(String name, String server,
-                                     int inPort, int outPort, String bypass){
+                                     int inPort, String bypass){
         Profile p = new Profile();
         p.setId(UUID.randomUUID().toString());
         p.setName(name);
-        p.setServer(server);
+        p.setHost(server);
         p.setInPort(inPort);
-        p.setOutPort(outPort);
         p.setBypass(bypass);
 
         return p;
     }
 
     public static Profile newProfile(String profileId, String name,
-                                     String server, int inPort, int outPort, String bypass){
+                                     String server, int inPort, String bypass){
         Profile p = new Profile();
         p.setId(profileId);
         p.setName(name);
-        p.setServer(server);
+        p.setHost(server);
         p.setInPort(inPort);
-        p.setOutPort(outPort);
         p.setBypass(bypass);
 
         return p;
@@ -68,12 +64,12 @@ public class Profile extends RealmObject {
         this.name = name;
     }
 
-    public String getServer() {
-        return server;
+    public String getHost() {
+        return host;
     }
 
-    public void setServer(String server) {
-        this.server = server;
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public int getInPort() {
@@ -82,14 +78,6 @@ public class Profile extends RealmObject {
 
     public void setInPort(int inPort) {
         this.inPort = inPort;
-    }
-
-    public int getOutPort() {
-        return outPort;
-    }
-
-    public void setOutPort(int outPort) {
-        this.outPort = outPort;
     }
 
     public String getBypass() {

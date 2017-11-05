@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -33,12 +34,14 @@ import com.google.common.base.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.RealmResults;
 import uci.wifiproxy.R;
 import uci.wifiproxy.data.profile.Profile;
 import uci.wifiproxy.data.user.User;
 import uci.wifiproxy.profile.addEditProfile.AddEditProfileActivity;
+import uci.wifiproxy.profile.addEditProfile.AddEditProfilePresenter;
 import uci.wifiproxy.proxy.service.ProxyService;
 import uci.wifiproxy.util.fontAwesome.ButtonAwesome;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -68,6 +71,8 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
 
     @Nullable
     private Button mWifiSettingsButton;
+
+    private EditText mLocalPortEditText;
 
     private FloatingActionButton mFabStartProxy;
 
@@ -119,12 +124,14 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
                     mPresenter.startProxy(mUsername.getText().toString(),
                             mPassword.getText().toString(),
                             profileId,
+                            mLocalPortEditText.getText().toString(),
                             mRememberPasswordCheck.isChecked(),
                             mGlobalProxyCheck.isChecked());
                 } else {
                     mPresenter.startProxy(mUsername.getText().toString(),
                             mPassword.getText().toString(),
                             profileId,
+                            mLocalPortEditText.getText().toString(),
                             mRememberPasswordCheck.isChecked(),
                             false);
                 }
@@ -150,6 +157,8 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
 
         mPassword = (TextView) root.findViewById(R.id.epass);
         mRememberPasswordCheck = (CheckBox) root.findViewById(R.id.check_rem_pass);
+
+        mLocalPortEditText = (EditText) root.findViewById(R.id.local_port);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mGlobalProxyCheck = (CheckBox) root.findViewById(R.id.globCheckBox);
@@ -204,6 +213,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         mPassword.setEnabled(true);
         mRememberPasswordCheck.setEnabled(true);
         mProfileSpinner.setEnabled(true);
+        mLocalPortEditText.setEnabled(true);
 
         if (mGlobalProxyCheck != null){
             mGlobalProxyCheck.setEnabled(true);
@@ -216,6 +226,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         mPassword.setEnabled(false);
         mRememberPasswordCheck.setEnabled(false);
         mProfileSpinner.setEnabled(false);
+        mLocalPortEditText.setEnabled(false);
 
         if (mGlobalProxyCheck != null){
             mGlobalProxyCheck.setEnabled(false);
@@ -247,6 +258,11 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     @Override
     public void setRememberPassword(boolean remember) {
         mRememberPasswordCheck.setChecked(remember);
+    }
+
+    @Override
+    public void setLocalPort(String localPort) {
+        mLocalPortEditText.setText(localPort);
     }
 
     @Override
@@ -305,6 +321,18 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     @Override
     public void setProfileNoSelectedError() {
         Snackbar.make(mUsername, R.string.no_profile_selected_error, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void setLocalPortEmptyError() {
+        mLocalPortEditText.setError("Local port cannot be empty");
+    }
+
+    @Override
+    public void setLocalPortOutOfRangeError() {
+        mLocalPortEditText.setError(String.format(Locale.ENGLISH, "Local port must be between %d and %d",
+                AddEditProfilePresenter.MAX_SYSTEM_PORTS_LIMIT,
+                AddEditProfilePresenter.MAX_PORTS_LIMIT));
     }
 
     @Override
@@ -481,7 +509,6 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
                 }
                 else{
                     mPresenter.loadUsers();
-                    mUsername.showDropDown();
                 }
             }
         };

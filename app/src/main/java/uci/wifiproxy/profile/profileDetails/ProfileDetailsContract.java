@@ -31,8 +31,6 @@ public interface ProfileDetailsContract {
 
         void showInPort(int inPort);
 
-        void showOutPort(int outPOrt);
-
         void showBypass(String bypass);
 
         void showEditProfile(String profileId);

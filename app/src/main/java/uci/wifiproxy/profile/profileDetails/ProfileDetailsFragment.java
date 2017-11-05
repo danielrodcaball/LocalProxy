@@ -39,8 +39,6 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
 
     private TextView mDetailInPort;
 
-    private TextView mDetailOutPort;
-
     private TextView mDetailBypass;
 
     public ProfileDetailsFragment(){
@@ -64,7 +62,6 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
         mDetailName = (TextView) root.findViewById(R.id.nameTv);
         mDetailServer = (TextView) root.findViewById(R.id.serverTv);
         mDetailInPort = (TextView) root.findViewById(R.id.inPortTv);
-        mDetailOutPort = (TextView) root.findViewById(R.id.outPortTv);
         mDetailBypass = (TextView) root.findViewById(R.id.bypassTv);
 
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_edit_profile);
@@ -120,11 +117,6 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
     @Override
     public void showInPort(int inPort) {
         mDetailInPort.setText(String.valueOf(inPort));
-    }
-
-    @Override
-    public void showOutPort(int outPOrt) {
-        mDetailOutPort.setText(String.valueOf(outPOrt));
     }
 
     @Override

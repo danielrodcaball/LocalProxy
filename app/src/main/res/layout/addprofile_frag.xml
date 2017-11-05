@@ -77,30 +77,7 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="numberSigned"
                 android:maxLines="1"
-                android:singleLine="true"
-                android:textSize="@dimen/text_size" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <TextView
-            android:id="@+id/OutputPortTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/OutputPort"
-            android:textSize="@dimen/text_size" />
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/eoutputport"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/portHint"
-                android:imeOptions="actionUnspecified"
-                android:inputType="numberSigned"
-                android:maxLines="1"
+                android:maxLength="5"
                 android:singleLine="true"
                 android:textSize="@dimen/text_size" />
 

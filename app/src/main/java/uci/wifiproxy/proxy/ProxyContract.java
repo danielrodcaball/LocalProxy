@@ -18,7 +18,7 @@ public interface ProxyContract {
     interface Presenter extends BasePresenter{
 
         void startProxy(@NonNull String user, @NonNull String pass, @NonNull String profileID,
-                        @NonNull boolean rememberPass,@NonNull boolean setGlobalProxy);
+                        @NonNull String localPort, @NonNull boolean rememberPass,@NonNull boolean setGlobalProxy);
 
         void stopProxy();
 
@@ -51,6 +51,8 @@ public interface ProxyContract {
 
         void setRememberPassword(boolean remember);
 
+        void setLocalPort(String localPort);
+
         void setGlobalProxyChecked(boolean checked);
 
         void setSpinnerProfiles(List<Profile> profiles);
@@ -64,6 +66,10 @@ public interface ProxyContract {
         void setPasswordEmptyError();
 
         void setProfileNoSelectedError();
+
+        void setLocalPortEmptyError();
+
+        void setLocalPortOutOfRangeError();
 
         void setUsers(@NonNull List<User> users);
 
