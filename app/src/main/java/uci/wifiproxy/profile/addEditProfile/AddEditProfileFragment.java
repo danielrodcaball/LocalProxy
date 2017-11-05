@@ -79,6 +79,7 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
         mInPort = (TextView) root.findViewById(R.id.einputport);
         mOutPort = (TextView) root.findViewById(R.id.eoutputport);
         mBypass = (TextView) root.findViewById(R.id.ebypass);
+        mBypass.setText(getString(R.string.bypassInitText));
 
         setHasOptionsMenu(true);
 
