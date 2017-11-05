@@ -29,6 +29,10 @@ public interface ProxyContract {
         void goToWifiConfDialog();
 
         void goToWifiSettings(boolean dontShowAgain);
+
+        void filterUsers(String constraint);
+
+        void loadUsers();
     }
 
     interface View extends BaseView<Presenter>{
@@ -70,7 +74,8 @@ public interface ProxyContract {
         void stopProxyService();
 
         void startProxyService(String username, String password, String server,
-                              int inputport, int outputport, String bypass, boolean setGlobProxy);
+                              int inputport, int outputport, String bypass, boolean setGlobProxy,
+                               String firewallRules);
 
         void showWifiConfDialog();
 

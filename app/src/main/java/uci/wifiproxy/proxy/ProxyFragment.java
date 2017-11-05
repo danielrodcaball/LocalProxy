@@ -337,7 +337,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     @Override
     public void startProxyService(String username, String password, String server,
                                   int inputport, int outputport, String bypass,
-                                  boolean setGlobProxy) {
+                                  boolean setGlobProxy, String firewallRules) {
         Intent proxyIntent = new Intent(getActivity(), ProxyService.class);
         proxyIntent.putExtra("user", username);
         proxyIntent.putExtra("pass", password);
@@ -346,6 +346,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         proxyIntent.putExtra("outputport", outputport + "");
         proxyIntent.putExtra("bypass", bypass);
         proxyIntent.putExtra("set_global_proxy", setGlobProxy);
+        proxyIntent.putExtra("firewallRules", firewallRules);
         getActivity().startService(proxyIntent);
     }
 
@@ -392,19 +393,18 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         return builder.create();
     }
 
-    private class UsersArrayAdapter extends ArrayAdapter<User> {
 
-        private List<User> items;
+    private class UsersArrayAdapter extends ArrayAdapter<User> {
 
         private int viewResourceId = R.layout.user_list_item;
 
         public UsersArrayAdapter(@NonNull Context context, @NonNull ArrayList<User> users) {
             super(context, R.layout.user_list_item, users);
-            this.items = users;
         }
 
         private void setList(List<User> users) {
-            items = users;
+            clear();
+            addAll(users);
         }
 
         public void replaceData(List<User> users) {
@@ -476,14 +476,13 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 //This is executed in the UI thread, PERFECT!!!!
-                clear();
-                if (constraint != null && items != null && items.size() > 0) {
-                    addAll(((RealmResults<User>) items).where().beginsWith(User.USERNAME_FIELD,
-                            constraint.toString().toLowerCase()).findAll());
-                } else {
-                    addAll(items);
+                if (constraint != null && !constraint.equals("")) {
+                    mPresenter.filterUsers(constraint.toString());
                 }
-                notifyDataSetChanged();
+                else{
+                    mPresenter.loadUsers();
+                    mUsername.showDropDown();
+                }
             }
         };
     }

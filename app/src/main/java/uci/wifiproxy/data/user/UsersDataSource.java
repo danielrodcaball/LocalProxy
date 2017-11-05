@@ -43,7 +43,7 @@ public interface UsersDataSource {
 
     void deleteAllUsers();
 
-    void filterUsers(@NonNull String usernameText, @NonNull FilterUsersCallback callback);
+    void filterByUsernameUsers(@NonNull String usernameText, @NonNull FilterUsersCallback callback);
 
     void getUserByUsername(@NonNull String username, @NonNull GetUserCallback callback);
 }

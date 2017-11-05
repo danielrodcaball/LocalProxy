@@ -98,7 +98,7 @@ public class UsersLocalDataSource implements UsersDataSource {
     }
 
     @Override
-    public void filterUsers(@NonNull String usernameText, @NonNull FilterUsersCallback callback) {
+    public void filterByUsernameUsers(@NonNull String usernameText, @NonNull FilterUsersCallback callback) {
         List<User> filteredUsers = realm.where(User.class)
                 .beginsWith(User.USERNAME_FIELD, usernameText).findAll();
         if (!filteredUsers.isEmpty()){

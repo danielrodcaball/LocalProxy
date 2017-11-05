@@ -31,6 +31,8 @@ public class ProxyService extends Service {
     private int inputport = 8080;
     private int outputport = 8080;
     private String bypass = "";
+    private String firewallRules = "";
+
 //    private ServerTask s;
     private HttpForwarder1 proxyThread;
     private boolean set_global_proxy;
@@ -88,6 +90,7 @@ public class ProxyService extends Service {
         outputport = Integer.valueOf(intent.getStringExtra("outputport"));
         set_global_proxy = intent.getBooleanExtra("set_global_proxy", true);
         bypass = intent.getStringExtra("bypass");
+        firewallRules = intent.getStringExtra("firewallRules");
 
         System.out.println("global_proxy: " + String.valueOf(set_global_proxy));
         if (set_global_proxy) {
@@ -100,7 +103,8 @@ public class ProxyService extends Service {
 //        s = new ServerTask(user, pass, domain, server, inputport, outputport, bypass, authScheme);
 //        s.execute();
         try {
-            proxyThread = new HttpForwarder1(server, inputport, user, pass, outputport, true, bypass);
+            proxyThread = new HttpForwarder1(server, inputport, user, pass, outputport, true, bypass,
+                    firewallRules, getPackageManager());
         } catch (IOException e) {
             Log.e(getClass().getName(), "The proxy thread can not be started: "  + e.getMessage());
             return START_NOT_STICKY;

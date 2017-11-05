@@ -1,10 +1,15 @@
 package uci.wifiproxy.firewall.addEditFirewallRule;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
+import java.util.List;
+
+import uci.wifiproxy.data.applicationPackage.ApplicationPackage;
+import uci.wifiproxy.data.applicationPackage.ApplicationPackageLocalDataSource;
 import uci.wifiproxy.data.firewallRule.FirewallRule;
 import uci.wifiproxy.data.firewallRule.FirewallRuleDataSource;
 import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
@@ -21,6 +26,9 @@ public class AddEditFirewallRulePresenter implements AddEditFirewallRuleContract
     private FirewallRuleLocalDataSource mFirewallRuleDataSource;
 
     @NonNull
+    private ApplicationPackageLocalDataSource mApplicationPackageLocalDataSource;
+
+    @NonNull
     private AddEditFirewallRuleContract.View mAddEditFirewallRuleView;
 
     @Nullable
@@ -29,8 +37,13 @@ public class AddEditFirewallRulePresenter implements AddEditFirewallRuleContract
     private boolean mIsDataMissing;
 
     public AddEditFirewallRulePresenter(@NonNull AddEditFirewallRuleContract.View addEditFirewallRuleView,
-                                        @Nullable String firewallRuleId, boolean shouldLoadDataFromSource) {
+                                        @Nullable String firewallRuleId,
+                                        @NonNull Context context,
+                                        boolean shouldLoadDataFromSource) {
+
         mFirewallRuleDataSource = FirewallRuleLocalDataSource.newInstance();
+        mApplicationPackageLocalDataSource = ApplicationPackageLocalDataSource.getInstance(context);
+
         mAddEditFirewallRuleView = checkNotNull(addEditFirewallRuleView);
         mFirewallRuleId = firewallRuleId;
         mIsDataMissing = shouldLoadDataFromSource;
@@ -41,16 +54,17 @@ public class AddEditFirewallRulePresenter implements AddEditFirewallRuleContract
 
     @Override
     public void start() {
+        loadApplicationPackages();
         if (!isNewFirewallRule() && mIsDataMissing)
             populateFirewallRule();
     }
 
     @Override
-    public void saveFirewallRule(String rule, String description) {
+    public void saveFirewallRule(String rule, String packageName, String description) {
         if (isNewFirewallRule())
-            createFirewallRule(rule, description);
+            createFirewallRule(rule, packageName, description);
         else
-            updateFirewallRule(rule, description);
+            updateFirewallRule(rule, packageName, description);
     }
 
     @Override
@@ -64,6 +78,9 @@ public class AddEditFirewallRulePresenter implements AddEditFirewallRuleContract
             public void onFirewallRuleLoaded(FirewallRule firewallRule) {
                 if (!mAddEditFirewallRuleView.isActive()) return;
 
+                mAddEditFirewallRuleView.setSpinnerApplicationPackageSelected(
+                        firewallRule.getApplicationPackageName()
+                );
                 mAddEditFirewallRuleView.setRule(firewallRule.getRule());
                 mAddEditFirewallRuleView.setDescription(firewallRule.getDescription());
 
@@ -76,6 +93,7 @@ public class AddEditFirewallRulePresenter implements AddEditFirewallRuleContract
                 mAddEditFirewallRuleView.setEmptyRuleError();
             }
         });
+
     }
 
     @Override
@@ -92,12 +110,20 @@ public class AddEditFirewallRulePresenter implements AddEditFirewallRuleContract
         return mFirewallRuleId == null;
     }
 
-    private void createFirewallRule(String rule, String description) {
+    private void loadApplicationPackages(){
+        List<ApplicationPackage> applicationPackageList =
+                mApplicationPackageLocalDataSource.getApplicationPackages();
+
+        if (applicationPackageList.size() != 0)
+            mAddEditFirewallRuleView.setApplicationPackages(applicationPackageList);
+    }
+
+    private void createFirewallRule(String rule, String packageName, String description) {
         boolean isValidData = validateData(rule, description);
 
         if (!isValidData) return;
 
-        FirewallRule firewallRule = FirewallRule.newInstance(rule, description);
+        FirewallRule firewallRule = FirewallRule.newInstance(rule, packageName, description);
 
         mFirewallRuleDataSource.saveFirewallRule(firewallRule);
 
@@ -105,12 +131,12 @@ public class AddEditFirewallRulePresenter implements AddEditFirewallRuleContract
             mAddEditFirewallRuleView.finishAddEditFirewallRuleActivity();
     }
 
-    private void updateFirewallRule(String rule, String description) {
+    private void updateFirewallRule(String rule, String packageName, String description) {
         boolean isValidData = validateData(rule, description);
 
         if (!isValidData) return;
 
-        FirewallRule firewallRule = FirewallRule.newInstance(mFirewallRuleId, rule, description);
+        FirewallRule firewallRule = FirewallRule.newInstance(mFirewallRuleId, packageName, rule, description);
 
         mFirewallRuleDataSource.updateFirewallRule(firewallRule);
 

@@ -40,6 +40,18 @@ public class FirewallRuleLocalDataSource implements FirewallRuleDataSource {
     }
 
     @Override
+    public void getActiveFirewallRules(@NonNull LoadFirewallRulesCallback callback) {
+        List<FirewallRule> firewallRuleList = realm.where(FirewallRule.class)
+                .equalTo(FirewallRule.IS_ACTIVE_FILED, true)
+                .findAll();
+        if (!firewallRuleList.isEmpty()) {
+            callback.onFirewallRulesLoaded(firewallRuleList);
+        } else {
+            callback.onDataNoAvailable();
+        }
+    }
+
+    @Override
     public void getFirewallRule(@NonNull String id, @NonNull GetFirewallRuleCallback callback) {
         FirewallRule firewallRule = realm.where(FirewallRule.class).equalTo(FirewallRule.ID_FILED, id).findFirst();
         if (firewallRule != null) {

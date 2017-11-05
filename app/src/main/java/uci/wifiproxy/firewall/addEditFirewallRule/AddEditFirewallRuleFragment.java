@@ -1,17 +1,34 @@
 package uci.wifiproxy.firewall.addEditFirewallRule;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import uci.wifiproxy.R;
+import uci.wifiproxy.data.applicationPackage.ApplicationPackage;
+import uci.wifiproxy.data.applicationPackage.ApplicationPackageLocalDataSource;
 
 /**
  * Created by daniel on 1/10/17.
@@ -25,6 +42,10 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
 
     private TextView mRule;
 
+    private Spinner mPackageNameSpinner;
+
+    private ApplicationPackagesAdapter mApplicationPackageAdapter;
+
     private TextView mDescription;
 
     public AddEditFirewallRuleFragment(){
@@ -33,6 +54,13 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
 
     public static AddEditFirewallRuleFragment newInstance(){
         return new AddEditFirewallRuleFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mApplicationPackageAdapter = new ApplicationPackagesAdapter(getContext(),
+                new ArrayList<ApplicationPackage>(0));
     }
 
     @Override
@@ -49,7 +77,9 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.saveFirewallRule(mRule.getText().toString(), mDescription.getText().toString());
+                mPresenter.saveFirewallRule(mRule.getText().toString(),
+                        ((ApplicationPackage)mPackageNameSpinner.getSelectedItem()).getPackageName(),
+                        mDescription.getText().toString());
             }
         });
     }
@@ -60,6 +90,8 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
         View root  = inflater.inflate(R.layout.addfirewallrule_frag, container, false);
         mRule = (TextView) root.findViewById(R.id.add_firewallRule_rule);
         mDescription = (TextView) root.findViewById(R.id.add_firewallRule_description);
+        mPackageNameSpinner = (Spinner) root.findViewById(R.id.applicationSpinner);
+        mPackageNameSpinner.setAdapter(mApplicationPackageAdapter);
 
         setHasOptionsMenu(true);
 
@@ -104,8 +136,88 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
     }
 
     @Override
+    public void setApplicationPackages(List<ApplicationPackage> applicationPackages) {
+        mApplicationPackageAdapter.replaceData(applicationPackages);
+    }
+
+    @Override
+    public void setSpinnerApplicationPackageSelected(String packageName) {
+        int pos = -1;
+        for (int i = 0; i < mApplicationPackageAdapter.getCount(); i++){
+            if (packageName.equals(mApplicationPackageAdapter.getItem(i).getPackageName())){
+                pos = i;
+                break;
+            }
+        }
+        if (pos >= 0){
+            mPackageNameSpinner.setSelection(pos,false);
+        }
+    }
+
+    @Override
     public boolean isActive() {
         return isAdded();
+    }
+
+
+    private class ApplicationPackagesAdapter extends ArrayAdapter<ApplicationPackage> {
+
+        private int itemViewResourceId = R.layout.application_package_item;
+
+        public ApplicationPackagesAdapter(@NonNull Context context, @NonNull List<ApplicationPackage> applicationPackages) {
+            super(context, R.layout.application_package_item, applicationPackages);
+        }
+
+
+        private void setList(List<ApplicationPackage> applicationPackages) {
+            clear();
+            addAll(applicationPackages);
+        }
+
+        public void replaceData(List<ApplicationPackage> applicationPackages) {
+            setList(applicationPackages);
+            notifyDataSetChanged();
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            return createView(position, convertView, parent);
+        }
+
+        @Override
+        public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            return createView(position, convertView, parent);
+        }
+
+        private View createView(int position, @Nullable View convertView, @NonNull ViewGroup parent){
+            View rowView = convertView;
+            if (rowView == null){
+                LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+                rowView = inflater.inflate(itemViewResourceId, parent, false);
+            }
+
+            final ApplicationPackage applicationPackage = getItem(position);
+            ImageView logo = (ImageView) rowView.findViewById(R.id.application_package_item_logo);
+            TextView packageName = (TextView) rowView.findViewById(R.id.application_package_item_name);
+
+            if (applicationPackage != null){
+                if (applicationPackage.getPackageName().equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING))
+                    packageName.setText(getResources().getString(R.string.all_applications));
+                else
+                    packageName.setText(applicationPackage.getPackageName());
+
+                if (applicationPackage.hasPackageLogo())
+                    logo.setImageDrawable(applicationPackage.getPackageLogo());
+                else if (applicationPackage.getPackageName().
+                        equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING))
+                    logo.setVisibility(View.GONE);
+                else
+                    logo.setImageResource(android.R.drawable.sym_def_app_icon);
+            }
+
+            return rowView;
+        }
     }
 
 }

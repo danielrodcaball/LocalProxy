@@ -1,6 +1,9 @@
 package uci.wifiproxy.firewall.firewallRulesList;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -160,7 +164,7 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
         showMessage(getString(R.string.firewall_rule_deactivated));
     }
 
-    private void showMessage(String message){
+    private void showMessage(String message) {
         Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
     }
 
@@ -212,7 +216,22 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
                 rowView = inflater.inflate(R.layout.firewallrule_list_item, parent, false);
             }
 
+
             final FirewallRule firewallRule = getItem(position);
+
+
+            ImageView packageLogo = (ImageView) rowView.findViewById(R.id.packageLogo);
+            try {
+                packageLogo.setImageDrawable(getPackageLogoDrawable(
+                        firewallRule.getApplicationPackageName(),
+                        parent.getContext())
+                );
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            TextView packageName = (TextView) rowView.findViewById(R.id.packageName);
+            packageName.setText(firewallRule.getApplicationPackageName());
 
             TextView ruleTv = (TextView) rowView.findViewById(R.id.rule);
             ruleTv.setText(firewallRule.getRule());
@@ -220,11 +239,10 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
             CheckBox checked = (CheckBox) rowView.findViewById(R.id.active);
 
             checked.setChecked(firewallRule.isActive());
-            if (!firewallRule.isActive()){
+            if (!firewallRule.isActive()) {
                 rowView.setBackgroundDrawable(parent.getContext()
                         .getResources().getDrawable(R.drawable.list_deactivate_touch_feedback));
-            }
-            else{
+            } else {
                 rowView.setBackgroundDrawable(parent.getContext()
                         .getResources().getDrawable(R.drawable.touch_feedback));
             }
@@ -244,6 +262,12 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
             });
 
             return rowView;
+        }
+
+        private Drawable getPackageLogoDrawable(String packageName, Context context) throws PackageManager.NameNotFoundException {
+                PackageManager pm = context.getPackageManager();
+                Drawable drawable = pm.getApplicationLogo(packageName);
+                return drawable;
         }
     }
 

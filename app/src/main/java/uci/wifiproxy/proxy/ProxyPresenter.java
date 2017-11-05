@@ -2,6 +2,7 @@ package uci.wifiproxy.proxy;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -10,12 +11,16 @@ import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 
+import uci.wifiproxy.data.firewallRule.FirewallRule;
+import uci.wifiproxy.data.firewallRule.FirewallRuleDataSource;
+import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
 import uci.wifiproxy.data.profile.Profile;
 import uci.wifiproxy.data.profile.source.ProfilesDataSource;
 import uci.wifiproxy.data.profile.source.ProfilesLocalDataSource;
 import uci.wifiproxy.data.user.User;
 import uci.wifiproxy.data.user.UsersDataSource;
 import uci.wifiproxy.data.user.UsersLocalDataSource;
+import uci.wifiproxy.util.StringUtils;
 
 /**
  * Created by daniel on 20/09/17.
@@ -38,6 +43,8 @@ public class ProxyPresenter implements ProxyContract.Presenter {
 
     private UsersLocalDataSource mUsersLocalDataSource;
 
+    private FirewallRuleLocalDataSource mFirewallRulesLocalDataSource;
+
     @NonNull
     private SharedPreferences mSharedPreferences;
 
@@ -48,6 +55,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         mSharedPreferences = sharedPreferences;
         mProfileLocalDataSource = ProfilesLocalDataSource.newInstance();
         mUsersLocalDataSource = UsersLocalDataSource.newInstance();
+        mFirewallRulesLocalDataSource = FirewallRuleLocalDataSource.newInstance();
 
         mProxyView.setPresenter(this);
     }
@@ -63,19 +71,59 @@ public class ProxyPresenter implements ProxyContract.Presenter {
             saveUpdateUser(username, password, rememberPass);
             saveConfiguration(username, profileId, setGlobalProxy);
 
+
+            final Object[] dataLoaded = new Object[2];
+            final boolean[] isDataLoaded = new boolean[2];
+
+
             mProfileLocalDataSource.getProfile(profileId, new ProfilesDataSource.GetProfileCallback() {
                 @Override
                 public void onProfileLoaded(Profile profile) {
-                    mProxyView.startProxyService(username, password,
-                            profile.getServer(), profile.getInPort(),
-                            profile.getOutPort(), profile.getBypass(), setGlobalProxy);
+                    isDataLoaded[0] = true;
+                    dataLoaded[0] = profile;
                 }
 
                 @Override
                 public void onDataNoAvailable() {
                     //never happens in this scenario
+                    isDataLoaded[0] = false;
                 }
             });
+
+            mFirewallRulesLocalDataSource.getFirewallRules(new FirewallRuleDataSource.LoadFirewallRulesCallback() {
+                @Override
+                public void onFirewallRulesLoaded(List<FirewallRule> firewallRules) {
+                    String[] parts = new String[firewallRules.size()];
+                    for (int i = 0; i < firewallRules.size(); i++) {
+                        parts[i] = firewallRules.get(i).getRule();
+                    }
+
+                    String result = StringUtils.unsplit(parts, 0, parts.length, ",");
+
+                    isDataLoaded[1] = true;
+                    dataLoaded[1] = result;
+                }
+
+                @Override
+                public void onDataNoAvailable() {
+                    isDataLoaded[1] = true;
+                    dataLoaded[1] = "";
+                }
+            });
+
+            //semaphore
+            while (!isDataLoaded[0] && !isDataLoaded[1]) {
+                //wait
+            }
+
+            //start proxy
+            Profile profile = (Profile) dataLoaded[0];
+            String firewallRulesString = (String) dataLoaded[1];
+            mProxyView.startProxyService(username, password,
+                    profile.getServer(), profile.getInPort(),
+                    profile.getOutPort(), profile.getBypass(),
+                    setGlobalProxy,
+                    firewallRulesString);
 
             mProxyView.disableAllViews();
             mProxyView.setStopView();
@@ -151,6 +199,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
     public void onDestroy() {
         mProfileLocalDataSource.releaseResources();
         mUsersLocalDataSource.releaseResources();
+        mFirewallRulesLocalDataSource.releaseResources();
     }
 
     @Override
@@ -178,6 +227,21 @@ public class ProxyPresenter implements ProxyContract.Presenter {
     }
 
     @Override
+    public void filterUsers(String constraint) {
+        mUsersLocalDataSource.filterByUsernameUsers(constraint, new UsersDataSource.FilterUsersCallback() {
+            @Override
+            public void onUsersFiltered(List<User> users) {
+                mProxyView.setUsers(users);
+            }
+
+            @Override
+            public void onDataNoAvailable() {
+                mProxyView.setUsers(new ArrayList<User>(0));
+            }
+        });
+    }
+
+    @Override
     public void start() {
         loadUsers();
         loadProfiles();
@@ -192,7 +256,8 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         }
     }
 
-    private void loadUsers() {
+    @Override
+    public void loadUsers() {
         mUsersLocalDataSource.getUsers(new UsersDataSource.LoadUsersCallback() {
             @Override
             public void onUsersLoaded(List<User> users) {
@@ -245,7 +310,9 @@ public class ProxyPresenter implements ProxyContract.Presenter {
     }
 
     private void loadLastConfiguration() {
+
         String userId = mSharedPreferences.getString(SHARED_PREFERENCES_USER_ID, "");
+
         if (!Strings.isNullOrEmpty(userId)) {
             mUsersLocalDataSource.getUser(userId, new UsersDataSource.GetUserCallback() {
                 @Override

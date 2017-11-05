@@ -1,10 +1,15 @@
 package uci.wifiproxy.proxy.core;
 
+import android.content.pm.PackageManager;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -41,6 +46,7 @@ import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
 import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
 import cz.msebera.android.httpclient.impl.client.ProxyClient;
 import cz.msebera.android.httpclient.impl.conn.PoolingHttpClientConnectionManager;
+import uci.wifiproxy.util.StringUtils;
 
 /**
  * Created by daniel on 17/04/17.
@@ -48,15 +54,16 @@ import cz.msebera.android.httpclient.impl.conn.PoolingHttpClientConnectionManage
 
 public class HttpForwarder1 extends Thread {
 
-    private static List<String> stripHeadersIn = Arrays.asList(new String[]{
-            "Content-Type", "Content-Length", "Proxy-Connection"});
-    private static List<String> stripHeadersOut = Arrays.asList(new String[]{
-            "Proxy-Authentication", "Proxy-Authorization", "Transfer-Encoding"});
+    private static List<String> stripHeadersIn = Arrays.asList(
+            "Content-Type", "Content-Length", "Proxy-Connection"
+    );
+    private static List<String> stripHeadersOut = Arrays.asList(
+            "Proxy-Authentication", "Proxy-Authorization", "Transfer-Encoding"
+    );
 
     private ServerSocket ssocket;
     private PoolingHttpClientConnectionManager manager;
     private ExecutorService threadPool = Executors.newCachedThreadPool();
-    //    private ExecutorService threadPool = Executors.newSingleThreadExecutor();
     private CloseableHttpClient delegateClient;
     private CloseableHttpClient noDelegateClient;
     private int inport;
@@ -64,18 +71,25 @@ public class HttpForwarder1 extends Thread {
     private String user;
     private String pass;
     private String bypass;
+    private String firewallRulesString;
     public boolean running = true;
     private LinkedList<Socket> listaSockets = new LinkedList<Socket>();
 
     private CredentialsProvider credentials = null;
 
+    private PackageManager packageManager;
+
     public HttpForwarder1(String addr, int inport, String user,
-                          String pass, int outport, boolean onlyLocal, String bypass) throws IOException {
+                          String pass, int outport, boolean onlyLocal, String bypass,
+                          String firewallRulesString, PackageManager packageManager) throws IOException {
         this.addr = addr;
         this.inport = inport;
         this.user = user;
         this.pass = pass;
         this.bypass = bypass;
+        this.firewallRulesString = firewallRulesString;
+
+        this.packageManager = packageManager;
 
         if (onlyLocal) {
             this.ssocket = new ServerSocket(outport, 0,
@@ -373,6 +387,33 @@ public class HttpForwarder1 extends Thread {
             return false;
         }
 
+        public void findSource(int port){
+            try {
+                BufferedReader bf = new BufferedReader(new FileReader("/proc/net/tcp"));
+                String line;
+                while ((line = bf.readLine()) != null){
+//                    Log.e("Line", line);
+                    line = line.trim();
+                    String[] arr = line.split("\\s");
+                    if (arr[0].equals("sl")) continue;
+
+                    String localPortHex = arr[1].split(":")[1];
+                    String uid = arr[7];
+
+                    String portHex = StringUtils.decToHex(port);
+//                    Log.e("Port", port+"");
+//                    Log.e("PortHex",portHex);
+                    if (portHex.equals(localPortHex)){
+                        Log.e("Source", packageManager.getNameForUid(Integer.parseInt(uid)));
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         public void run() {
             try {
                 HttpParser parser = new HttpParser(
@@ -382,6 +423,18 @@ public class HttpForwarder1 extends Thread {
                     }
                 } catch (IOException e) {
                     parser.close();
+                    return;
+                }
+
+                Log.e("Socket", this.localSocket.getPort()+"");
+                findSource(localSocket.getPort());
+
+                if (matches(parser.getUri().toString(), firewallRulesString)){
+                    OutputStream os = localSocket.getOutputStream();
+                    os.write("HTTP/1.1 403 Forbidden".getBytes());
+                    os.write("\r\n".getBytes());
+                    os.write("\r\n".getBytes());
+                    os.write("<h1>Forbidden by the local Firewall</h1>".getBytes());
                     return;
                 }
 

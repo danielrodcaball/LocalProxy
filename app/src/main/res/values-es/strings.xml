@@ -90,6 +90,8 @@
     <string name="new_firewallRule">Nueva Regla de Cortafuegos</string>
     <string name="edit_firewallRule">Editar Regla de Cortafuegos</string>
     <string name="successfully_firewallrule_updated_message">Regla de firewall actualizada</string>
+    <string name="firewallRule_application_tv">Aplicación:</string>
+    <string name="all_applications">Todas</string>
 
 
 

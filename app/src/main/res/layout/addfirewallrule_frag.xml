@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -16,7 +17,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/firewallRule_rule_tv"/>
+            android:text="@string/firewallRule_application_tv" />
+
+
+        <Spinner
+            android:id="@+id/applicationSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/firewallRule_rule_tv" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -38,8 +53,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/firewallRule_description_tv"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:text="@string/firewallRule_description_tv" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

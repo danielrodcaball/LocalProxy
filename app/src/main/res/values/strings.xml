@@ -86,7 +86,7 @@
     <string name="firewall_rule_activated">Firewall rule activated</string>
     <string name="firewall_rule_deactivated">Firewall rule deactivated</string>
     <string name="firewall_title">Firewall</string>
-    <string name="firewallRule_rule_hint">service.example.com | *example.com</string>
+    <string name="firewallRule_rule_hint"> * | *example.com | service.example.com</string>
     <string name="firewallRule_rule_tv">Rule:</string>
     <string name="firewallRule_description_tv">Description:</string>
     <string name="firewallRule_description_hint">This is my rule description</string>
@@ -95,7 +95,8 @@
     <string name="new_firewallRule">New Firewall Rule</string>
     <string name="edit_firewallRule">Edit Firewall Rule</string>
     <string name="successfully_firewallrule_updated_message">Firewall rule updated</string>
-
+    <string name="firewallRule_application_tv">Application:</string>
+    <string name="all_applications">All</string>
 
 
 </resources>

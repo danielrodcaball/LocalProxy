@@ -67,6 +67,7 @@ public class AddEditFirewallRuleActivity extends AppCompatActivity {
         mPresenter = new AddEditFirewallRulePresenter(
                 addEditFirewallRuleFragment,
                 firewallRuleId,
+                getApplicationContext(),
                 shouldLoadDataFromRepo
         );
 

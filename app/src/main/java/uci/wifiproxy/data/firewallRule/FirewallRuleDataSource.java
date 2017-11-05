@@ -22,6 +22,8 @@ public interface FirewallRuleDataSource {
 
     void getFirewallRules(@NonNull LoadFirewallRulesCallback callback);
 
+    void getActiveFirewallRules(@NonNull LoadFirewallRulesCallback callback);
+
     void getFirewallRule(@NonNull String id, @NonNull GetFirewallRuleCallback callback);
 
     void saveFirewallRule(@NonNull FirewallRule firewallRule);

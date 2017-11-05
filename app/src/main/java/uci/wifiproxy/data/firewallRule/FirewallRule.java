@@ -19,7 +19,9 @@ public class FirewallRule extends RealmObject {
 
     public final static String RULE_FILED = "rule";
 
-    public final static String IS_CHECKED_FILED = "isActive";
+    public final static String APPLICATION_PACKAGE_NAME_FIELD = "applicationPackageName";
+
+    public final static String IS_ACTIVE_FILED = "isActive";
 
 
     @PrimaryKey
@@ -28,15 +30,20 @@ public class FirewallRule extends RealmObject {
     @Required
     private String rule;
 
+    @Required
+    private String applicationPackageName;
+
     private String description;
 
     private boolean isActive;
 
     public static FirewallRule newInstance(@NonNull String firewallRuleId, @NonNull String rule,
+                                           @NonNull String applicationPackageName,
                                            @Nullable String description){
         FirewallRule firewallRule = new FirewallRule();
 
         firewallRule.setId(firewallRuleId);
+        firewallRule.setApplicationPackageName(applicationPackageName);
         firewallRule.setRule(rule);
         firewallRule.setDescription(description);
         firewallRule.setActive(true);
@@ -44,10 +51,13 @@ public class FirewallRule extends RealmObject {
         return firewallRule;
     }
 
-    public static FirewallRule newInstance(@NonNull String rule, @NonNull String description){
+    public static FirewallRule newInstance(@NonNull String rule,
+                                           @NonNull String applicationPackageName,
+                                           @Nullable String description){
         FirewallRule firewallRule = new FirewallRule();
 
         firewallRule.setId(UUID.randomUUID().toString());
+        firewallRule.setApplicationPackageName(applicationPackageName);
         firewallRule.setRule(rule);
         firewallRule.setDescription(description);
         firewallRule.setActive(true);
@@ -85,5 +95,13 @@ public class FirewallRule extends RealmObject {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getApplicationPackageName() {
+        return applicationPackageName;
+    }
+
+    public void setApplicationPackageName(String applicationPackageName) {
+        this.applicationPackageName = applicationPackageName;
     }
 }

@@ -1,7 +1,10 @@
 package uci.wifiproxy.firewall.addEditFirewallRule;
 
+import java.util.List;
+
 import uci.wifiproxy.BasePresenter;
 import uci.wifiproxy.BaseView;
+import uci.wifiproxy.data.applicationPackage.ApplicationPackage;
 
 /**
  * Created by daniel on 1/10/17.
@@ -21,13 +24,17 @@ public interface AddEditFirewallRuleContract {
 
         void setEmptyRuleError();
 
+        void setApplicationPackages(List<ApplicationPackage> applicationPackages);
+
+        void setSpinnerApplicationPackageSelected(String packageName);
+
         //check if the view is active
         boolean isActive();
     }
 
     interface Presenter extends BasePresenter{
 
-        void saveFirewallRule(String rule, String description);
+        void saveFirewallRule(String rule, String packageName, String description);
 
         void populateFirewallRule();
 
