@@ -75,9 +75,9 @@ public class ProxyService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (android.os.Debug.isDebuggerConnected()) {
-            android.os.Debug.waitForDebugger();
-        }
+//        if (android.os.Debug.isDebuggerConnected()) {
+//            android.os.Debug.waitForDebugger();
+//        }
 
         if (intent.getExtras() == null) {
             Log.e(getClass().getName(), "Error starting service");

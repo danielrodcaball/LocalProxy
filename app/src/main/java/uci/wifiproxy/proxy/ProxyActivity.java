@@ -25,6 +25,8 @@ import android.view.View;
 
 
 import uci.wifiproxy.R;
+import uci.wifiproxy.WifiProxyApplication;
+import uci.wifiproxy.data.proxyConfiguration.ProxyConfigurationDataSource;
 import uci.wifiproxy.firewall.firewallRulesList.FirewallRulesListActivity;
 import uci.wifiproxy.profile.profilesList.ProfilesListActivity;
 import uci.wifiproxy.proxy.service.ProxyService;
@@ -32,8 +34,6 @@ import uci.wifiproxy.util.ActivityUtils;
 
 public class ProxyActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    private static final String SHARED_PREFERENCES_NAME = "WifiProxy.conf";
 
     public static int LIGHT_THEME = 0;
     public static int DARK_THEME = 1;
@@ -73,7 +73,11 @@ public class ProxyActivity extends AppCompatActivity
         }
 
         //create the presenter
-        new ProxyPresenter(proxyFragment, getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE));
+        new ProxyPresenter(
+                proxyFragment,
+                ProxyConfigurationDataSource.newInstance(getApplicationContext()),
+                getSharedPreferences(WifiProxyApplication.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+        );
 
         //Load previously saved state, if available
         if (savedInstanceState != null) {

@@ -15,6 +15,8 @@ import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
 import uci.wifiproxy.data.profile.Profile;
 import uci.wifiproxy.data.profile.source.ProfilesDataSource;
 import uci.wifiproxy.data.profile.source.ProfilesLocalDataSource;
+import uci.wifiproxy.data.proxyConfiguration.ProxyConfiguration;
+import uci.wifiproxy.data.proxyConfiguration.ProxyConfigurationDataSource;
 import uci.wifiproxy.data.user.User;
 import uci.wifiproxy.data.user.UsersDataSource;
 import uci.wifiproxy.data.user.UsersLocalDataSource;
@@ -29,15 +31,7 @@ import static uci.wifiproxy.profile.addEditProfile.AddEditProfilePresenter.MAX_S
 
 public class ProxyPresenter implements ProxyContract.Presenter {
 
-    private static final String SHARED_PREFERENCES_USER_ID = "userId";
-
-    private static final String SHARED_PREFERENCES_GLOBAL_PROXY = "globalProxy";
-
-    private static final String SHARED_PREFERENCES_PROFILE_ID = "profile_id";
-
     private static final String SHARED_PREFERENCES_DONT_SHOW_DIALOG_AGAIN = "dontShowDialogAgain";
-
-    private static final String SHARED_PREFERENCES_LOCAL_PORT = "localPort";
 
     @NonNull
     private ProxyContract.View mProxyView;
@@ -49,16 +43,20 @@ public class ProxyPresenter implements ProxyContract.Presenter {
     private FirewallRuleLocalDataSource mFirewallRulesLocalDataSource;
 
     @NonNull
+    private ProxyConfigurationDataSource mProxyConfigurationDataSource;
+
     private SharedPreferences mSharedPreferences;
 
 
     public ProxyPresenter(@NonNull ProxyContract.View proxyView,
-                          @NonNull SharedPreferences sharedPreferences) {
+                          @NonNull ProxyConfigurationDataSource proxyConfigurationDataSource,
+                          SharedPreferences sharedPreferences) {
         mProxyView = proxyView;
-        mSharedPreferences = sharedPreferences;
+        mProxyConfigurationDataSource = proxyConfigurationDataSource;
         mProfileLocalDataSource = ProfilesLocalDataSource.newInstance();
         mUsersLocalDataSource = UsersLocalDataSource.newInstance();
         mFirewallRulesLocalDataSource = FirewallRuleLocalDataSource.newInstance();
+        mSharedPreferences = sharedPreferences;
 
         mProxyView.setPresenter(this);
     }
@@ -72,7 +70,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         if (isValidData) {
 
             saveUpdateUser(username, password, rememberPass);
-            saveConfiguration(username, profileId, localPort, setGlobalProxy);
+            saveConfiguration(username, profileId, Integer.parseInt(localPort), setGlobalProxy);
 
 
             final Object[] dataLoaded = new Object[2];
@@ -303,17 +301,18 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         });
     }
 
-    private void saveConfiguration(String username, final String profileId, final String localPort, final boolean setGlobProxy) {
+    private void saveConfiguration(String username, final String profileId, final int localPort, final boolean setGlobProxy) {
 
         mUsersLocalDataSource.getUserByUsername(username, new UsersDataSource.GetUserCallback() {
             @Override
             public void onUserLoaded(User user) {
-                SharedPreferences.Editor editor = mSharedPreferences.edit();
-                editor.putString(SHARED_PREFERENCES_USER_ID, user.getId());
-                editor.putString(SHARED_PREFERENCES_PROFILE_ID, profileId);
-                editor.putString(SHARED_PREFERENCES_LOCAL_PORT, localPort);
-                editor.putBoolean(SHARED_PREFERENCES_GLOBAL_PROXY, setGlobProxy);
-                editor.apply();
+                ProxyConfiguration proxyConfiguration = new ProxyConfiguration(
+                        user.getId(),
+                        profileId,
+                        localPort,
+                        setGlobProxy
+                        );
+                mProxyConfigurationDataSource.saveProxyConfiguration(proxyConfiguration);
             }
 
             @Override
@@ -321,12 +320,13 @@ public class ProxyPresenter implements ProxyContract.Presenter {
                 //Never happens in this scenario, because the user was already saved
                 //at the beginning in the start proxy method, its to say the user always
                 //will be loaded
-                SharedPreferences.Editor editor = mSharedPreferences.edit();
-                editor.putString(SHARED_PREFERENCES_USER_ID, "");
-                editor.putString(SHARED_PREFERENCES_PROFILE_ID, profileId);
-                editor.putString(SHARED_PREFERENCES_LOCAL_PORT, localPort);
-                editor.putBoolean(SHARED_PREFERENCES_GLOBAL_PROXY, setGlobProxy);
-                editor.apply();
+                ProxyConfiguration proxyConfiguration = new ProxyConfiguration(
+                        "",
+                        profileId,
+                        localPort,
+                        setGlobProxy
+                );
+                mProxyConfigurationDataSource.saveProxyConfiguration(proxyConfiguration);
             }
         });
 
@@ -334,10 +334,10 @@ public class ProxyPresenter implements ProxyContract.Presenter {
 
     private void loadLastConfiguration() {
 
-        String userId = mSharedPreferences.getString(SHARED_PREFERENCES_USER_ID, "");
+        ProxyConfiguration proxyConfiguration = mProxyConfigurationDataSource.getProxyConfiguration();
 
-        if (!Strings.isNullOrEmpty(userId)) {
-            mUsersLocalDataSource.getUser(userId, new UsersDataSource.GetUserCallback() {
+        if (!Strings.isNullOrEmpty(proxyConfiguration.getUserId())) {
+            mUsersLocalDataSource.getUser(proxyConfiguration.getUserId(), new UsersDataSource.GetUserCallback() {
                 @Override
                 public void onUserLoaded(User user) {
                     mProxyView.setUsername(user.getUsername());
@@ -359,17 +359,15 @@ public class ProxyPresenter implements ProxyContract.Presenter {
             });
         }
 
-        String profileId = mSharedPreferences.getString(SHARED_PREFERENCES_PROFILE_ID, "");
-        if (!Strings.isNullOrEmpty(profileId)) {
-            mProxyView.setSpinnerProfileSelected(profileId);
+        if (!Strings.isNullOrEmpty(proxyConfiguration.getProfileId())) {
+            mProxyView.setSpinnerProfileSelected(proxyConfiguration.getProfileId());
         }
 
-        String localPort  = mSharedPreferences.getString(SHARED_PREFERENCES_LOCAL_PORT, "");
-        if (!Strings.isNullOrEmpty(localPort)){
-            mProxyView.setLocalPort(localPort);
+        if ((proxyConfiguration.getLocalPort() >= MAX_SYSTEM_PORTS_LIMIT ||
+                proxyConfiguration.getLocalPort() < MAX_PORTS_LIMIT)){
+            mProxyView.setLocalPort(String.valueOf(proxyConfiguration.getLocalPort()));
         }
 
-        boolean globProxy = mSharedPreferences.getBoolean(SHARED_PREFERENCES_GLOBAL_PROXY, true);
-        mProxyView.setGlobalProxyChecked(globProxy);
+        mProxyView.setGlobalProxyChecked(proxyConfiguration.isSetGlobalProxy());
     }
 }
