@@ -174,7 +174,7 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
     }
 
 
-    private static class FirewallRulesAdapter extends BaseAdapter {
+    private class FirewallRulesAdapter extends BaseAdapter {
 
         private List<FirewallRule> mFirewallRules;
         private FirewallRuleItemListener mItemListener;
@@ -254,7 +254,8 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
                 }
             });
 
-            ruleTv.setOnClickListener(new View.OnClickListener() {
+            View firewallRuleListItemLL = rowView.findViewById(R.id.firewallRuleListItemLL);
+            firewallRuleListItemLL.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mItemListener.onFirewallRuleClick(firewallRule);
@@ -266,7 +267,7 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
 
         private Drawable getPackageLogoDrawable(String packageName, Context context) throws PackageManager.NameNotFoundException {
                 PackageManager pm = context.getPackageManager();
-                Drawable drawable = pm.getApplicationLogo(packageName);
+                Drawable drawable = pm.getApplicationIcon   (packageName);
                 return drawable;
         }
     }

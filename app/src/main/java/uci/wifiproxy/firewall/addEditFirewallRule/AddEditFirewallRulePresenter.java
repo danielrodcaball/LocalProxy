@@ -136,7 +136,7 @@ public class AddEditFirewallRulePresenter implements AddEditFirewallRuleContract
 
         if (!isValidData) return;
 
-        FirewallRule firewallRule = FirewallRule.newInstance(mFirewallRuleId, packageName, rule, description);
+        FirewallRule firewallRule = FirewallRule.newInstance(mFirewallRuleId, rule, packageName, description);
 
         mFirewallRuleDataSource.updateFirewallRule(firewallRule);
 

@@ -395,6 +395,7 @@ public class HttpForwarder1 extends Thread {
 //                    Log.e("Line", line);
                     line = line.trim();
                     String[] arr = line.split("\\s");
+
                     if (arr[0].equals("sl")) continue;
 
                     String localPortHex = arr[1].split(":")[1];

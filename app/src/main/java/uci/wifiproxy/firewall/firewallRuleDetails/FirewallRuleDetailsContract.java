@@ -1,5 +1,7 @@
 package uci.wifiproxy.firewall.firewallRuleDetails;
 
+import android.graphics.drawable.Drawable;
+
 import uci.wifiproxy.BasePresenter;
 import uci.wifiproxy.BaseView;
 
@@ -29,6 +31,10 @@ public interface FirewallRuleDetailsContract {
         void showDescription(String description);
 
         void showFirewallRuleDeleted();
+
+        void showPackageName(String packageName);
+
+        void showPackageLogo(String packageName);
 
         void showSuccessfullyUpdatedMessage();
 

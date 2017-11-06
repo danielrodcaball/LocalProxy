@@ -53,6 +53,8 @@ public class FirewallRuleDetailsPresenter implements FirewallRuleDetailsContract
 
                 mView.showRule(firewallRule.getRule());
                 mView.showDescription(firewallRule.getDescription());
+                mView.showPackageName(firewallRule.getApplicationPackageName());
+                mView.showPackageLogo(firewallRule.getApplicationPackageName());
             }
 
             @Override

@@ -18,6 +18,8 @@
         android:layout_gravity="center_vertical"/>
 
     <LinearLayout
+        android:id="@+id/firewallRuleListItemLL"
+        android:background="@drawable/touch_feedback"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -30,14 +32,16 @@
 
             <ImageView
                 android:id="@+id/packageLogo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 app:srcCompat="@android:drawable/sym_def_app_icon"/>
 
             <TextView
                 android:id="@+id/packageName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:layout_gravity="center"
                 tools:text="com.android.wifiproxy"/>
 
