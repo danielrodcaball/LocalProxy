@@ -112,7 +112,7 @@ public class HttpForwarder1 extends Thread {
         try {
             //NTCredentials extends from UsernamePasswordCredential which means that can resolve
             //Basic, Digest and NTLM authentication schemes. The field of domain act like an realm,
-            //it can be null and it'll works correctly
+            //it can be null and it will works correctly
             credentials.setCredentials(new AuthScope(AuthScope.ANY),
                     new NTCredentials(this.user, this.pass, InetAddress.getLocalHost().getHostName(),
                             null));
@@ -293,60 +293,6 @@ public class HttpForwarder1 extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    void resolveNoProxy(HttpParser parser, OutputStream os) {
-        Socket remoteSocket = null;
-        try {
-            Log.i("making connection", parser.getUri());
-            URL url = new URL(parser.getUri());
-            InputStream in = null;
-            OutputStream out = null;
-            remoteSocket = new Socket(url.getHost(), (url.getPort() == -1) ? 80 : url.getPort());
-            os.write("HTTP/1.1 200 OK".getBytes());
-            os.write("\r\n".getBytes());
-            in = remoteSocket.getInputStream();
-            out = remoteSocket.getOutputStream();
-            InputStream is = new ByteArrayInputStream(parser.buffer);
-            threadPool.execute(new Piper(is, out));
-//                            BufferedReader i = new BufferedReader(
-//                                    new InputStreamReader(in));
-//                            String line = null;
-//                            while ((line = i.readLine()) != null) {
-//                                Log.e("InputStream", line);
-//                            }
-            new Piper(in, os).run();
-            Log.e("paso", "OK");
-            parser.close();
-            os.close();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-            for (StackTraceElement s : e.getStackTrace()) {
-                e.printStackTrace();
-            }
-        } finally {
-            if (remoteSocket != null) {
-                try {
-                    remoteSocket.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            try {
-                os.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                parser.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
         }
     }
 
