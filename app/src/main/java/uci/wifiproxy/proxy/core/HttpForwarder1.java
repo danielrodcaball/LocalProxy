@@ -116,37 +116,36 @@ public class HttpForwarder1 extends Thread {
             credentials.setCredentials(new AuthScope(AuthScope.ANY),
                     new NTCredentials(this.user, this.pass, InetAddress.getLocalHost().getHostName(),
                             null));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
 
+        this.delegateClient = HttpClientBuilder.create()
+                .setConnectionManager(manager)
+                .setProxy(new HttpHost(this.addr, this.inport))
+                .setDefaultCredentialsProvider(credentials)
+                .disableRedirectHandling()
+                .disableCookieManagement()
+                .disableAuthCaching()
+                .build();
 
-            this.delegateClient = HttpClientBuilder.create()
-                    .setConnectionManager(manager)
-                    .setProxy(new HttpHost(this.addr, this.inport))
-                    .setDefaultCredentialsProvider(credentials)
-                    .disableRedirectHandling()
-                    .disableCookieManagement()
-                    .disableAuthCaching()
-                    .build();
+        this.noDelegateClient = HttpClientBuilder.create()
+                .setConnectionManager(manager)
+                .disableRedirectHandling()
+                .disableCookieManagement()
+                .build();
 
-            this.noDelegateClient = HttpClientBuilder.create()
-                    .setConnectionManager(manager)
-                    .disableRedirectHandling()
-                    .disableCookieManagement()
-                    .build();
-
-            while (running) {
-                try {
+        while (running) {
+            try {
 //                if (interrupted()) {
 //                    Log.e(getClass().getName(), "The proxy task was interrupted");
 //                }
-                    Socket s = this.ssocket.accept();
+                Socket s = this.ssocket.accept();
 //                listaSockets.add(s);
-                    this.threadPool.execute(new HttpForwarder1.Handler(s));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                this.threadPool.execute(new HttpForwarder1.Handler(s));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
         }
     }
 
@@ -297,6 +296,61 @@ public class HttpForwarder1 extends Thread {
         }
     }
 
+    void resolveNoProxy(HttpParser parser, OutputStream os) {
+        Socket remoteSocket = null;
+        try {
+            Log.i("making connection", parser.getUri());
+            URL url = new URL(parser.getUri());
+            InputStream in = null;
+            OutputStream out = null;
+            remoteSocket = new Socket(url.getHost(), (url.getPort() == -1) ? 80 : url.getPort());
+            os.write("HTTP/1.1 200 OK".getBytes());
+            os.write("\r\n".getBytes());
+            in = remoteSocket.getInputStream();
+            out = remoteSocket.getOutputStream();
+            InputStream is = new ByteArrayInputStream(parser.buffer);
+            threadPool.execute(new Piper(is, out));
+//                            BufferedReader i = new BufferedReader(
+//                                    new InputStreamReader(in));
+//                            String line = null;
+//                            while ((line = i.readLine()) != null) {
+//                                Log.e("InputStream", line);
+//                            }
+            new Piper(in, os).run();
+            Log.e("paso", "OK");
+            parser.close();
+            os.close();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            for (StackTraceElement s : e.getStackTrace()) {
+                e.printStackTrace();
+            }
+        } finally {
+            if (remoteSocket != null) {
+                try {
+                    remoteSocket.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                parser.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
     class Handler implements Runnable {
 
         Socket localSocket;
@@ -333,11 +387,11 @@ public class HttpForwarder1 extends Thread {
             return false;
         }
 
-        public void findSource(int port) {
+        public void findSource(int port){
             try {
                 BufferedReader bf = new BufferedReader(new FileReader("/proc/net/tcp"));
                 String line;
-                while ((line = bf.readLine()) != null) {
+                while ((line = bf.readLine()) != null){
 //                    Log.e("Line", line);
                     line = line.trim();
                     String[] arr = line.split("\\s");
@@ -350,7 +404,7 @@ public class HttpForwarder1 extends Thread {
                     String portHex = StringUtils.decToHex(port);
 //                    Log.e("Port", port+"");
 //                    Log.e("PortHex",portHex);
-                    if (portHex.equals(localPortHex)) {
+                    if (portHex.equals(localPortHex)){
                         Log.e("Source", packageManager.getNameForUid(Integer.parseInt(uid)));
                     }
                 }
@@ -373,10 +427,10 @@ public class HttpForwarder1 extends Thread {
                     return;
                 }
 
-                Log.e("Socket", this.localSocket.getPort() + "");
+                Log.e("Socket", this.localSocket.getPort()+"");
                 findSource(localSocket.getPort());
 
-                if (matches(parser.getUri(), firewallRulesString)) {
+                if (matches(parser.getUri().toString(), firewallRulesString)){
                     OutputStream os = localSocket.getOutputStream();
                     os.write("HTTP/1.1 403 Forbidden".getBytes());
                     os.write("\r\n".getBytes());
@@ -385,7 +439,7 @@ public class HttpForwarder1 extends Thread {
                     return;
                 }
 
-                boolean matches = (bypass != null) && matches(parser.getUri(), bypass);
+                boolean matches = (bypass != null) && matches(parser.getUri().toString(), bypass);
                 HttpClient client = matches ? HttpForwarder1.this.noDelegateClient : HttpForwarder1.this.delegateClient;
 
                 if (parser.getMethod().equals("CONNECT")) {

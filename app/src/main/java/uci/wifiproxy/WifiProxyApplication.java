@@ -9,9 +9,6 @@ import io.realm.Realm;
  */
 
 public class WifiProxyApplication extends Application {
-
-    public static final String SHARED_PREFERENCES_NAME = "WifiProxy.conf";
-
     @Override
     public void onCreate() {
         super.onCreate();
