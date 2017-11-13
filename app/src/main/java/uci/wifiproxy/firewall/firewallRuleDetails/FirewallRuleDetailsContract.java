@@ -32,9 +32,13 @@ public interface FirewallRuleDetailsContract {
 
         void showFirewallRuleDeleted();
 
-        void showPackageName(String packageName);
+        void showApplicationName(String packageName);
+
+        void showAllApplicationPackageName();
 
         void showPackageLogo(String packageName);
+
+        void showNoPackageLogo();
 
         void showSuccessfullyUpdatedMessage();
 

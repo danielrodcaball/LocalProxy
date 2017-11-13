@@ -29,7 +29,7 @@
             app:srcCompat="@android:drawable/sym_def_app_icon" />
 
         <TextView
-            android:id="@+id/packageName"
+            android:id="@+id/applicationName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/application_name_tv"

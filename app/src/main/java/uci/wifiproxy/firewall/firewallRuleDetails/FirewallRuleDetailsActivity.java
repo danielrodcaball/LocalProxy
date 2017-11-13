@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import uci.wifiproxy.R;
+import uci.wifiproxy.data.applicationPackage.ApplicationPackageLocalDataSource;
 import uci.wifiproxy.profile.profileDetails.ProfileDetailsFragment;
 import uci.wifiproxy.profile.profileDetails.ProfileDetailsPresenter;
 import uci.wifiproxy.util.ActivityUtils;
@@ -47,7 +48,9 @@ public class FirewallRuleDetailsActivity extends AppCompatActivity{
                     firewallRuleDetailsFragment, R.id.contentFrame);
         }
 
-        new FirewallRuleDetailsPresenter(firewallRuleDetailsFragment, firewallRuleId);
+        new FirewallRuleDetailsPresenter(firewallRuleDetailsFragment,
+                firewallRuleId,
+                ApplicationPackageLocalDataSource.getInstance(getApplicationContext()));
 
     }
 

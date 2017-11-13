@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
+import uci.wifiproxy.data.applicationPackage.ApplicationPackage;
+import uci.wifiproxy.data.applicationPackage.ApplicationPackageLocalDataSource;
 import uci.wifiproxy.data.firewallRule.FirewallRule;
 import uci.wifiproxy.data.firewallRule.FirewallRuleDataSource;
 import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
@@ -26,11 +28,16 @@ public class FirewallRuleDetailsPresenter implements FirewallRuleDetailsContract
     @Nullable
     private String mFirewallRuleId;
 
+    @NonNull
+    ApplicationPackageLocalDataSource mApplicationPackageLocalDataSource;
+
     public FirewallRuleDetailsPresenter(@NonNull FirewallRuleDetailsContract.View view,
-                                        @Nullable String firewallRuleId) {
+                                        @Nullable String firewallRuleId,
+                                        ApplicationPackageLocalDataSource applicationPackageLocalDataSource) {
         mView = checkNotNull(view);
         mFirewallRuleId = firewallRuleId;
         mFirewallRuleDataSource = FirewallRuleLocalDataSource.newInstance();
+        mApplicationPackageLocalDataSource = applicationPackageLocalDataSource;
 
         mView.setPresenter(this);
     }
@@ -51,10 +58,21 @@ public class FirewallRuleDetailsPresenter implements FirewallRuleDetailsContract
             public void onFirewallRuleLoaded(FirewallRule firewallRule) {
                 if (!mView.isActive()) return;
 
+                ApplicationPackage applicationPackage =
+                        mApplicationPackageLocalDataSource
+                                .getApplicationPackageByPackageName(firewallRule.getApplicationPackageName());
+
                 mView.showRule(firewallRule.getRule());
                 mView.showDescription(firewallRule.getDescription());
-                mView.showPackageName(firewallRule.getApplicationPackageName());
-                mView.showPackageLogo(firewallRule.getApplicationPackageName());
+
+                if (applicationPackage.getName()
+                        .equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING)) {
+                    mView.showAllApplicationPackageName();
+                    mView.showNoPackageLogo();
+                } else {
+                    mView.showApplicationName(applicationPackage.getName());
+                    mView.showPackageLogo(firewallRule.getApplicationPackageName());
+                }
             }
 
             @Override

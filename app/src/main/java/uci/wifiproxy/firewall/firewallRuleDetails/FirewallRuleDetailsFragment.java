@@ -19,8 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import uci.wifiproxy.R;
 import uci.wifiproxy.firewall.addEditFirewallRule.AddEditFirewallRuleActivity;
 import uci.wifiproxy.firewall.addEditFirewallRule.AddEditFirewallRuleFragment;
@@ -41,7 +39,7 @@ public class FirewallRuleDetailsFragment extends Fragment implements FirewallRul
 
     private ImageView mPackageLogoTv;
 
-    private TextView mPackageNameTv;
+    private TextView mApplicationNameTv;
 
     private TextView mRuleTv;
 
@@ -73,7 +71,7 @@ public class FirewallRuleDetailsFragment extends Fragment implements FirewallRul
         View root = inflater.inflate(R.layout.firewallrule_details_frag, container, false);
         mRuleTv = (TextView) root.findViewById(R.id.firewallrule_detail_rule);
         mDescriptionTv = (TextView) root.findViewById(R.id.firewallrule_detail_description);
-        mPackageNameTv = (TextView) root.findViewById(R.id.packageName);
+        mApplicationNameTv = (TextView) root.findViewById(R.id.applicationName);
         mPackageLogoTv = (ImageView) root.findViewById(R.id.packageLogo);
 
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_edit_firewallrule);
@@ -132,8 +130,14 @@ public class FirewallRuleDetailsFragment extends Fragment implements FirewallRul
     }
 
     @Override
-    public void showPackageName(String packageName) {
-        mPackageNameTv.setText(packageName);
+    public void showApplicationName(String packageName) {
+        mApplicationNameTv.setText(packageName);
+    }
+
+    @Override
+    public void showAllApplicationPackageName() {
+        mApplicationNameTv.setTextSize(20);
+        mApplicationNameTv.setText(getString(R.string.all_applications));
     }
 
     @Override
@@ -143,6 +147,11 @@ public class FirewallRuleDetailsFragment extends Fragment implements FirewallRul
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void showNoPackageLogo() {
+        mPackageLogoTv.setVisibility(View.GONE);
     }
 
     private Drawable getPackageLogoDrawable(String packageName, Context context) throws PackageManager.NameNotFoundException {

@@ -49,10 +49,30 @@ public class ApplicationPackageLocalDataSource {
             String packageName = ai.packageName;
             Drawable packageLogo = null;
             packageLogo = packageManager.getApplicationIcon(ai);
-            applicationPackages.add(new ApplicationPackage(name, packageName, packageLogo));
+            applicationPackages.add(createApplicationPackage(ai));
         }
 
         return applicationPackages;
+    }
+
+    public ApplicationPackage getApplicationPackageByPackageName(String packageName){
+        if (packageName.equals(ALL_APPLICATION_PACKAGES_STRING))
+            return new ApplicationPackage(ALL_APPLICATION_PACKAGES_STRING, ALL_APPLICATION_PACKAGES_STRING, null);
+        try {
+            ApplicationInfo ai = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+            return createApplicationPackage(ai);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private ApplicationPackage createApplicationPackage(ApplicationInfo ai){
+        String name = ai.loadLabel(packageManager).toString();
+        String packageName = ai.packageName;
+        Drawable packageLogo = null;
+        packageLogo = packageManager.getApplicationIcon(ai);
+        return new ApplicationPackage(name, packageName, packageLogo);
     }
 
 }

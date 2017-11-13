@@ -91,7 +91,7 @@
     <string name="edit_firewallRule">Editar Regla de Cortafuegos</string>
     <string name="successfully_firewallrule_updated_message">Regla de firewall actualizada</string>
     <string name="firewallRule_application_tv">Aplicación:</string>
-    <string name="all_applications">Todas</string>
+    <string name="all_applications">Todas las aplicaciones</string>
     <string name="local_port_label">Puerto local:</string>
 
 </resources>

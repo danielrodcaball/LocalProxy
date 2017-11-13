@@ -202,8 +202,10 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
             TextView packageName = (TextView) rowView.findViewById(R.id.application_package_item_name);
 
             if (applicationPackage != null){
-                if (applicationPackage.getPackageName().equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING))
+                if (applicationPackage.getPackageName().equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING)) {
                     packageName.setText(getResources().getString(R.string.all_applications));
+                    packageName.setTextSize(20);
+                }
                 else
                     packageName.setText(applicationPackage.getName());
 

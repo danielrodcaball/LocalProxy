@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uci.wifiproxy.R;
+import uci.wifiproxy.data.applicationPackage.ApplicationPackage;
+import uci.wifiproxy.data.applicationPackage.ApplicationPackageLocalDataSource;
 import uci.wifiproxy.data.firewallRule.FirewallRule;
 import uci.wifiproxy.firewall.addEditFirewallRule.AddEditFirewallRuleActivity;
 import uci.wifiproxy.firewall.firewallRuleDetails.FirewallRuleDetailsActivity;
@@ -218,57 +221,60 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
 
 
             final FirewallRule firewallRule = getItem(position);
+            ApplicationPackage applicationPackage =
+                    ApplicationPackageLocalDataSource.getInstance(FirewallRulesListFragment.this.getContext())
+                            .getApplicationPackageByPackageName(firewallRule.getApplicationPackageName());
 
-
+            TextView applicationName = (TextView) rowView.findViewById(R.id.applicationName);
             ImageView packageLogo = (ImageView) rowView.findViewById(R.id.packageLogo);
-            try {
-                packageLogo.setImageDrawable(getPackageLogoDrawable(
-                        firewallRule.getApplicationPackageName(),
-                        parent.getContext())
-                );
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            TextView packageName = (TextView) rowView.findViewById(R.id.packageName);
-            packageName.setText(firewallRule.getApplicationPackageName());
-
             TextView ruleTv = (TextView) rowView.findViewById(R.id.rule);
-            ruleTv.setText(firewallRule.getRule());
-
             CheckBox checked = (CheckBox) rowView.findViewById(R.id.active);
 
-            checked.setChecked(firewallRule.isActive());
-            if (!firewallRule.isActive()) {
-                rowView.setBackgroundDrawable(parent.getContext()
-                        .getResources().getDrawable(R.drawable.list_deactivate_touch_feedback));
-            } else {
-                rowView.setBackgroundDrawable(parent.getContext()
-                        .getResources().getDrawable(R.drawable.touch_feedback));
+            if (applicationPackage != null) {
+                if (applicationPackage.getName()
+                        .equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING)) {
+                    packageLogo.setVisibility(View.GONE);
+                    applicationName.setText(getString(R.string.all_applications));
+                } else {
+                    packageLogo.setVisibility(View.VISIBLE);
+                    packageLogo.setImageDrawable(applicationPackage.getPackageLogo());
+                    applicationName.setText(applicationPackage.getName());
+                }
+
+                ruleTv.setText(firewallRule.getRule());
+
+                checked.setChecked(firewallRule.isActive());
+                if (!firewallRule.isActive()) {
+                    rowView.setBackgroundDrawable(parent.getContext()
+                            .getResources().getDrawable(R.drawable.list_deactivate_touch_feedback));
+                } else {
+                    rowView.setBackgroundDrawable(parent.getContext()
+                            .getResources().getDrawable(R.drawable.touch_feedback));
+                }
+
+                checked.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mItemListener.onFirewallRuleCheckClick(firewallRule, !firewallRule.isActive());
+                    }
+                });
+
+                View firewallRuleListItemLL = rowView.findViewById(R.id.firewallRuleListItemLL);
+                firewallRuleListItemLL.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mItemListener.onFirewallRuleClick(firewallRule);
+                    }
+                });
             }
-
-            checked.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mItemListener.onFirewallRuleCheckClick(firewallRule, !firewallRule.isActive());
-                }
-            });
-
-            View firewallRuleListItemLL = rowView.findViewById(R.id.firewallRuleListItemLL);
-            firewallRuleListItemLL.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mItemListener.onFirewallRuleClick(firewallRule);
-                }
-            });
 
             return rowView;
         }
 
         private Drawable getPackageLogoDrawable(String packageName, Context context) throws PackageManager.NameNotFoundException {
-                PackageManager pm = context.getPackageManager();
-                Drawable drawable = pm.getApplicationIcon   (packageName);
-                return drawable;
+            PackageManager pm = context.getPackageManager();
+            Drawable drawable = pm.getApplicationIcon(packageName);
+            return drawable;
         }
     }
 
