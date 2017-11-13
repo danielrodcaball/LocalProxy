@@ -4,16 +4,23 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.net.VpnService;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import uci.wifiproxy.R;
+import uci.wifiproxy.data.firewallRule.FirewallRule;
+import uci.wifiproxy.data.firewallRule.FirewallRuleDataSource;
+import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
+import uci.wifiproxy.firewall.Firewall;
 import uci.wifiproxy.util.WifiUtils;
 //import uci.wifiproxy.ntlm.core.HttpForwarder;
 import uci.wifiproxy.proxy.core.HttpForwarder1;
@@ -26,12 +33,6 @@ public class ProxyService extends Service {
      * Permanece en el área de notificación
      * */
     private String user = "";
-    private String pass = "";
-    private String server = "";
-    private int inputport = 8080;
-    private int outputport = 8080;
-    private String bypass = "";
-    private String firewallRules = "";
 
 //    private ServerTask s;
     private HttpForwarder1 proxyThread;
@@ -84,13 +85,12 @@ public class ProxyService extends Service {
         }
 
         user = intent.getStringExtra("user");
-        pass = intent.getStringExtra("pass");
-        server = intent.getStringExtra("server");
-        inputport = Integer.valueOf(intent.getStringExtra("inputport"));
-        outputport = Integer.valueOf(intent.getStringExtra("outputport"));
+        String pass = intent.getStringExtra("pass");
+        String server = intent.getStringExtra("server");
+        int inputport = Integer.valueOf(intent.getStringExtra("inputport"));
+        int outputport = Integer.valueOf(intent.getStringExtra("outputport"));
         set_global_proxy = intent.getBooleanExtra("set_global_proxy", true);
-        bypass = intent.getStringExtra("bypass");
-        firewallRules = intent.getStringExtra("firewallRules");
+        String bypass = intent.getStringExtra("bypass");
 
         System.out.println("global_proxy: " + String.valueOf(set_global_proxy));
         if (set_global_proxy) {
@@ -100,15 +100,16 @@ public class ProxyService extends Service {
 
         Log.i(getClass().getName(), "Starting for user " + user  + ", server " + server + ", input port " + String.valueOf(inputport) + ", output port" + String.valueOf(outputport) + " and bypass string: " + bypass);
 
-//        s = new ServerTask(user, pass, domain, server, inputport, outputport, bypass, authScheme);
-//        s.execute();
+        Firewall firewall = createFirewall();
+
         try {
-            proxyThread = new HttpForwarder1(server, inputport, user, pass, outputport, true, bypass,
-                    firewallRules, getPackageManager());
+            proxyThread = new HttpForwarder1(server, inputport, user, pass, outputport, true, bypass);
         } catch (IOException e) {
             Log.e(getClass().getName(), "The proxy thread can not be started: "  + e.getMessage());
             return START_NOT_STICKY;
         }
+
+        proxyThread.setFirewall(firewall);
 
         executor.execute(proxyThread);
         notifyit();
@@ -146,5 +147,22 @@ public class ProxyService extends Service {
         notification.flags |= Notification.FLAG_NO_CLEAR;
 
         startForeground(NOTIFICATION, notification);
+    }
+
+    private Firewall createFirewall(){
+
+        FirewallRuleLocalDataSource firewallRuleLocalDataSource = FirewallRuleLocalDataSource.newInstance();
+        List<FirewallRule> firewallRules = firewallRuleLocalDataSource.getActiveFirewallRules();
+
+        List<FirewallRule.FirewallRuleLoaded> firewallRuleLoadeds = new ArrayList<>();
+        for (FirewallRule fr : firewallRules){
+            firewallRuleLoadeds.add(fr.getFirewallRuleLoaded());
+        }
+
+        firewallRuleLocalDataSource.releaseResources();
+
+        Firewall firewall = new Firewall(firewallRuleLoadeds, getApplicationContext());
+
+        return firewall;
     }
 }

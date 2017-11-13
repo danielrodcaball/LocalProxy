@@ -363,9 +363,14 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     }
 
     @Override
-    public void startProxyService(String username, String password, String server,
-                                  int inputport, int outputport, String bypass,
-                                  boolean setGlobProxy, String firewallRules) {
+    public void startProxyService(String username,
+                                  String password,
+                                  String server,
+                                  int inputport,
+                                  int outputport,
+                                  String bypass,
+                                  boolean setGlobProxy
+    ) {
         Intent proxyIntent = new Intent(getActivity(), ProxyService.class);
         proxyIntent.putExtra("user", username);
         proxyIntent.putExtra("pass", password);
@@ -374,7 +379,6 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         proxyIntent.putExtra("outputport", outputport + "");
         proxyIntent.putExtra("bypass", bypass);
         proxyIntent.putExtra("set_global_proxy", setGlobProxy);
-        proxyIntent.putExtra("firewallRules", firewallRules);
         getActivity().startService(proxyIntent);
     }
 

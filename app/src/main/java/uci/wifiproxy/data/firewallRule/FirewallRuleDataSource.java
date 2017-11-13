@@ -22,7 +22,7 @@ public interface FirewallRuleDataSource {
 
     void getFirewallRules(@NonNull LoadFirewallRulesCallback callback);
 
-    void getActiveFirewallRules(@NonNull LoadFirewallRulesCallback callback);
+    List<FirewallRule> getActiveFirewallRules();
 
     void getFirewallRule(@NonNull String id, @NonNull GetFirewallRuleCallback callback);
 

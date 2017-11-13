@@ -1,28 +1,18 @@
 package uci.wifiproxy.proxy.core;
 
-import android.content.pm.PackageManager;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpEntityEnclosingRequest;
@@ -46,6 +36,7 @@ import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
 import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
 import cz.msebera.android.httpclient.impl.client.ProxyClient;
 import cz.msebera.android.httpclient.impl.conn.PoolingHttpClientConnectionManager;
+import uci.wifiproxy.firewall.Firewall;
 import uci.wifiproxy.util.StringUtils;
 
 /**
@@ -66,30 +57,27 @@ public class HttpForwarder1 extends Thread {
     private ExecutorService threadPool = Executors.newCachedThreadPool();
     private CloseableHttpClient delegateClient;
     private CloseableHttpClient noDelegateClient;
+
     private int inport;
     private String addr = "";
     private String user;
     private String pass;
     private String bypass;
-    private String firewallRulesString;
+
     public boolean running = true;
-    private LinkedList<Socket> listaSockets = new LinkedList<Socket>();
 
     private CredentialsProvider credentials = null;
 
-    private PackageManager packageManager;
+    private Firewall firewall;
+
 
     public HttpForwarder1(String addr, int inport, String user,
-                          String pass, int outport, boolean onlyLocal, String bypass,
-                          String firewallRulesString, PackageManager packageManager) throws IOException {
+                          String pass, int outport, boolean onlyLocal, String bypass) throws IOException {
         this.addr = addr;
         this.inport = inport;
         this.user = user;
         this.pass = pass;
         this.bypass = bypass;
-        this.firewallRulesString = firewallRulesString;
-
-        this.packageManager = packageManager;
 
         if (onlyLocal) {
             this.ssocket = new ServerSocket(outport, 0,
@@ -106,6 +94,10 @@ public class HttpForwarder1 extends Thread {
 
 
         Log.e(getClass().getName(), "Starting proxy");
+    }
+
+    public void setFirewall(Firewall firewall) {
+        this.firewall = firewall;
     }
 
     public void run() {
@@ -141,7 +133,6 @@ public class HttpForwarder1 extends Thread {
 //                    Log.e(getClass().getName(), "The proxy task was interrupted");
 //                }
                 Socket s = this.ssocket.accept();
-//                listaSockets.add(s);
                 this.threadPool.execute(new HttpForwarder1.Handler(s));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -165,39 +156,12 @@ public class HttpForwarder1 extends Thread {
         }
 
         try {
-            this.ssocket.close();
+            close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         manager.shutdown();
-    }
-
-    public void terminate() {
-        /*
-        *TODO: look for doc about java.util.ConcurrentModificationException
-        *this method crashes sometimes trying to access the list
-        * */
-        try {
-            for (Socket a : listaSockets) {
-                try {
-                    a.close();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-            listaSockets.clear();
-
-        } catch (java.util.ConcurrentModificationException concurrentModificationException) {
-            concurrentModificationException.printStackTrace();
-        } finally {
-            try {
-                this.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            this.running = false;
-        }
     }
 
     public void close() throws IOException {
@@ -253,8 +217,6 @@ public class HttpForwarder1 extends Thread {
             }
 
         }
-
-
     }
 
     void doConnect(HttpParser parser, OutputStream os) {
@@ -306,60 +268,6 @@ public class HttpForwarder1 extends Thread {
             this.localSocket = localSocket;
         }
 
-        private boolean matches(String url, String bypass) {
-            LinkedList<StringBuilder> patterns = new LinkedList<StringBuilder>();
-
-            for (String i : bypass.split(",")) {
-                StringBuilder s = new StringBuilder(i);
-                if (i.length() > 0) {
-                    while (s.charAt(0) == ' ') {
-                        s.delete(0, 1);
-                    }
-                    if (s.charAt(0) == '*') {
-                        s.insert(0, ' ');
-                    }
-                    patterns.add(s);
-                }
-            }
-
-            for (StringBuilder i : patterns) {
-                Pattern p = Pattern.compile(i.toString());
-                if (p.matcher(url).find()) {
-                    Log.i(getClass().getName(), "url matches bypass " + url);
-                    return true;
-                }
-            }
-            Log.i(getClass().getName(), "url does not matches bypass " + url);
-            return false;
-        }
-
-        public void findSource(int port){
-            try {
-                BufferedReader bf = new BufferedReader(new FileReader("/proc/net/tcp"));
-                String line;
-                while ((line = bf.readLine()) != null){
-//                    Log.e("Line", line);
-                    line = line.trim();
-                    String[] arr = line.split("\\s");
-
-                    if (arr[0].equals("sl")) continue;
-
-                    String localPortHex = arr[1].split(":")[1];
-                    String uid = arr[7];
-
-                    String portHex = StringUtils.decToHex(port);
-//                    Log.e("Port", port+"");
-//                    Log.e("PortHex",portHex);
-                    if (portHex.equals(localPortHex)){
-                        Log.e("Source", packageManager.getNameForUid(Integer.parseInt(uid)));
-                    }
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
 
         public void run() {
             try {
@@ -373,10 +281,9 @@ public class HttpForwarder1 extends Thread {
                     return;
                 }
 
-                Log.e("Socket", this.localSocket.getPort()+"");
-                findSource(localSocket.getPort());
+//                Log.e("Socket", this.localSocket.getPort() + "");
 
-                if (matches(parser.getUri().toString(), firewallRulesString)){
+                if (firewall != null && !firewall.filter(localSocket, parser.getUri())) {
                     OutputStream os = localSocket.getOutputStream();
                     os.write("HTTP/1.1 403 Forbidden".getBytes());
                     os.write("\r\n".getBytes());
@@ -385,8 +292,15 @@ public class HttpForwarder1 extends Thread {
                     return;
                 }
 
-                boolean matches = (bypass != null) && matches(parser.getUri().toString(), bypass);
-                HttpClient client = matches ? HttpForwarder1.this.noDelegateClient : HttpForwarder1.this.delegateClient;
+                boolean matches = (bypass != null) && StringUtils.matches(parser.getUri(), bypass);
+                HttpClient client;
+                if (matches) {
+                    client = HttpForwarder1.this.noDelegateClient;
+                    Log.i(getClass().getName(), "url matches bypass " + parser.getUri());
+                } else {
+                    client = HttpForwarder1.this.delegateClient;
+                    Log.i(getClass().getName(), "url does not matches bypass " + parser.getUri());
+                }
 
                 if (parser.getMethod().equals("CONNECT")) {
                     Log.i(getClass().getName(), "CONNECT " + parser.getUri());

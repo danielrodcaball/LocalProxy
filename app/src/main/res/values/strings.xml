@@ -19,7 +19,7 @@
     <string name="run">run</string>
     <string name="stop">stop</string>
     <string name="notif1">UCIntlm is running…</string>
-    <string name="notif2">Running UCIntlm for user: </string>
+    <string name="notif2">Running WifiProxy for user: </string>
     <string name="notif3">UCIntlm was stopped…</string>
     <string name="AdvancedOptions">Advanced Options</string>
     <string name="passwordHint">password</string>

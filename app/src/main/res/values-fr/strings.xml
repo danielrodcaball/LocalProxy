@@ -18,7 +18,7 @@
     <string name="run">démarrage</string>
     <string name="stop">arrêter</string>
     <string name="notif1">UCIntlm est en cours d\'exécution…</string>
-    <string name="notif2">UCIntlm est en cours d\'exécution pour l\'utilisateur: </string>
+    <string name="notif2">WifiProxy est en cours d\'exécution pour l\'utilisateur: </string>
     <string name="notif3">UCIntlm a été arrêté…</string>
     <string name="AdvancedOptions">Options Avancées</string>
     <string name="passwordHint">mot de passe</string>

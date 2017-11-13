@@ -10,15 +10,18 @@ import android.support.annotation.Nullable;
 
 public class ApplicationPackage {
 
+    private String name;
+
     @NonNull
     private String packageName;
 
     @Nullable
     private Drawable packageLogo;
 
-    public ApplicationPackage(@NonNull String packageName, Drawable packageLogo) {
+    public ApplicationPackage(String name, @NonNull String packageName, Drawable packageLogo) {
         this.packageName = packageName;
         this.packageLogo = packageLogo;
+        this.name = name;
     }
 
     @NonNull
@@ -33,5 +36,9 @@ public class ApplicationPackage {
 
     public boolean hasPackageLogo(){
         return packageLogo != null;
+    }
+
+    public String getName() {
+        return name;
     }
 }

@@ -205,7 +205,7 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
                 if (applicationPackage.getPackageName().equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING))
                     packageName.setText(getResources().getString(R.string.all_applications));
                 else
-                    packageName.setText(applicationPackage.getPackageName());
+                    packageName.setText(applicationPackage.getName());
 
                 if (applicationPackage.hasPackageLogo())
                     logo.setImageDrawable(applicationPackage.getPackageLogo());

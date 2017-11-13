@@ -1,5 +1,10 @@
 package uci.wifiproxy.util;
 
+import android.util.Log;
+
+import java.util.LinkedList;
+import java.util.regex.Pattern;
+
 /**
  * Created by daniel on 3/10/17.
  */
@@ -46,6 +51,31 @@ public class StringUtils {
             dec >>= numberOfBitsInAHalfByte;
         }
         return hexBuilder.toString();
+    }
+
+    public static boolean matches(String url, String bypass) {
+        LinkedList<StringBuilder> patterns = new LinkedList<StringBuilder>();
+
+        for (String i : bypass.split(",")) {
+            StringBuilder s = new StringBuilder(i);
+            if (i.length() > 0) {
+                while (s.charAt(0) == ' ') {
+                    s.delete(0, 1);
+                }
+                if (s.charAt(0) == '*') {
+                    s.insert(0, ' ');
+                }
+                patterns.add(s);
+            }
+        }
+
+        for (StringBuilder i : patterns) {
+            Pattern p = Pattern.compile(i.toString());
+            if (p.matcher(url).find()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

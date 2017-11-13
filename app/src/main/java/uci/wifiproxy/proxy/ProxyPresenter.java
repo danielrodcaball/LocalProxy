@@ -56,7 +56,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
 
     @Override
     public void startProxy(@NonNull final String username, @NonNull final String password, @NonNull final String profileId,
-                           @NonNull String localPort, @NonNull boolean rememberPass, @Nullable final boolean setGlobalProxy) {
+                           @NonNull final String localPort, @NonNull boolean rememberPass, @Nullable final boolean setGlobalProxy) {
 
         boolean isValidData = validateData(username, password, profileId, localPort);
 
@@ -65,64 +65,28 @@ public class ProxyPresenter implements ProxyContract.Presenter {
             saveUpdateUser(username, password, rememberPass);
             saveConfiguration(username, profileId, localPort, setGlobalProxy);
 
-
-            final Object[] dataLoaded = new Object[2];
-            final boolean[] isDataLoaded = new boolean[2];
-
-
             mProfileLocalDataSource.getProfile(profileId, new ProfilesDataSource.GetProfileCallback() {
                 @Override
                 public void onProfileLoaded(Profile profile) {
-                    isDataLoaded[0] = true;
-                    dataLoaded[0] = profile;
+                    //start proxy
+                    mProxyView.startProxyService(username, password,
+                            profile.getHost(),
+                            profile.getInPort(),
+                            Integer.parseInt(localPort),
+                            profile.getBypass(),
+                            setGlobalProxy
+                    );
+
+                    mProxyView.disableAllViews();
+                    mProxyView.setStopView();
                 }
 
                 @Override
                 public void onDataNoAvailable() {
                     //never happens in this scenario
-                    isDataLoaded[0] = false;
                 }
             });
 
-            mFirewallRulesLocalDataSource.getFirewallRules(new FirewallRuleDataSource.LoadFirewallRulesCallback() {
-                @Override
-                public void onFirewallRulesLoaded(List<FirewallRule> firewallRules) {
-                    String[] parts = new String[firewallRules.size()];
-                    for (int i = 0; i < firewallRules.size(); i++) {
-                        parts[i] = firewallRules.get(i).getRule();
-                    }
-
-                    String result = StringUtils.unsplit(parts, 0, parts.length, ",");
-
-                    isDataLoaded[1] = true;
-                    dataLoaded[1] = result;
-                }
-
-                @Override
-                public void onDataNoAvailable() {
-                    isDataLoaded[1] = true;
-                    dataLoaded[1] = "";
-                }
-            });
-
-            //semaphore
-            while (!isDataLoaded[0] && !isDataLoaded[1]) {
-                //wait
-            }
-
-            //start proxy
-            Profile profile = (Profile) dataLoaded[0];
-            String firewallRulesString = (String) dataLoaded[1];
-            mProxyView.startProxyService(username, password,
-                    profile.getHost(),
-                    profile.getInPort(),
-                    Integer.parseInt(localPort),
-                    profile.getBypass(),
-                    setGlobalProxy,
-                    firewallRulesString);
-
-            mProxyView.disableAllViews();
-            mProxyView.setStopView();
         }
     }
 
@@ -188,7 +152,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
             isValid = false;
         }
 
-        if (Strings.isNullOrEmpty(localPort)){
+        if (Strings.isNullOrEmpty(localPort)) {
             mProxyView.setLocalPortEmptyError();
             isValid = false;
         }
@@ -349,8 +313,8 @@ public class ProxyPresenter implements ProxyContract.Presenter {
             mProxyView.setSpinnerProfileSelected(profileId);
         }
 
-        int localPort  = mPrefHelper.getCurrentLocalPort();
-        if (localPort > -1){
+        int localPort = mPrefHelper.getCurrentLocalPort();
+        if (localPort > -1) {
             mProxyView.setLocalPort(String.valueOf(localPort));
         }
 

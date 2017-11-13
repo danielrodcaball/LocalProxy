@@ -1,9 +1,11 @@
 package uci.wifiproxy.data.applicationPackage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 
@@ -23,7 +25,7 @@ public class ApplicationPackageLocalDataSource {
     private PackageManager packageManager;
 
     private ApplicationPackage allApplicationsPackages =
-            new ApplicationPackage(ALL_APPLICATION_PACKAGES_STRING, null);
+            new ApplicationPackage(ALL_APPLICATION_PACKAGES_STRING ,ALL_APPLICATION_PACKAGES_STRING, null);
 
     private ApplicationPackageLocalDataSource(@NonNull Context context) {
         packageManager = context.getPackageManager();
@@ -40,12 +42,14 @@ public class ApplicationPackageLocalDataSource {
         List<ApplicationPackage> applicationPackages = new ArrayList<>();
         applicationPackages.add(allApplicationsPackages);
 
-        List<ApplicationInfo> packageInfos = packageManager.getInstalledApplications(PackageManager.MATCH_UNINSTALLED_PACKAGES);
+        List<ApplicationInfo> packageInfos = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+
         for (ApplicationInfo ai : packageInfos) {
+            String name = ai.loadLabel(packageManager).toString();
             String packageName = ai.packageName;
             Drawable packageLogo = null;
             packageLogo = packageManager.getApplicationIcon(ai);
-            applicationPackages.add(new ApplicationPackage(packageName, packageLogo));
+            applicationPackages.add(new ApplicationPackage(name, packageName, packageLogo));
         }
 
         return applicationPackages;

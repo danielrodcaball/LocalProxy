@@ -19,7 +19,7 @@
     <string name="run">iniciar</string>
     <string name="stop">parar</string>
     <string name="notif1">UCIntlm está ejecutándose…</string>
-    <string name="notif2">Ejecutando UCIntlm para el usuario: </string>
+    <string name="notif2">Ejecutando WifiProxy para el usuario: </string>
     <string name="notif3">UCIntlm fue detenido…</string>
     <string name="AdvancedOptions">Opciones Avanzadas</string>
     <string name="passwordHint">contraseña</string>

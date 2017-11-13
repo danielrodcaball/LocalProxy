@@ -15,10 +15,10 @@ import uci.wifiproxy.data.user.User;
 
 public interface ProxyContract {
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
 
         void startProxy(@NonNull String user, @NonNull String pass, @NonNull String profileID,
-                        @NonNull String localPort, @NonNull boolean rememberPass,@NonNull boolean setGlobalProxy);
+                        @NonNull String localPort, @NonNull boolean rememberPass, @NonNull boolean setGlobalProxy);
 
         void stopProxy();
 
@@ -35,7 +35,7 @@ public interface ProxyContract {
         void loadUsers();
     }
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
         void enableAllViews();
 
@@ -80,8 +80,8 @@ public interface ProxyContract {
         void stopProxyService();
 
         void startProxyService(String username, String password, String server,
-                              int inputport, int outputport, String bypass, boolean setGlobProxy,
-                               String firewallRules);
+                               int inputport, int outputport, String bypass, boolean setGlobProxy
+        );
 
         void showWifiConfDialog();
 

@@ -104,4 +104,25 @@ public class FirewallRule extends RealmObject {
     public void setApplicationPackageName(String applicationPackageName) {
         this.applicationPackageName = applicationPackageName;
     }
+
+    public FirewallRuleLoaded getFirewallRuleLoaded(){
+        return new FirewallRuleLoaded(id, applicationPackageName, rule, description, isActive);
+    }
+
+
+    public class FirewallRuleLoaded{
+        public String id;
+        public String applicationPackageName;
+        public String rule;
+        public String description;
+        public boolean isActive;
+
+        public FirewallRuleLoaded(String id, String applicationPackageName, String rule, String description, boolean isActive) {
+            this.id = id;
+            this.applicationPackageName = applicationPackageName;
+            this.rule = rule;
+            this.description = description;
+            this.isActive = isActive;
+        }
+    }
 }
