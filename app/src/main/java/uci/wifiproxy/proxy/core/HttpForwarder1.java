@@ -333,7 +333,6 @@ public class HttpForwarder1 extends Thread {
                                 .build();
                     }
 
-                    //TODO: test this statement
                     if (request instanceof HttpEntityEnclosingRequest) {
                         HttpEntityEnclosingRequest request1 = (HttpEntityEnclosingRequest) request;
                         request1.setEntity(new StreamingRequestEntity(parser));
