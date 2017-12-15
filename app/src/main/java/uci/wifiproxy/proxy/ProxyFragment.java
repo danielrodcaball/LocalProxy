@@ -44,7 +44,7 @@ import uci.wifiproxy.profile.addEditProfile.AddEditProfileActivity;
 import uci.wifiproxy.profile.addEditProfile.AddEditProfilePresenter;
 import uci.wifiproxy.proxy.service.ProxyService;
 import uci.wifiproxy.util.fontAwesome.ButtonAwesome;
-import uk.co.senab.photoview.PhotoViewAttacher;
+import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
