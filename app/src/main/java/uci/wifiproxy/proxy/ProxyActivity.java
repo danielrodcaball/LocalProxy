@@ -288,13 +288,13 @@ public class ProxyActivity extends AppCompatActivity
 //        proxyIntent.putExtra("bypass", preferencesTab.bypass.getText().toString());
 //        switch (preferencesTab.authSchemeSpinner.getSelectedItemPosition()){
 //            case 0:
-//                proxyIntent.putExtra("authScheme", HttpForwarder1.BASIC_SCHEME);
+//                proxyIntent.putExtra("authScheme", HttpForwarder.BASIC_SCHEME);
 //                break;
 //            case 1:
-//                proxyIntent.putExtra("authScheme", HttpForwarder1.NTLM_SCHEME);
+//                proxyIntent.putExtra("authScheme", HttpForwarder.NTLM_SCHEME);
 //                break;
 //            case 2:
-//                proxyIntent.putExtra("authScheme", HttpForwarder1.DIGEST_SCHEME);
+//                proxyIntent.putExtra("authScheme", HttpForwarder.DIGEST_SCHEME);
 //                break;
 //        }
 //

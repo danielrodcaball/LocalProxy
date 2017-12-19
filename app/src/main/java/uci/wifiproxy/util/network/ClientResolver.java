@@ -28,10 +28,10 @@ public class ClientResolver {
         packageManager = context.getPackageManager();
     }
     
-    public ConnectionDescriptor getClientDescriptorBySocket(Socket socket) {
+    public ConnectionDescriptor getClientDescriptor(int port, String address) {
 
-        int port = socket.getPort();
-        String address = socket.getInetAddress().getHostAddress();
+//        int port = socket.getPort();
+//        String address = socket.getInetAddress().getHostAddress();
         BufferedReader reader = null;
         try {
             

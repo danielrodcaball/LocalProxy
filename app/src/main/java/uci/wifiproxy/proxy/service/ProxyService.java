@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.net.VpnService;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
@@ -18,12 +17,11 @@ import java.util.concurrent.Executors;
 
 import uci.wifiproxy.R;
 import uci.wifiproxy.data.firewallRule.FirewallRule;
-import uci.wifiproxy.data.firewallRule.FirewallRuleDataSource;
 import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
 import uci.wifiproxy.firewall.Firewall;
+import uci.wifiproxy.proxy.core.HttpForwarder;
 import uci.wifiproxy.util.WifiUtils;
 //import uci.wifiproxy.ntlm.core.HttpForwarder;
-import uci.wifiproxy.proxy.core.HttpForwarder1;
 import uci.wifiproxy.proxy.ProxyActivity;
 
 
@@ -35,7 +33,7 @@ public class ProxyService extends Service {
     private String user = "";
 
 //    private ServerTask s;
-    private HttpForwarder1 proxyThread;
+    private HttpForwarder proxyThread;
     private boolean set_global_proxy;
 
     private int NOTIFICATION = 1337;
@@ -103,7 +101,7 @@ public class ProxyService extends Service {
         Firewall firewall = createFirewall();
 
         try {
-            proxyThread = new HttpForwarder1(server, inputport, user, pass, outputport, true, bypass);
+            proxyThread = new HttpForwarder(server, inputport, user, pass, outputport, true, bypass);
         } catch (IOException e) {
             Log.e(getClass().getName(), "The proxy thread can not be started: "  + e.getMessage());
             return START_NOT_STICKY;

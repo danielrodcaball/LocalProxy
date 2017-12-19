@@ -25,6 +25,11 @@ public class Piper
     }
 
     public void run() {
+        startCopy();
+    }
+    
+    public long startCopy(){
+        long bytesRead = 0;
         try {
             while (true) {
                 int read = this.is.read(this.buffer);
@@ -32,12 +37,16 @@ public class Piper
                 if (read == -1) {
                     break;
                 }
+                
                 this.os.write(this.buffer, 0, read);
+                
+                bytesRead += read;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        close();
+//        close();
+        return bytesRead;
     }
 
     public InputStream getIs() {

@@ -38,8 +38,8 @@ public class Firewall {
         clientResolver = new ClientResolver(context);
     }
 
-    public boolean filter(Socket socket, String uri) {
-        ConnectionDescriptor connectionDescriptor = clientResolver.getClientDescriptorBySocket(socket);
+    public boolean filter(int localPort, String localAddress, String uri) {
+        ConnectionDescriptor connectionDescriptor = clientResolver.getClientDescriptor(localPort, localAddress);
         String packageNameSource = connectionDescriptor.getNamespace();
 
 //        Log.e("source", packageNameSource);
