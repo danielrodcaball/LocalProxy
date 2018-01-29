@@ -32,7 +32,7 @@ public class ProxyService extends Service {
      * */
     private String user = "";
 
-//    private ServerTask s;
+    //    private ServerTask s;
     private HttpForwarder proxyThread;
     private boolean set_global_proxy;
 
@@ -96,18 +96,15 @@ public class ProxyService extends Service {
             Toast.makeText(this, getString(R.string.OnProxy), Toast.LENGTH_LONG).show();
         }
 
-        Log.i(getClass().getName(), "Starting for user " + user  + ", server " + server + ", input port " + String.valueOf(inputport) + ", output port" + String.valueOf(outputport) + " and bypass string: " + bypass);
-
-        Firewall firewall = createFirewall();
+        Log.i(getClass().getName(), "Starting for user " + user + ", server " + server + ", input port " + String.valueOf(inputport) + ", output port" + String.valueOf(outputport) + " and bypass string: " + bypass);
 
         try {
-            proxyThread = new HttpForwarder(server, inputport, user, pass, outputport, true, bypass);
+            proxyThread = new HttpForwarder(server, inputport, user, pass, outputport, true, bypass,
+                    getApplicationContext());
         } catch (IOException e) {
-            Log.e(getClass().getName(), "The proxy thread can not be started: "  + e.getMessage());
+            Log.e(getClass().getName(), "The proxy thread can not be started: " + e.getMessage());
             return START_NOT_STICKY;
         }
-
-        proxyThread.setFirewall(firewall);
 
         executor.execute(proxyThread);
         notifyit();
@@ -147,20 +144,4 @@ public class ProxyService extends Service {
         startForeground(NOTIFICATION, notification);
     }
 
-    private Firewall createFirewall(){
-
-        FirewallRuleLocalDataSource firewallRuleLocalDataSource = FirewallRuleLocalDataSource.newInstance();
-        List<FirewallRule> firewallRules = firewallRuleLocalDataSource.getActiveFirewallRules();
-
-        List<FirewallRule.FirewallRuleLoaded> firewallRuleLoadeds = new ArrayList<>();
-        for (FirewallRule fr : firewallRules){
-            firewallRuleLoadeds.add(fr.getFirewallRuleLoaded());
-        }
-
-        firewallRuleLocalDataSource.releaseResources();
-
-        Firewall firewall = new Firewall(firewallRuleLoadeds, getApplicationContext());
-
-        return firewall;
-    }
 }

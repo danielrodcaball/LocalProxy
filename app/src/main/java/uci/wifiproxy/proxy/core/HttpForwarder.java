@@ -1,5 +1,7 @@
 package uci.wifiproxy.proxy.core;
 
+import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -71,11 +73,11 @@ public class HttpForwarder extends Thread {
 
     private CredentialsProvider credentials = null;
 
-    private Firewall firewall;
-
+    private Context context;
 
     public HttpForwarder(String addr, int inport, String user,
-                         String pass, int outport, boolean onlyLocal, String bypass) throws IOException {
+                         String pass, int outport, boolean onlyLocal,
+                         String bypass, Context context) throws IOException {
         this.addr = addr;
         this.inport = inport;
         this.user = user;
@@ -95,12 +97,9 @@ public class HttpForwarder extends Thread {
 
         credentials = new BasicCredentialsProvider();
 
+        this.context = context;
 
         Log.e(getClass().getName(), "Starting proxy");
-    }
-
-    public void setFirewall(Firewall firewall) {
-        this.firewall = firewall;
     }
 
     public void run() {
@@ -185,18 +184,21 @@ public class HttpForwarder extends Thread {
             HttpParser parser = null;
             OutputStream os = null;
             long bytes = 0;
+            Firewall firewall = new Firewall(context);
             try {
                 parser = parseInputStream(this.localSocket.getInputStream());
                 os = this.localSocket.getOutputStream();
 
-                //Firewall
-                if (firewallBlock(parser, os)) return;
+                //Firewall action
+                if (firewallBlock(firewall, parser, os)) return;
 
                 if (parser.getMethod().equals("CONNECT")) {
                     bytes += resolveConnect(parser, os);
                 } else {
                     bytes += resolveOtherMethods(parser, os);
                 }
+
+                Log.e("bytes:", parser.getUri() + ": " + bytes+"");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -216,6 +218,10 @@ public class HttpForwarder extends Thread {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                parser = null;
+                os = null;
+                firewall.releaseResources();
+                firewall = null;
             }
         }
 
@@ -338,7 +344,7 @@ public class HttpForwarder extends Thread {
 
         }
 
-        private boolean firewallBlock(HttpParser parser, OutputStream os) {
+        private boolean firewallBlock(Firewall firewall, HttpParser parser, OutputStream os) {
             if (firewall != null
                     && !firewall.filter(localSocket.getPort(),
                     localSocket.getInetAddress().getHostAddress(),
@@ -348,7 +354,7 @@ public class HttpForwarder extends Thread {
                     os.write("HTTP/1.1 403 Forbidden".getBytes());
                     os.write("\r\n".getBytes());
                     os.write("\r\n".getBytes());
-                    os.write("<h1>Forbidden by the local Firewall</h1>".getBytes());
+                    os.write("<h1>Forbidden by WifiProxy's firewall</h1>".getBytes());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

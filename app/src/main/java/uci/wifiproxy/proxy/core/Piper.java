@@ -1,5 +1,7 @@
 package uci.wifiproxy.proxy.core;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,6 +35,7 @@ public class Piper
         try {
             while (true) {
                 int read = this.is.read(this.buffer);
+//                Log.e("b", read+"");
 
                 if (read == -1) {
                     break;

@@ -14,6 +14,8 @@ import java.util.List;
 
 import uci.wifiproxy.data.applicationPackage.ApplicationPackageLocalDataSource;
 import uci.wifiproxy.data.firewallRule.FirewallRule;
+import uci.wifiproxy.data.firewallRule.FirewallRuleDataSource;
+import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
 import uci.wifiproxy.util.StringUtils;
 import uci.wifiproxy.util.network.ClientResolver;
 import uci.wifiproxy.util.network.ConnectionDescriptor;
@@ -24,18 +26,22 @@ import uci.wifiproxy.util.network.ConnectionDescriptor;
 
 public class Firewall {
 
-    private List<FirewallRule.FirewallRuleLoaded> mFirewallRulesLoaded;
-
 //    private PackageManager mPackageManager;
 
     private Context mContext;
 
+    private FirewallRuleLocalDataSource mFirewallRuleDataSource;
+
     private ClientResolver clientResolver;
 
-    public Firewall(List<FirewallRule.FirewallRuleLoaded> firewallRulesLoaded, Context context) {
-        mFirewallRulesLoaded = firewallRulesLoaded;
+    public Firewall(Context context) {
         mContext = context;
+        mFirewallRuleDataSource = FirewallRuleLocalDataSource.newInstance();
         clientResolver = new ClientResolver(context);
+    }
+
+    public void releaseResources(){
+        mFirewallRuleDataSource.releaseResources();
     }
 
     public boolean filter(int localPort, String localAddress, String uri) {
@@ -44,17 +50,18 @@ public class Firewall {
 
 //        Log.e("source", packageNameSource);
 
-        for (FirewallRule.FirewallRuleLoaded firewallRuleL : mFirewallRulesLoaded) {
+        for (FirewallRule firewallRule: mFirewallRuleDataSource.getActiveFirewallRules()) {
             if (
-                    firewallRuleL.applicationPackageName.equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING)
-                            || firewallRuleL.isActive
-                            && packageNameSource.equals(firewallRuleL.applicationPackageName)
-                            && StringUtils.matches(uri, firewallRuleL.rule)
+                    (firewallRule.getApplicationPackageName().equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING)
+                            && StringUtils.matches(uri, firewallRule.getRule()))
+                            || (packageNameSource.equals(firewallRule.getApplicationPackageName())
+                            && StringUtils.matches(uri, firewallRule.getRule()))
                     ) {
                 Log.i(getClass().getName(), packageNameSource + " : " + uri + " blocked by firewall");
                 return false;
             }
         }
+
         Log.i(getClass().getName(), packageNameSource + " : " + uri + " pass the firewall");
         return true;
     }
