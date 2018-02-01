@@ -10,16 +10,24 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.net.SocketFactory;
+
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HeaderIterator;
 import cz.msebera.android.httpclient.HttpEntityEnclosingRequest;
 import cz.msebera.android.httpclient.HttpHost;
 import cz.msebera.android.httpclient.HttpResponse;
@@ -27,6 +35,7 @@ import cz.msebera.android.httpclient.auth.AuthScope;
 import cz.msebera.android.httpclient.auth.NTCredentials;
 import cz.msebera.android.httpclient.client.CredentialsProvider;
 import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.config.RequestConfig;
 import cz.msebera.android.httpclient.client.methods.HttpDelete;
 import cz.msebera.android.httpclient.client.methods.HttpGet;
 import cz.msebera.android.httpclient.client.methods.HttpHead;
@@ -36,13 +45,28 @@ import cz.msebera.android.httpclient.client.methods.HttpPut;
 import cz.msebera.android.httpclient.client.methods.HttpTrace;
 import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 import cz.msebera.android.httpclient.client.methods.RequestBuilder;
+import cz.msebera.android.httpclient.client.protocol.HttpClientContext;
+import cz.msebera.android.httpclient.conn.scheme.PlainSocketFactory;
+import cz.msebera.android.httpclient.conn.socket.ConnectionSocketFactory;
+import cz.msebera.android.httpclient.conn.socket.LayeredConnectionSocketFactory;
+import cz.msebera.android.httpclient.conn.socket.PlainConnectionSocketFactory;
 import cz.msebera.android.httpclient.impl.client.BasicCredentialsProvider;
 import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
 import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
 import cz.msebera.android.httpclient.impl.client.ProxyClient;
 import cz.msebera.android.httpclient.impl.conn.PoolingHttpClientConnectionManager;
-import uci.wifiproxy.firewall.Firewall;
+import cz.msebera.android.httpclient.impl.io.DefaultHttpRequestParser;
+import cz.msebera.android.httpclient.impl.io.HttpRequestParser;
+import cz.msebera.android.httpclient.io.HttpMessageParser;
+import cz.msebera.android.httpclient.protocol.HttpContext;
+import uci.wifiproxy.data.applicationPackage.ApplicationPackageLocalDataSource;
+import uci.wifiproxy.data.firewallRule.FirewallRule;
+import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
+import uci.wifiproxy.data.trace.Trace;
+import uci.wifiproxy.data.trace.TraceDataSource;
 import uci.wifiproxy.util.StringUtils;
+import uci.wifiproxy.util.network.ClientResolver;
+import uci.wifiproxy.util.network.ConnectionDescriptor;
 
 /**
  * Created by daniel on 17/04/17.
@@ -73,7 +97,8 @@ public class HttpForwarder extends Thread {
 
     private CredentialsProvider credentials = null;
 
-    private Context context;
+    private ClientResolver clientResolver;
+
 
     public HttpForwarder(String addr, int inport, String user,
                          String pass, int outport, boolean onlyLocal,
@@ -97,7 +122,7 @@ public class HttpForwarder extends Thread {
 
         credentials = new BasicCredentialsProvider();
 
-        this.context = context;
+        clientResolver = new ClientResolver(context);
 
         Log.e(getClass().getName(), "Starting proxy");
     }
@@ -115,18 +140,22 @@ public class HttpForwarder extends Thread {
         }
 
         this.delegateClient = HttpClientBuilder.create()
-                .setConnectionManager(manager)
+//                .setConnectionManager(manager)
                 .setProxy(new HttpHost(this.addr, this.inport))
                 .setDefaultCredentialsProvider(credentials)
                 .disableRedirectHandling()
                 .disableCookieManagement()
-                .disableAuthCaching()
+//                .disableAuthCaching()
+                .disableAutomaticRetries()
+                .disableConnectionState()
                 .build();
 
         this.noDelegateClient = HttpClientBuilder.create()
-                .setConnectionManager(manager)
+//                .setConnectionManager(manager)
                 .disableRedirectHandling()
                 .disableCookieManagement()
+                .disableAutomaticRetries()
+                .disableConnectionState()
                 .build();
 
         while (running) {
@@ -140,12 +169,15 @@ public class HttpForwarder extends Thread {
                 e.printStackTrace();
             }
         }
+
     }
 
     public void halt() {
         Log.e(getClass().getName(), "Stoping proxy");
         running = false;
-//        terminate();
+
+        manager.shutdown();
+        threadPool.shutdownNow();
         try {
             this.delegateClient.close();
         } catch (IOException e) {
@@ -163,7 +195,6 @@ public class HttpForwarder extends Thread {
             e.printStackTrace();
         }
 
-        manager.shutdown();
     }
 
     public void close() throws IOException {
@@ -184,13 +215,27 @@ public class HttpForwarder extends Thread {
             HttpParser parser = null;
             OutputStream os = null;
             long bytes = 0;
-            Firewall firewall = new Firewall(context);
             try {
                 parser = parseInputStream(this.localSocket.getInputStream());
                 os = this.localSocket.getOutputStream();
 
+                String packageNameSource = getPackageNameSource(localSocket.getPort(),
+                        localSocket.getInetAddress().getHostAddress());
+
+                Log.e("Request:", packageNameSource + ": " + parser.getUri());
+
                 //Firewall action
-                if (firewallBlock(firewall, parser, os)) return;
+                if (!firewallFilter(packageNameSource, parser.getUri())) {
+                    try {
+                        os.write("HTTP/1.1 403 Forbidden".getBytes());
+                        os.write("\r\n".getBytes());
+                        os.write("\r\n".getBytes());
+                        os.write("<h1>Forbidden by WifiProxy's firewall</h1>".getBytes());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return;
+                }
 
                 if (parser.getMethod().equals("CONNECT")) {
                     bytes += resolveConnect(parser, os);
@@ -198,7 +243,9 @@ public class HttpForwarder extends Thread {
                     bytes += resolveOtherMethods(parser, os);
                 }
 
-                Log.e("bytes:", parser.getUri() + ": " + bytes+"");
+                saveTrace(packageNameSource, parser.getUri(), bytes);
+
+                Log.e("bytes:", packageNameSource + ": " + bytes + "");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -220,14 +267,35 @@ public class HttpForwarder extends Thread {
                 }
                 parser = null;
                 os = null;
-                firewall.releaseResources();
-                firewall = null;
             }
         }
 
-        private void saveTrace() {
-
+        private void saveTrace(String sourceApplication, String requestedUrl, long bytesSpent) {
+            Trace trace = Trace.newTrace(sourceApplication, requestedUrl, bytesSpent, Calendar.getInstance().getTimeInMillis());
+            TraceDataSource traceDataSource = TraceDataSource.newInstance();
+            traceDataSource.saveTrace(trace);
+            traceDataSource.releaseResources();
+            traceDataSource = null;
         }
+
+//        private long resolveOtherMethods1(HttpParser parser, OutputStream os) throws IOException {
+//            long bytes = 0;
+//            HttpClientContext clientContext = HttpClientContext.create();
+//            clientContext.setCredentialsProvider(credentials);
+//            PlainConnectionSocketFactory sf = PlainConnectionSocketFactory.getSocketFactory();
+//            InetSocketAddress remoteAddress = new InetSocketAddress(
+//                    InetAddress.getByAddress(new byte[]{10,0,0,1}), HttpForwarder.this.inport);
+//            Socket socket = sf.connectSocket(1000, null, new HttpHost("/"),
+//                    remoteAddress, null, clientContext);
+//
+//            InputStream inRemote = socket.getInputStream();
+//            OutputStream outRemote = socket.getOutputStream();
+//            os.write("HTTP/1.1 200 Connection established".getBytes());
+//            os.write("\r\n\r\n".getBytes());
+//            threadPool.execute(new Piper(parser, outRemote));
+//            bytes += new Piper(inRemote, os).startCopy();
+//            return bytes;
+//        }
 
         private long resolveOtherMethods(HttpParser parser, OutputStream os) {
             long bytes = 0;
@@ -242,9 +310,10 @@ public class HttpForwarder extends Thread {
                 client = HttpForwarder.this.delegateClient;
                 Log.i(getClass().getName(), "url does not matches bypass " + parser.getUri());
             }
-
+            HttpUriRequest request;
+            HttpResponse response;
             try {
-                HttpUriRequest request;
+
                 Log.i(getClass().getName(), parser.getMethod() + " " + parser.getUri());
                 if (parser.getMethod().equals("GET")) {
                     request = new HttpGet(parser.getUri());
@@ -277,14 +346,15 @@ public class HttpForwarder extends Thread {
                     request.addHeader(h);
                 }
 
-                HttpResponse response = client.execute(request);
+                response = client.execute(request);
 
                 os.write(response.getStatusLine().toString().getBytes());
-                Log.e("STATUS-LINE", response.getStatusLine().toString());
+//                Log.e("STATUS-LINE", response.getStatusLine().toString());
                 os.write("\r\n".getBytes());
 
-                headers = response.getAllHeaders();
-                for (Header h : headers) {
+                HeaderIterator it = response.headerIterator();
+                while (it.hasNext()) {
+                    Header h = (Header)it.next();
                     if (stripHeadersOut.contains(h.getName())) continue;
                     os.write((h.toString() + "\r\n").getBytes());
                 }
@@ -304,6 +374,10 @@ public class HttpForwarder extends Thread {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                inRemote = null;
+                client = null;
+                request = null;
+                response = null;
             }
 
             return bytes;
@@ -327,8 +401,10 @@ public class HttpForwarder extends Thread {
         private HttpParser parseInputStream(InputStream is) throws ParseException, IOException {
             HttpParser parser = new HttpParser(is);
             try {
-                while (!parser.parse()) {
-                }
+                parser.parse();
+//                while (!parser.parse()) {
+//                    Log.e("parser", "parse");
+//                }
             } catch (IOException e) {
                 parser.close();
             }
@@ -344,25 +420,34 @@ public class HttpForwarder extends Thread {
 
         }
 
-        private boolean firewallBlock(Firewall firewall, HttpParser parser, OutputStream os) {
-            if (firewall != null
-                    && !firewall.filter(localSocket.getPort(),
-                    localSocket.getInetAddress().getHostAddress(),
-                    parser.getUri())) {
 
-                try {
-                    os.write("HTTP/1.1 403 Forbidden".getBytes());
-                    os.write("\r\n".getBytes());
-                    os.write("\r\n".getBytes());
-                    os.write("<h1>Forbidden by WifiProxy's firewall</h1>".getBytes());
-                } catch (Exception e) {
-                    e.printStackTrace();
+        public boolean firewallFilter(String packageNameSource, String uri) {
+            FirewallRuleLocalDataSource firewallRuleLocalDataSource = FirewallRuleLocalDataSource.newInstance();
+            try {
+                for (FirewallRule firewallRule : firewallRuleLocalDataSource.getActiveFirewallRules()) {
+                    if (
+                            (firewallRule.getApplicationPackageName().equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING)
+                                    && StringUtils.matches(uri, firewallRule.getRule()))
+                                    || (packageNameSource.equals(firewallRule.getApplicationPackageName())
+                                    && StringUtils.matches(uri, firewallRule.getRule()))
+                            ) {
+//                        Log.i(getClass().getName(), packageNameSource + " : " + uri + " blocked by firewall");
+                        return false;
+                    }
                 }
 
+//                Log.i(getClass().getName(), packageNameSource + " : " + uri + " pass the firewall");
                 return true;
+            } finally {
+                firewallRuleLocalDataSource.releaseResources();
+                firewallRuleLocalDataSource = null;
             }
+        }
 
-            return false;
+        private String getPackageNameSource(int localPort, String localAddress) {
+            ConnectionDescriptor connectionDescriptor = clientResolver.getClientDescriptor(localPort, localAddress);
+            String packageNameSource = connectionDescriptor.getNamespace();
+            return packageNameSource;
         }
 
         long doConnectNoProxy(HttpParser parser, OutputStream os) {
@@ -403,6 +488,9 @@ public class HttpForwarder extends Thread {
                         e.printStackTrace();
                     }
                 }
+                remoteSocket = null;
+                inRemote = null;
+                outRemote = null;
             }
 
             return bytes;
@@ -420,7 +508,6 @@ public class HttpForwarder extends Thread {
                 ProxyClient client = new ProxyClient();
                 HttpHost proxyHost = new HttpHost(addr, inport);
                 HttpHost targetHost = new HttpHost(uri[0], Integer.parseInt(uri[1]));
-
 
                 remoteSocket = client.tunnel(proxyHost, targetHost, credentials.getCredentials(AuthScope.ANY));
                 inRemote = remoteSocket.getInputStream();
@@ -452,6 +539,9 @@ public class HttpForwarder extends Thread {
                         fe.printStackTrace();
                     }
                 }
+                remoteSocket = null;
+                inRemote = null;
+                outRemote = null;
             }
 
             return bytes;

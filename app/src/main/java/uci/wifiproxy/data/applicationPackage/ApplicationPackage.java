@@ -15,27 +15,14 @@ public class ApplicationPackage {
     @NonNull
     private String packageName;
 
-    @Nullable
-    private Drawable packageLogo;
-
-    public ApplicationPackage(String name, @NonNull String packageName, Drawable packageLogo) {
+    public ApplicationPackage(String name, @NonNull String packageName) {
         this.packageName = packageName;
-        this.packageLogo = packageLogo;
         this.name = name;
     }
 
     @NonNull
     public String getPackageName() {
         return packageName;
-    }
-
-    @Nullable
-    public Drawable getPackageLogo() {
-        return packageLogo;
-    }
-
-    public boolean hasPackageLogo(){
-        return packageLogo != null;
     }
 
     public String getName() {

@@ -2,6 +2,7 @@ package uci.wifiproxy.firewall.addEditFirewallRule;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -11,6 +12,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.ThemedSpinnerAdapter;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -144,7 +147,7 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
     public void setSpinnerApplicationPackageSelected(String packageName) {
         int pos = -1;
         for (int i = 0; i < mApplicationPackageAdapter.getCount(); i++){
-            if (packageName.equals(mApplicationPackageAdapter.getItem(i).getPackageName())){
+            if (packageName.equals(((ApplicationPackage)mApplicationPackageAdapter.getItem(i)).getPackageName())){
                 pos = i;
                 break;
             }
@@ -160,23 +163,37 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
     }
 
 
-    private class ApplicationPackagesAdapter extends ArrayAdapter<ApplicationPackage> {
+    private class ApplicationPackagesAdapter extends BaseAdapter {
 
         private int itemViewResourceId = R.layout.application_package_item;
+        private List<ApplicationPackage> items;
 
         public ApplicationPackagesAdapter(@NonNull Context context, @NonNull List<ApplicationPackage> applicationPackages) {
-            super(context, R.layout.application_package_item, applicationPackages);
+            this.items = applicationPackages;
         }
 
-
         private void setList(List<ApplicationPackage> applicationPackages) {
-            clear();
-            addAll(applicationPackages);
+            this.items = applicationPackages;
         }
 
         public void replaceData(List<ApplicationPackage> applicationPackages) {
             setList(applicationPackages);
             notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return items.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return items.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
         }
 
         @NonNull
@@ -190,6 +207,7 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
             return createView(position, convertView, parent);
         }
 
+
         private View createView(int position, @Nullable View convertView, @NonNull ViewGroup parent){
             View rowView = convertView;
             if (rowView == null){
@@ -197,25 +215,30 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
                 rowView = inflater.inflate(itemViewResourceId, parent, false);
             }
 
-            final ApplicationPackage applicationPackage = getItem(position);
+            final ApplicationPackage applicationPackage = (ApplicationPackage) getItem(position);
+            Log.e("AppPackageName", applicationPackage.getName());
+            Log.e("AppPackage", applicationPackage.getPackageName());
             ImageView logo = (ImageView) rowView.findViewById(R.id.application_package_item_logo);
             TextView packageName = (TextView) rowView.findViewById(R.id.application_package_item_name);
 
             if (applicationPackage != null){
                 if (applicationPackage.getPackageName().equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING)) {
                     packageName.setText(getResources().getString(R.string.all_applications));
-                    packageName.setTextSize(20);
-                }
-                else
-                    packageName.setText(applicationPackage.getName());
-
-                if (applicationPackage.hasPackageLogo())
-                    logo.setImageDrawable(applicationPackage.getPackageLogo());
-                else if (applicationPackage.getPackageName().
-                        equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING))
+                    packageName.setTextSize(25);
                     logo.setVisibility(View.GONE);
-                else
-                    logo.setImageResource(android.R.drawable.sym_def_app_icon);
+                }
+                else {
+                    packageName.setText(applicationPackage.getName());
+                    packageName.setTextSize(15);
+                    logo.setVisibility(View.VISIBLE);
+                    PackageManager packageManager = getContext().getPackageManager();
+                    try {
+                        logo.setImageDrawable(packageManager.getApplicationIcon(applicationPackage.getPackageName()));
+                    } catch (PackageManager.NameNotFoundException e) {
+                        logo.setImageResource(android.R.drawable.sym_def_app_icon);
+                    }
+                }
+
             }
 
             return rowView;

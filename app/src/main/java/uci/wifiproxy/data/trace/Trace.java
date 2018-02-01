@@ -16,7 +16,7 @@ public class Trace extends RealmObject {
     public static final String APP_SOURCE_FIELD = "sourceApplication";
     public static final String URL_REQUESTED_FIELD = "requestedUrl";
     public static final String BYTES_SPENT_FIELD = "bytesSpent";
-    public static final String DATE_FIELD = "date";
+    public static final String DATETIME_FIELD = "datetime";
 
     @PrimaryKey
     private String id;
@@ -29,17 +29,16 @@ public class Trace extends RealmObject {
 
     private long bytesSpent;
 
-    @Required
-    private String date;
+    private long datetime;
 
     public static Trace newTrace(String sourceApplication, String requestedUrl, long bytesSpent,
-                                 String date){
+                                 long datetime){
         Trace trace = new Trace();
         trace.setId(UUID.randomUUID().toString());
         trace.setSourceApplication(sourceApplication);
         trace.setRequestedUrl(requestedUrl);
         trace.setBytesSpent(bytesSpent);
-        trace.setDate(date);
+        trace.setDatetime(datetime);
         return trace;
     }
 
@@ -75,11 +74,11 @@ public class Trace extends RealmObject {
         this.bytesSpent = bytesSpent;
     }
 
-    public String getDate() {
-        return date;
+    public long getDatetime() {
+        return datetime;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDatetime(long datetime) {
+        this.datetime = datetime;
     }
 }

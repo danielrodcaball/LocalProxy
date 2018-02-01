@@ -26,73 +26,16 @@ import uci.wifiproxy.util.network.ConnectionDescriptor;
 
 public class Firewall {
 
-//    private PackageManager mPackageManager;
-
-    private Context mContext;
-
     private FirewallRuleLocalDataSource mFirewallRuleDataSource;
 
-    private ClientResolver clientResolver;
-
-    public Firewall(Context context) {
-        mContext = context;
+    public Firewall() {
         mFirewallRuleDataSource = FirewallRuleLocalDataSource.newInstance();
-        clientResolver = new ClientResolver(context);
     }
 
     public void releaseResources(){
         mFirewallRuleDataSource.releaseResources();
     }
 
-    public boolean filter(int localPort, String localAddress, String uri) {
-        ConnectionDescriptor connectionDescriptor = clientResolver.getClientDescriptor(localPort, localAddress);
-        String packageNameSource = connectionDescriptor.getNamespace();
 
-//        Log.e("source", packageNameSource);
 
-        for (FirewallRule firewallRule: mFirewallRuleDataSource.getActiveFirewallRules()) {
-            if (
-                    (firewallRule.getApplicationPackageName().equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING)
-                            && StringUtils.matches(uri, firewallRule.getRule()))
-                            || (packageNameSource.equals(firewallRule.getApplicationPackageName())
-                            && StringUtils.matches(uri, firewallRule.getRule()))
-                    ) {
-                Log.i(getClass().getName(), packageNameSource + " : " + uri + " blocked by firewall");
-                return false;
-            }
-        }
-
-        Log.i(getClass().getName(), packageNameSource + " : " + uri + " pass the firewall");
-        return true;
-    }
-
-    private String getPackageNameByLocalPort(int port) {
-        try {
-            BufferedReader bf = new BufferedReader(new FileReader("/proc/net/tcp"));
-            String line;
-            Log.e("localPort", port + "");
-
-            while ((line = bf.readLine()) != null) {
-                Log.e("Line", line);
-                line = line.trim();
-                String[] arr = line.split("\\s");
-
-                if (arr[0].equals("sl")) continue;
-
-                String localPortHex = arr[1].split(":")[1];
-                String uid = arr[7];
-
-                String portHex = Integer.toHexString(port);
-//                Log.e("portHex", portHex);
-                if (portHex.equalsIgnoreCase(localPortHex)) {
-                    return mContext.getPackageManager().getNameForUid(Integer.parseInt(uid));
-                }
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
 }

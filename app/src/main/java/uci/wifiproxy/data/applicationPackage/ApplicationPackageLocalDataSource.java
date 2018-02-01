@@ -25,7 +25,7 @@ public class ApplicationPackageLocalDataSource {
     private PackageManager packageManager;
 
     private ApplicationPackage allApplicationsPackages =
-            new ApplicationPackage(ALL_APPLICATION_PACKAGES_STRING ,ALL_APPLICATION_PACKAGES_STRING, null);
+            new ApplicationPackage(ALL_APPLICATION_PACKAGES_STRING ,ALL_APPLICATION_PACKAGES_STRING);
 
     private ApplicationPackageLocalDataSource(@NonNull Context context) {
         packageManager = context.getPackageManager();
@@ -45,10 +45,6 @@ public class ApplicationPackageLocalDataSource {
         List<ApplicationInfo> packageInfos = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
 
         for (ApplicationInfo ai : packageInfos) {
-            String name = ai.loadLabel(packageManager).toString();
-            String packageName = ai.packageName;
-            Drawable packageLogo = null;
-            packageLogo = packageManager.getApplicationIcon(ai);
             applicationPackages.add(createApplicationPackage(ai));
         }
 
@@ -57,7 +53,7 @@ public class ApplicationPackageLocalDataSource {
 
     public ApplicationPackage getApplicationPackageByPackageName(String packageName){
         if (packageName.equals(ALL_APPLICATION_PACKAGES_STRING))
-            return new ApplicationPackage(ALL_APPLICATION_PACKAGES_STRING, ALL_APPLICATION_PACKAGES_STRING, null);
+            return new ApplicationPackage(ALL_APPLICATION_PACKAGES_STRING, ALL_APPLICATION_PACKAGES_STRING);
         try {
             ApplicationInfo ai = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
             return createApplicationPackage(ai);
@@ -70,9 +66,7 @@ public class ApplicationPackageLocalDataSource {
     private ApplicationPackage createApplicationPackage(ApplicationInfo ai){
         String name = ai.loadLabel(packageManager).toString();
         String packageName = ai.packageName;
-        Drawable packageLogo = null;
-        packageLogo = packageManager.getApplicationIcon(ai);
-        return new ApplicationPackage(name, packageName, packageLogo);
+        return new ApplicationPackage(name, packageName);
     }
 
 }

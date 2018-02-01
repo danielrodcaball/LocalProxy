@@ -237,8 +237,13 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
                     applicationName.setText(getString(R.string.all_applications));
                 } else {
                     packageLogo.setVisibility(View.VISIBLE);
-                    packageLogo.setImageDrawable(applicationPackage.getPackageLogo());
                     applicationName.setText(applicationPackage.getName());
+                    PackageManager packageManager = getContext().getPackageManager();
+                    try {
+                        packageLogo.setImageDrawable(packageManager.getApplicationIcon(applicationPackage.getPackageName()));
+                    } catch (PackageManager.NameNotFoundException e) {
+                        packageLogo.setImageResource(android.R.drawable.sym_def_app_icon);
+                    }
                 }
 
                 ruleTv.setText(firewallRule.getRule());
