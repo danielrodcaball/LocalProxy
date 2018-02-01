@@ -211,44 +211,53 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
             return position;
         }
 
+        class ViewHolder{
+            public TextView applicationName;
+            public ImageView packageLogo;
+            public TextView ruleTv;
+            public CheckBox checked;
+        }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View rowView = convertView;
             if (rowView == null) {
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
                 rowView = inflater.inflate(R.layout.firewallrule_list_item, parent, false);
+                ViewHolder viewHolder = new ViewHolder();
+                viewHolder.applicationName = (TextView) rowView.findViewById(R.id.applicationName);
+                viewHolder.packageLogo = (ImageView) rowView.findViewById(R.id.packageLogo);
+                viewHolder.ruleTv = (TextView) rowView.findViewById(R.id.rule);
+                viewHolder.checked = (CheckBox) rowView.findViewById(R.id.active);
+                rowView.setTag(viewHolder);
             }
 
+            ViewHolder viewHolder = (ViewHolder) rowView.getTag();
 
             final FirewallRule firewallRule = getItem(position);
             ApplicationPackage applicationPackage =
-                    ApplicationPackageLocalDataSource.getInstance(FirewallRulesListFragment.this.getContext())
+                    ApplicationPackageLocalDataSource.getInstance(getContext())
                             .getApplicationPackageByPackageName(firewallRule.getApplicationPackageName());
-
-            TextView applicationName = (TextView) rowView.findViewById(R.id.applicationName);
-            ImageView packageLogo = (ImageView) rowView.findViewById(R.id.packageLogo);
-            TextView ruleTv = (TextView) rowView.findViewById(R.id.rule);
-            CheckBox checked = (CheckBox) rowView.findViewById(R.id.active);
 
             if (applicationPackage != null) {
                 if (applicationPackage.getName()
                         .equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING)) {
-                    packageLogo.setVisibility(View.GONE);
-                    applicationName.setText(getString(R.string.all_applications));
+                    viewHolder.packageLogo.setVisibility(View.GONE);
+                    viewHolder.applicationName.setText(getString(R.string.all_applications));
                 } else {
-                    packageLogo.setVisibility(View.VISIBLE);
-                    applicationName.setText(applicationPackage.getName());
+                    viewHolder.packageLogo.setVisibility(View.VISIBLE);
+                    viewHolder.applicationName.setText(applicationPackage.getName());
                     PackageManager packageManager = getContext().getPackageManager();
                     try {
-                        packageLogo.setImageDrawable(packageManager.getApplicationIcon(applicationPackage.getPackageName()));
+                        viewHolder.packageLogo.setImageDrawable(packageManager.getApplicationIcon(applicationPackage.getPackageName()));
                     } catch (PackageManager.NameNotFoundException e) {
-                        packageLogo.setImageResource(android.R.drawable.sym_def_app_icon);
+                        viewHolder.packageLogo.setImageResource(android.R.drawable.sym_def_app_icon);
                     }
                 }
 
-                ruleTv.setText(firewallRule.getRule());
+                viewHolder.ruleTv.setText(firewallRule.getRule());
 
-                checked.setChecked(firewallRule.isActive());
+                viewHolder.checked.setChecked(firewallRule.isActive());
                 if (!firewallRule.isActive()) {
                     rowView.setBackgroundDrawable(parent.getContext()
                             .getResources().getDrawable(R.drawable.list_deactivate_touch_feedback));
@@ -257,7 +266,7 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
                             .getResources().getDrawable(R.drawable.touch_feedback));
                 }
 
-                checked.setOnClickListener(new View.OnClickListener() {
+                viewHolder.checked.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         mItemListener.onFirewallRuleCheckClick(firewallRule, !firewallRule.isActive());

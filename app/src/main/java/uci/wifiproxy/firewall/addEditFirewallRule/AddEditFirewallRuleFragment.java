@@ -207,35 +207,45 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
             return createView(position, convertView, parent);
         }
 
+        class ViewHolder{
+            public ImageView logo;
+            public TextView packageName;
+        }
+
 
         private View createView(int position, @Nullable View convertView, @NonNull ViewGroup parent){
             View rowView = convertView;
+
             if (rowView == null){
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
                 rowView = inflater.inflate(itemViewResourceId, parent, false);
+                ViewHolder viewHolder = new ViewHolder();
+                viewHolder.logo = (ImageView) rowView.findViewById(R.id.application_package_item_logo);;
+                viewHolder.packageName = (TextView) rowView.findViewById(R.id.application_package_item_name);
+                rowView.setTag(viewHolder);
             }
 
+            ViewHolder viewHolder = (ViewHolder) rowView.getTag();
+
             final ApplicationPackage applicationPackage = (ApplicationPackage) getItem(position);
-            Log.e("AppPackageName", applicationPackage.getName());
-            Log.e("AppPackage", applicationPackage.getPackageName());
-            ImageView logo = (ImageView) rowView.findViewById(R.id.application_package_item_logo);
-            TextView packageName = (TextView) rowView.findViewById(R.id.application_package_item_name);
+//            Log.e("AppPackageName", applicationPackage.getName());
+//            Log.e("AppPackage", applicationPackage.getPackageName());
 
             if (applicationPackage != null){
                 if (applicationPackage.getPackageName().equals(ApplicationPackageLocalDataSource.ALL_APPLICATION_PACKAGES_STRING)) {
-                    packageName.setText(getResources().getString(R.string.all_applications));
-                    packageName.setTextSize(25);
-                    logo.setVisibility(View.GONE);
+                    viewHolder.packageName.setText(getResources().getString(R.string.all_applications));
+                    viewHolder.packageName.setTextSize(25);
+                    viewHolder.logo.setVisibility(View.GONE);
                 }
                 else {
-                    packageName.setText(applicationPackage.getName());
-                    packageName.setTextSize(15);
-                    logo.setVisibility(View.VISIBLE);
+                    viewHolder.packageName.setText(applicationPackage.getName());
+                    viewHolder.packageName.setTextSize(15);
+                    viewHolder.logo.setVisibility(View.VISIBLE);
                     PackageManager packageManager = getContext().getPackageManager();
                     try {
-                        logo.setImageDrawable(packageManager.getApplicationIcon(applicationPackage.getPackageName()));
+                        viewHolder.logo.setImageDrawable(packageManager.getApplicationIcon(applicationPackage.getPackageName()));
                     } catch (PackageManager.NameNotFoundException e) {
-                        logo.setImageResource(android.R.drawable.sym_def_app_icon);
+                        viewHolder.logo.setImageResource(android.R.drawable.sym_def_app_icon);
                     }
                 }
 

@@ -196,18 +196,26 @@ public class ProfilesListFragment extends Fragment implements ProfilesListContra
             return position;
         }
 
+        class ViewHolder{
+            public TextView titleTV;
+        }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View rowView = convertView;
             if (rowView == null){
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
                 rowView = inflater.inflate(R.layout.profiles_list_item, parent, false);
+                ViewHolder viewHolder = new ViewHolder();
+                viewHolder.titleTV = (TextView) rowView.findViewById(R.id.title);
+                rowView.setTag(viewHolder);
             }
+
+            ViewHolder viewHolder = (ViewHolder) rowView.getTag();
 
             final Profile profile = getItem(position);
 
-            TextView titleTV = (TextView) rowView.findViewById(R.id.title);
-            titleTV.setText(profile.getName());
+            viewHolder.titleTV.setText(profile.getName());
 
             rowView.setOnClickListener(new View.OnClickListener() {
                 @Override
