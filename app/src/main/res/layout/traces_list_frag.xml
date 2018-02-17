@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<uci.wifiproxy.trace.tracesList.ScrollChildSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/tracesContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/tracesLL"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- A RecyclerView with some commonly used attributes -->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/traces_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/noTraces"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/noTracesIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_traces" />
+
+            <TextView
+                android:id="@+id/noTracesMain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/list_item_padding"
+                android:text="@string/no_traces_all"/>
+
+            <!--android:text="@string/no_traces_all"-->
+
+        </LinearLayout>
+    </RelativeLayout>
+</uci.wifiproxy.trace.tracesList.ScrollChildSwipeRefreshLayout>
+

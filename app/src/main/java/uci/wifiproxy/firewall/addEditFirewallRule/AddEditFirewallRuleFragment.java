@@ -207,7 +207,7 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
             return createView(position, convertView, parent);
         }
 
-        class ViewHolder{
+        public class ViewHolder{
             public ImageView logo;
             public TextView packageName;
         }

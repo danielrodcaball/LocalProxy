@@ -3,18 +3,13 @@ package uci.wifiproxy.proxy;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
@@ -24,21 +19,19 @@ import android.view.MenuItem;
 import android.view.View;
 
 
+import uci.wifiproxy.BaseDrawerActivity;
 import uci.wifiproxy.R;
 import uci.wifiproxy.data.pref.AppPreferencesHelper;
-import uci.wifiproxy.firewall.firewallRulesList.FirewallRulesListActivity;
-import uci.wifiproxy.profile.profilesList.ProfilesListActivity;
 import uci.wifiproxy.proxy.service.ProxyService;
 import uci.wifiproxy.util.ActivityUtils;
 
-public class ProxyActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class ProxyActivity extends BaseDrawerActivity {
 
     public static int LIGHT_THEME = 0;
     public static int DARK_THEME = 1;
     public int themeId;
 
-    private DrawerLayout mDrawerLayout;
+//    private DrawerLayout mDrawerLayout;
 
 
     @Override
@@ -57,7 +50,7 @@ public class ProxyActivity extends AppCompatActivity
         mDrawerLayout.setStatusBarBackground(R.color.colorPrimaryDark);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (navigationView != null) {
-            navigationView.setNavigationItemSelectedListener(this);
+            setupDrawerContent(navigationView);
             navigationView.getMenu().findItem(R.id.proxy_navigation_menu_item).setChecked(true);
         }
 
@@ -99,30 +92,30 @@ public class ProxyActivity extends AppCompatActivity
         super.onDestroy();
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.proxy_navigation_menu_item:
-                item.setChecked(true);
-                break;
-            case R.id.profile_navigation_menu_item:
-                Intent intent = new Intent(ProxyActivity.this, ProfilesListActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                break;
-            case R.id.firewall_navigation_menu_item:
-                intent = new Intent(ProxyActivity.this, FirewallRulesListActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                break;
-            default:
-                break;
-        }
-
-        // Close the navigation drawer when an item is selected.
-        mDrawerLayout.closeDrawers();
-        return true;
-    }
+//    @Override
+//    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.proxy_navigation_menu_item:
+//                item.setChecked(true);
+//                break;
+//            case R.id.profile_navigation_menu_item:
+//                Intent intent = new Intent(ProxyActivity.this, ProfilesListActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                startActivity(intent);
+//                break;
+//            case R.id.firewall_navigation_menu_item:
+//                intent = new Intent(ProxyActivity.this, FirewallRulesListActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                startActivity(intent);
+//                break;
+//            default:
+//                break;
+//        }
+//
+//        // Close the navigation drawer when an item is selected.
+//        mDrawerLayout.closeDrawers();
+//        return true;
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

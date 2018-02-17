@@ -6,6 +6,7 @@ import android.util.Log;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.Sort;
 
 /**
  * Created by daniel on 18/12/17.
@@ -31,7 +32,7 @@ public class TraceDataSource {
     }
 
     public void getAllTraces(LoadTracesCallback callback) {
-        List<Trace> traces = realm.where(Trace.class).findAllSortedAsync(Trace.DATETIME_FIELD);
+        List<Trace> traces = realm.where(Trace.class).findAllSorted(Trace.DATETIME_FIELD, Sort.DESCENDING);
         if (traces.isEmpty()) {
             callback.onDataNoAvailable();
         } else {
@@ -57,7 +58,7 @@ public class TraceDataSource {
         });
     }
 
-    interface LoadTracesCallback {
+    public interface LoadTracesCallback {
         void onTracesLoaded(List<Trace> traces);
 
         void onDataNoAvailable();

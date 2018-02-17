@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/touch_feedback"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/list_item_padding"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/list_item_padding">
+    <!--android:layout_height="?android:attr/listPreferredItemHeight"-->
+
+    <LinearLayout
+        android:id="@+id/traceListItemLL"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/touch_feedback"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/packageLogo"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                app:srcCompat="@android:drawable/sym_def_app_icon" />
+
+            <TextView
+                android:id="@+id/applicationName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                tools:text="com.android.wifiproxy" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:lines="1"
+            android:text="@string/consumption"
+            tools:text="https://stackoverflow.com/questions/47037994/android-studio-error-java-lang-illegalargumentexception-resource-name-cannot-be" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:lines="1"
+                android:text="@string/consumption"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+
+            <TextView
+                android:id="@+id/consumption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:textSize="20sp"
+                tools:text="56MB" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

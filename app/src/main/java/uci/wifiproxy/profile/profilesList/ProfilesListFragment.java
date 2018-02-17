@@ -196,7 +196,7 @@ public class ProfilesListFragment extends Fragment implements ProfilesListContra
             return position;
         }
 
-        class ViewHolder{
+        public class ViewHolder{
             public TextView titleTV;
         }
 

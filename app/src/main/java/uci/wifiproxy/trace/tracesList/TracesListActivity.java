@@ -1,4 +1,4 @@
-package uci.wifiproxy.firewall.firewallRulesList;
+package uci.wifiproxy.trace.tracesList;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,44 +14,43 @@ import uci.wifiproxy.R;
 import uci.wifiproxy.util.ActivityUtils;
 
 /**
- * Created by daniel on 29/09/17.
+ * Created by daniel on 16/02/18.
  */
 
-public class FirewallRulesListActivity extends BaseDrawerActivity {
+public class TracesListActivity extends BaseDrawerActivity {
 
-//    private DrawerLayout mDrawerLayout;
+//    private DrawerLayout mDrawer;
+    private TracesListContract.Presenter mPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.firewallrules_list_act);
+        setContentView(R.layout.traces_list_act);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ActionBar ab = getSupportActionBar();
-        ab.setTitle(R.string.firewall_title);
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
-        ab.setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(getString(R.string.traces_title));
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
-        //Set up navigation drawer
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackground(R.color.colorPrimaryDark);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (navigationView != null) {
             setupDrawerContent(navigationView);
-            navigationView.getMenu().findItem(R.id.firewall_navigation_menu_item).setChecked(true);
+            navigationView.getMenu().findItem(R.id.traces_navigation_menu_item).setChecked(true);
         }
 
-        FirewallRulesListFragment firewallRulesListFragment =
-                (FirewallRulesListFragment) getSupportFragmentManager().findFragmentById(R.id.contentFrame);
-        if (firewallRulesListFragment == null){
-            firewallRulesListFragment = FirewallRulesListFragment.newInstance();
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    firewallRulesListFragment, R.id.contentFrame);
+        TracesListFragment tracesListFragment =
+                (TracesListFragment) getSupportFragmentManager().findFragmentById(R.id.contentFrame);
+        if (tracesListFragment == null) {
+            tracesListFragment = TracesListFragment.newInstance();
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), tracesListFragment, R.id.contentFrame);
         }
 
-        //create the presenter
-        new FirewallRulesListPresenter(firewallRulesListFragment);
+        //Create the presenter
+        mPresenter = new TracesListPresenter(tracesListFragment);
 
         //Load previously saved state, if available
         if (savedInstanceState != null) {
@@ -63,7 +62,6 @@ public class FirewallRulesListActivity extends BaseDrawerActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -84,26 +82,33 @@ public class FirewallRulesListActivity extends BaseDrawerActivity {
 //                        Intent intent = null;
 //                        switch (menuItem.getItemId()) {
 //                            case R.id.proxy_navigation_menu_item:
-//                                intent = new Intent(FirewallRulesListActivity.this, ProxyActivity.class);
+//                                intent = new Intent(TracesListActivity.this, ProxyActivity.class);
 //                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 //                                startActivity(intent);
 //                                break;
 //                            case R.id.profile_navigation_menu_item:
-//                                intent = new Intent(FirewallRulesListActivity.this, ProfilesListActivity.class);
+//                                intent = new Intent(TracesListActivity.this, ProfilesListActivity.class);
 //                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 //                                startActivity(intent);
 //                                break;
 //                            case R.id.firewall_navigation_menu_item:
+//                                intent = new Intent(TracesListActivity.this, FirewallRulesListActivity.class);
+//                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                                startActivity(intent);
+//                                break;
+//                            case R.id.traces_navigation_menu_item:
 //                                menuItem.setChecked(true);
 //                                break;
 //                            default:
 //                                break;
 //                        }
-//
 //                        // Close the navigation drawer when an item is selected.
-//                        mDrawerLayout.closeDrawers();
+//                        mDrawer.closeDrawers();
 //                        return true;
 //                    }
 //                });
 //    }
 }
+
+
+

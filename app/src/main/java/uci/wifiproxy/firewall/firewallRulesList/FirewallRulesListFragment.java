@@ -211,7 +211,7 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
             return position;
         }
 
-        class ViewHolder{
+        public class ViewHolder{
             public TextView applicationName;
             public ImageView packageLogo;
             public TextView ruleTv;

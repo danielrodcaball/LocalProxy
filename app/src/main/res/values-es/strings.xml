@@ -93,5 +93,8 @@
     <string name="firewallRule_application_tv">Aplicación:</string>
     <string name="all_applications">Todas las aplicaciones</string>
     <string name="local_port_label">Puerto local:</string>
+    <string name="no_traces_all">No hay trazas</string>
+    <string name="consumption">Consumo:</string>
+    <string name="traces_title">Trazas</string>
 
 </resources>

@@ -54,6 +54,12 @@
             tools:ignore="UnusedAttribute">
         </activity>
 
+        <activity
+            android:name=".trace.tracesList.TracesListActivity"
+            android:launchMode="singleTop"
+            tools:ignore="UnusedAttribute">
+        </activity>
+
         <service
             android:name="uci.wifiproxy.proxy.service.ProxyService"
             android:icon="@mipmap/ic_launcher"
