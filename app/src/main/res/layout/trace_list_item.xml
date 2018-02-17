@@ -19,7 +19,7 @@
         android:background="@drawable/touch_feedback"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -31,23 +31,51 @@
 
             <TextView
                 android:id="@+id/applicationName"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
-                tools:text="com.android.wifiproxy" />
+                android:layout_toRightOf="@+id/packageLogo"
+                tools:text="com.android.wifiproxy"
+                android:layout_toEndOf="@+id/packageLogo" />
+
+            <ImageButton
+                android:id="@+id/expand_trace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_expand_trace"
+                android:tint="@color/colorPrimary"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/touch_feedback"
+                android:tag="close"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textStyle="bold"
+                android:text="Url:"/>
+
+            <TextView
+                android:id="@+id/url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:lines="1"
+                android:layout_marginLeft="10dp"
+                android:text="@string/consumption"
+                tools:text="https://stackoverflow.com/questions/47037994/android-studio-error-java-lang-illegalargumentexception-resource-name-cannot-be" />
 
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/url"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:lines="1"
-            android:text="@string/consumption"
-            tools:text="https://stackoverflow.com/questions/47037994/android-studio-error-java-lang-illegalargumentexception-resource-name-cannot-be" />
 
         <LinearLayout
             android:layout_width="match_parent"

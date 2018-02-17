@@ -101,5 +101,7 @@
     <string name="no_traces_all">There are no traces</string>
     <string name="consumption">Consumption:</string>
     <string name="traces_title">Traces</string>
+    <string name="trace_url">Requested url:</string>
+    <string name="trace_consumption">Consumption:</string>
 
 </resources>
