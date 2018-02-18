@@ -369,6 +369,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
                                   int inputport,
                                   int outputport,
                                   String bypass,
+                                  String domain,
                                   boolean setGlobProxy
     ) {
         Intent proxyIntent = new Intent(getActivity(), ProxyService.class);
@@ -378,6 +379,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         proxyIntent.putExtra("inputport", inputport + "");
         proxyIntent.putExtra("outputport", outputport + "");
         proxyIntent.putExtra("bypass", bypass);
+        proxyIntent.putExtra("domain", domain);
         proxyIntent.putExtra("set_global_proxy", setGlobProxy);
         getActivity().startService(proxyIntent);
     }

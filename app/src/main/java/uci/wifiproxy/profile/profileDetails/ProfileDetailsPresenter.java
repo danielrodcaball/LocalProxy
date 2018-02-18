@@ -75,6 +75,7 @@ public class ProfileDetailsPresenter implements ProfileDetailsContract.Presenter
         mProfilesDetailsView.showServer(profile.getHost());
         mProfilesDetailsView.showInPort(profile.getInPort());
         mProfilesDetailsView.showBypass(profile.getBypass());
+        mProfilesDetailsView.showDomain(profile.getDomain());
     }
 
     @Override

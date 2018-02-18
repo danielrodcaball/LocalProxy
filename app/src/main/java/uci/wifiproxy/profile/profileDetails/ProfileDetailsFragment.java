@@ -41,6 +41,8 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
 
     private TextView mDetailBypass;
 
+    private TextView mDomain;
+
     public ProfileDetailsFragment(){
         //Requires an empty public constructor
     }
@@ -63,6 +65,7 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
         mDetailServer = (TextView) root.findViewById(R.id.serverTv);
         mDetailInPort = (TextView) root.findViewById(R.id.inPortTv);
         mDetailBypass = (TextView) root.findViewById(R.id.bypassTv);
+        mDomain = (TextView) root.findViewById(R.id.domainTv);
 
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_edit_profile);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +125,11 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
     @Override
     public void showBypass(String bypass) {
         mDetailBypass.setText(bypass);
+    }
+
+    @Override
+    public void showDomain(String domain) {
+        mDomain.setText(domain);
     }
 
     @Override

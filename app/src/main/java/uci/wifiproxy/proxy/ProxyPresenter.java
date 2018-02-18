@@ -74,6 +74,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
                             profile.getInPort(),
                             Integer.parseInt(localPort),
                             profile.getBypass(),
+                            profile.getDomain(),
                             setGlobalProxy
                     );
 

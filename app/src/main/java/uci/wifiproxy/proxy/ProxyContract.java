@@ -80,8 +80,8 @@ public interface ProxyContract {
         void stopProxyService();
 
         void startProxyService(String username, String password, String server,
-                               int inputport, int outputport, String bypass, boolean setGlobProxy
-        );
+                               int inputport, int outputport, String bypass,
+                               String domain, boolean setGlobProxy);
 
         void showWifiConfDialog();
 

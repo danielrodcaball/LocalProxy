@@ -9,7 +9,8 @@
     <string name="Username">user</string>
     <string name="Password">Password</string>
     <string name="ShowPassword">Show password</string>
-    <string name="Domain">Domain:</string>
+    <string name="Domain">Domain(only if you know it):</string>
+    <string name="domainView">Domain:</string>
     <string name="Server">Server:</string>
     <string name="InputPort">Input Port:</string>
     <string name="OutputPort">Output Port:</string>

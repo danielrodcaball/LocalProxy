@@ -77,6 +77,7 @@ public class ProfilesLocalDataSource implements ProfilesDataSource {
             profileToUpdate.setHost(profile.getHost());
             profileToUpdate.setBypass(profile.getBypass());
             profileToUpdate.setInPort(profile.getInPort());
+            profileToUpdate.setDomain(profile.getDomain());
             realm.commitTransaction();
 
             callback.onProfileUpdated();

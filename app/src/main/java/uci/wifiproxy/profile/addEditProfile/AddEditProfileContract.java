@@ -23,6 +23,8 @@ public interface AddEditProfileContract {
 
         void setBypass(String bypass);
 
+        void setDomain(String domain);
+
         boolean isActive();
 
         void setProfileEqualNameError();
@@ -42,7 +44,7 @@ public interface AddEditProfileContract {
     interface Presenter extends BasePresenter{
 
         void saveProfile(String name, String server,
-                         String inPort, String bypass);
+                         String inPort, String bypass, String domain);
 
         void populateProfile();
 

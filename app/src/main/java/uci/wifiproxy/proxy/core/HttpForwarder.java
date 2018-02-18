@@ -96,6 +96,7 @@ public class HttpForwarder extends Thread {
     private final String user;
     private final String pass;
     private final String bypass;
+    private final String domain;
 
     public boolean running = true;
 
@@ -105,12 +106,13 @@ public class HttpForwarder extends Thread {
 
     public HttpForwarder(String addr, int inport, String user,
                          String pass, int outport, boolean onlyLocal,
-                         String bypass, Context context) throws IOException {
+                         String bypass, String domain, Context context) throws IOException {
         this.addr = addr;
         this.inport = inport;
         this.user = user;
         this.pass = pass;
         this.bypass = bypass;
+        this.domain = domain;
 
         if (onlyLocal) {
             this.ssocket = new ServerSocket(outport, 0,
@@ -137,7 +139,9 @@ public class HttpForwarder extends Thread {
             //it can be null and it will works correctly
             credentials.setCredentials(new AuthScope(AuthScope.ANY),
                     new NTCredentials(this.user, this.pass, InetAddress.getLocalHost().getHostName(),
-                            null));
+                            (Strings.isNullOrEmpty(domain) ? null : domain)
+                    )
+            );
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -360,7 +364,7 @@ public class HttpForwarder extends Thread {
 
                 HeaderIterator it = response.headerIterator();
                 while (it.hasNext()) {
-                    Header h = (Header)it.next();
+                    Header h = (Header) it.next();
                     if (stripHeadersOut.contains(h.getName())) continue;
                     os.write((h.toString() + "\r\n").getBytes());
                 }
