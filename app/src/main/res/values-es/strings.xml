@@ -98,5 +98,13 @@
     <string name="traces_title">Trazas</string>
     <string name="trace_url">Url requerida:</string>
     <string name="trace_consumption">Consumo:</string>
+    <string name="add_as_firewall_rule">Añadir como regla de cortafuegos</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="successfully_added_as_firewallrule">Regla de cortafuegos añadida</string>
+    <string name="date">Fecha:</string>
+    <string name="clear_all">Limpiar</string>
+    <string name="search">Buscar</string>
+    <string name="query_hint">nombre de app o url</string>
 
 </resources>

@@ -103,5 +103,15 @@
     <string name="traces_title">Traces</string>
     <string name="trace_url">Requested url:</string>
     <string name="trace_consumption">Consumption:</string>
+    <string name="add_as_firewall_rule">Add as firewall rule</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="successfully_added_as_firewallrule">Firewall rule added</string>
+    <string name="date">Date:</string>
+    <string name="sort_by_date">Sort by date</string>
+    <string name="sort_by_consumption">Sort by spending</string>
+    <string name="clear_all">Clear all</string>
+    <string name="search">Search</string>
+    <string name="query_hint">app name or url</string>
 
 </resources>

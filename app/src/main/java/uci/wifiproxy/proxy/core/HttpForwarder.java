@@ -2,7 +2,11 @@ package uci.wifiproxy.proxy.core;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
+
+import com.google.common.base.Strings;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -98,7 +102,6 @@ public class HttpForwarder extends Thread {
     private CredentialsProvider credentials = null;
 
     private ClientResolver clientResolver;
-
 
     public HttpForwarder(String addr, int inport, String user,
                          String pass, int outport, boolean onlyLocal,
@@ -219,8 +222,9 @@ public class HttpForwarder extends Thread {
                 parser = parseInputStream(this.localSocket.getInputStream());
                 os = this.localSocket.getOutputStream();
 
-                String packageNameSource = getPackageNameSource(localSocket.getPort(),
+                ConnectionDescriptor connectionDescriptor = getPackageConnectionDescritor(localSocket.getPort(),
                         localSocket.getInetAddress().getHostAddress());
+                String packageNameSource = connectionDescriptor.getNamespace();
 
                 Log.e("Request:", packageNameSource + ": " + parser.getUri());
 
@@ -243,7 +247,9 @@ public class HttpForwarder extends Thread {
                     bytes += resolveOtherMethods(parser, os);
                 }
 
-                saveTrace(packageNameSource, parser.getUri(), bytes);
+                saveTrace(packageNameSource,
+                        (connectionDescriptor.getName() != null) ? connectionDescriptor.getName() : Trace.UNKNOWN_APP_NAME,
+                        parser.getUri(), bytes);
 
                 Log.e("bytes:", packageNameSource + ": " + bytes + "");
 
@@ -270,8 +276,8 @@ public class HttpForwarder extends Thread {
             }
         }
 
-        private void saveTrace(String sourceApplication, String requestedUrl, long bytesSpent) {
-            Trace trace = Trace.newTrace(sourceApplication, requestedUrl, bytesSpent, Calendar.getInstance().getTimeInMillis());
+        private void saveTrace(String packageName, String name, String requestedUrl, long bytesSpent) {
+            Trace trace = Trace.newTrace(packageName, name, requestedUrl, bytesSpent, Calendar.getInstance().getTimeInMillis());
             TraceDataSource traceDataSource = TraceDataSource.newInstance();
             traceDataSource.saveTrace(trace);
             traceDataSource.releaseResources();
@@ -444,10 +450,9 @@ public class HttpForwarder extends Thread {
             }
         }
 
-        private String getPackageNameSource(int localPort, String localAddress) {
+        private ConnectionDescriptor getPackageConnectionDescritor(int localPort, String localAddress) {
             ConnectionDescriptor connectionDescriptor = clientResolver.getClientDescriptor(localPort, localAddress);
-            String packageNameSource = connectionDescriptor.getNamespace();
-            return packageNameSource;
+            return connectionDescriptor;
         }
 
         long doConnectNoProxy(HttpParser parser, OutputStream os) {

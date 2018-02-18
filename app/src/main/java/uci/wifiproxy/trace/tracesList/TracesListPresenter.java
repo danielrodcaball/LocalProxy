@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import uci.wifiproxy.data.firewallRule.FirewallRule;
+import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
 import uci.wifiproxy.data.trace.Trace;
 import uci.wifiproxy.data.trace.TraceDataSource;
 
@@ -16,26 +18,41 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class TracesListPresenter implements TracesListContract.Presenter {
 
     private TraceDataSource mTraceDataSource;
+    private FirewallRuleLocalDataSource mFirewallRuleDataSource;
     private TracesListContract.View mView;
 
     public TracesListPresenter(@NonNull TracesListContract.View view){
         mTraceDataSource = TraceDataSource.newInstance();
+        mFirewallRuleDataSource = FirewallRuleLocalDataSource.newInstance();
         mView = checkNotNull(view, "view cannot be null");
 
         mView.setPresenter(this);
     }
 
     @Override
-    public void loadTraces() {
-        loadTraces(true);
+    public void addAsFirewallRule(String rule, String appPackageName) {
+        FirewallRule firewallRule = FirewallRule.newInstance(rule, appPackageName, "Imported from traces");
+        mFirewallRuleDataSource.saveFirewallRule(firewallRule);
+        mView.showSuccessfullyAddedAsFirewallRuleMessage();
     }
 
-    private void loadTraces(final boolean showLoadingUi){
+    @Override
+    public void loadTraces(String filter, boolean sortByConsumption) {
+        loadTraces(filter, sortByConsumption, true);
+    }
+
+    @Override
+    public void deleteAllTraces() {
+        mTraceDataSource.deleteAllTraces();
+        mView.showNoTraces();
+    }
+
+    private void loadTraces(String filter, boolean sortByConsumption, final boolean showLoadingUi){
         if (showLoadingUi){
             mView.setLoadingIndicator(true);
         }
 
-        mTraceDataSource.getAllTraces(new TraceDataSource.LoadTracesCallback() {
+        mTraceDataSource.filterTraces(filter, sortByConsumption, new TraceDataSource.LoadTracesCallback() {
             @Override
             public void onTracesLoaded(List<Trace> traces) {
                 if (!mView.isActive()) return;
@@ -65,10 +82,11 @@ public class TracesListPresenter implements TracesListContract.Presenter {
     @Override
     public void onDestroy() {
         mTraceDataSource.releaseResources();
+        mFirewallRuleDataSource.releaseResources();
     }
 
     @Override
     public void start() {
-        loadTraces();
+        loadTraces(null, false);
     }
 }

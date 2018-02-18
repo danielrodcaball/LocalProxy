@@ -8,7 +8,6 @@
         android:id="@+id/tracesContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true"
         android:orientation="vertical">
 
         <LinearLayout
@@ -21,7 +20,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/traces_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:scrollbars="vertical" />
         </LinearLayout>
 
@@ -46,8 +45,6 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/list_item_padding"
                 android:text="@string/no_traces_all"/>
-
-            <!--android:text="@string/no_traces_all"-->
 
         </LinearLayout>
     </RelativeLayout>

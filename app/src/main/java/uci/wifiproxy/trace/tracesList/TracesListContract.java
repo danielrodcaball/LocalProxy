@@ -17,13 +17,15 @@ public interface TracesListContract {
     interface View extends BaseView<Presenter> {
         void setLoadingIndicator(boolean active);
         void showTraces(List<Trace> traces);
-        void showTraceDetailUi(String traceId);
+        void showSuccessfullyAddedAsFirewallRuleMessage();
         void showNoTraces();
         boolean isActive();
     }
 
     interface Presenter extends BasePresenter{
-        void loadTraces();
+        void addAsFirewallRule(String rule, String appPackageName);
+        void loadTraces(String filter, boolean sortByConsumption);
+        void deleteAllTraces();
         void openTracesDetails(@NonNull Trace requestedTrace);
         void onDestroy();
     }
