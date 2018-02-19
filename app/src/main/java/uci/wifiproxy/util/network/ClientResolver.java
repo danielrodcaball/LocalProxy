@@ -79,7 +79,7 @@ public class ClientResolver {
                             PackageInfo pInfo = packageManager.getPackageInfo(packageName, 0);
                             String version = pInfo.versionName;
                             String name = packageManager.getApplicationLabel(pInfo.applicationInfo).toString();
-                            return new ConnectionDescriptor(new String[]{packageName}, new String[]{name}, new String[]{version}, NetworkInfo.TCP6_TYPE, connStatus, srcAddressEntry, srcPort, dstAddressEntry, dstPort, null, uidEntry); 
+                            return new ConnectionDescriptor(new String[]{packageName}, new String[]{name}, new String[]{version}, NetworkInfo.TCP6_TYPE, connStatus, srcAddressEntry, srcPort, dstAddressEntry, dstPort, null, uidEntry);
                         }
                     }
                 }
@@ -126,7 +126,7 @@ public class ClientResolver {
                             String packageName = packagesForUid[0];
                             PackageInfo pInfo = packageManager.getPackageInfo(packageName, 0);
                             String version = pInfo.versionName;
-                            String name = pInfo.applicationInfo.name;
+                            String name = pInfo.applicationInfo.loadLabel(packageManager).toString();
                             return new ConnectionDescriptor(new String[]{packageName}, new String[]{name}, new String[]{version}, NetworkInfo.TCP_TYPE, status, srcAddressEntry, srcPort, dstAddressEntry, dstPort, null, uidEntry);
                         }
                     }

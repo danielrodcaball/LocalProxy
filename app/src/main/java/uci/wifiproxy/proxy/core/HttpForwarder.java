@@ -230,7 +230,8 @@ public class HttpForwarder extends Thread {
                         localSocket.getInetAddress().getHostAddress());
                 String packageNameSource = connectionDescriptor.getNamespace();
 
-                Log.e("Request:", packageNameSource + ": " + parser.getUri());
+                Log.e("Request:", connectionDescriptor.getNamespace() +
+                        "(" + connectionDescriptor.getName() + ")" + ": " + parser.getUri());
 
                 //Firewall action
                 if (!firewallFilter(packageNameSource, parser.getUri())) {

@@ -278,7 +278,7 @@ public class TracesListFragment extends Fragment implements TracesListContract.V
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 alertDialog.dismiss();
-                                                mPresenter.addAsFirewallRule(editRule.getText().toString(), appName.getText().toString());
+                                                mPresenter.addAsFirewallRule(editRule.getText().toString(), (String)appName.getTag());
                                             }
                                         });
                                 alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel),
@@ -338,6 +338,7 @@ public class TracesListFragment extends Fragment implements TracesListContract.V
             holder.consumption.setText(String.format("%.2f", trace.getBytesSpent() / 2048.0) + " MB");
             holder.url.setText(trace.getRequestedUrl());
             holder.appName.setText((trace.getAppName().equals(Trace.UNKNOWN_APP_NAME)) ? trace.getSourceApplication() : trace.getAppName());
+            holder.appName.setTag(trace.getSourceApplication());
 
             Date date = new Date(trace.getDatetime());
             holder.date.setText(new SimpleDateFormat("dd/MM/yyyy").format(date));
