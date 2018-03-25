@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,6 +24,8 @@ import uci.wifiproxy.proxy.core.HttpForwarder;
 import uci.wifiproxy.util.WifiUtils;
 //import uci.wifiproxy.ntlm.core.HttpForwarder;
 import uci.wifiproxy.proxy.ProxyActivity;
+
+import static android.provider.Settings.Global.HTTP_PROXY;
 
 
 public class ProxyService extends Service {
@@ -62,8 +65,8 @@ public class ProxyService extends Service {
 //        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && set_global_proxy) {
-            WifiUtils.unsetWifiProxySettings(this);
-            Toast.makeText(this, getString(R.string.OnNoProxy), Toast.LENGTH_LONG).show();
+//            WifiUtils.unsetWifiProxySettings(this);
+//            Toast.makeText(this, getString(R.string.OnNoProxy), Toast.LENGTH_LONG).show();
         }
 
 //        UCIntlmWidget.actualizarWidget(this.getApplicationContext(),
@@ -92,8 +95,10 @@ public class ProxyService extends Service {
         String domain = intent.getStringExtra("domain");
 
         System.out.println("global_proxy: " + String.valueOf(set_global_proxy));
-        if (set_global_proxy) {
-            WifiUtils.setWifiProxySettings(this, outputport, "");
+//        if (set_global_proxy) {
+        if (true) {
+//            WifiUtils.setWifiProxySettings(this, outputport, "");
+            Settings.Secure.putString(getContentResolver(), HTTP_PROXY, "127.0.0.1:" + outputport);
             Toast.makeText(this, getString(R.string.OnProxy), Toast.LENGTH_LONG).show();
         }
 
