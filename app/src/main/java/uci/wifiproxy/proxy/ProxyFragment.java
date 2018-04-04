@@ -44,6 +44,7 @@ import uci.wifiproxy.profile.addEditProfile.AddEditProfileActivity;
 import uci.wifiproxy.profile.addEditProfile.AddEditProfilePresenter;
 import uci.wifiproxy.proxy.service.ProxyService;
 import uci.wifiproxy.util.fontAwesome.ButtonAwesome;
+
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -68,9 +69,6 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
 
     @Nullable
     private CheckBox mGlobalProxyCheck;
-
-    @Nullable
-    private Button mWifiSettingsButton;
 
     private EditText mLocalPortEditText;
 
@@ -120,21 +118,12 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
                 String profileId = (mProfileSpinner.getSelectedItem() == null) ? ""
                         : ((Profile) mProfileSpinner.getSelectedItem()).getId();
 
-                if (mGlobalProxyCheck != null) {
-                    mPresenter.startProxy(mUsername.getText().toString(),
-                            mPassword.getText().toString(),
-                            profileId,
-                            mLocalPortEditText.getText().toString(),
-                            mRememberPasswordCheck.isChecked(),
-                            mGlobalProxyCheck.isChecked());
-                } else {
-                    mPresenter.startProxy(mUsername.getText().toString(),
-                            mPassword.getText().toString(),
-                            profileId,
-                            mLocalPortEditText.getText().toString(),
-                            mRememberPasswordCheck.isChecked(),
-                            false);
-                }
+                mPresenter.startProxy(mUsername.getText().toString(),
+                        mPassword.getText().toString(),
+                        profileId,
+                        mLocalPortEditText.getText().toString(),
+                        mRememberPasswordCheck.isChecked(),
+                        mGlobalProxyCheck.isChecked());
             }
         });
 
@@ -160,18 +149,16 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
 
         mLocalPortEditText = (EditText) root.findViewById(R.id.local_port);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mGlobalProxyCheck = (CheckBox) root.findViewById(R.id.globCheckBox);
-        }
-        else{
-            mWifiSettingsButton = (Button) root.findViewById(R.id.wifiSettingsButton);
-            mWifiSettingsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mPresenter.goToWifiConfDialog();
-                }
-            });
-        }
+        mGlobalProxyCheck = (CheckBox) root.findViewById(R.id.globCheckBox);
+//        else{
+//            mWifiSettingsButton = (Button) root.findViewById(R.id.wifiSettingsButton);
+//            mWifiSettingsButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mPresenter.goToWifiConfDialog();
+//                }
+//            });
+//        }
 
         mProfileSpinner = (Spinner) root.findViewById(R.id.spinner_profiles);
         mProfileSpinner.setAdapter(mProfileArrayAdapter);
@@ -215,7 +202,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         mProfileSpinner.setEnabled(true);
         mLocalPortEditText.setEnabled(true);
 
-        if (mGlobalProxyCheck != null){
+        if (mGlobalProxyCheck != null) {
             mGlobalProxyCheck.setEnabled(true);
         }
     }
@@ -228,7 +215,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         mProfileSpinner.setEnabled(false);
         mLocalPortEditText.setEnabled(false);
 
-        if (mGlobalProxyCheck != null){
+        if (mGlobalProxyCheck != null) {
             mGlobalProxyCheck.setEnabled(false);
         }
     }
@@ -512,8 +499,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
                 //This is executed in the UI thread, PERFECT!!!!
                 if (constraint != null && !constraint.equals("")) {
                     mPresenter.filterUsers(constraint.toString());
-                }
-                else{
+                } else {
                     mPresenter.loadUsers();
                 }
             }

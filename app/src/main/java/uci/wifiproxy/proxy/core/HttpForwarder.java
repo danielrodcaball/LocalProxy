@@ -62,6 +62,7 @@ import cz.msebera.android.httpclient.impl.conn.PoolingHttpClientConnectionManage
 import cz.msebera.android.httpclient.impl.io.DefaultHttpRequestParser;
 import cz.msebera.android.httpclient.impl.io.HttpRequestParser;
 import cz.msebera.android.httpclient.io.HttpMessageParser;
+import cz.msebera.android.httpclient.message.BasicHeader;
 import cz.msebera.android.httpclient.protocol.HttpContext;
 import uci.wifiproxy.data.applicationPackage.ApplicationPackageLocalDataSource;
 import uci.wifiproxy.data.firewallRule.FirewallRule;
@@ -245,6 +246,16 @@ public class HttpForwarder extends Thread {
                     }
                     return;
                 }
+
+                //changing headers
+//                Header [] headers = parser.getHeaders();
+//                for (int i = 0; i < headers.length; i++){
+//                    Header h = headers[i];
+//                    if (h.getName().equalsIgnoreCase("user-agent")){
+//                        Log.e("yes", "yes");
+//                        headers[i] = new BasicHeader("User-agent", "firefox");
+//                    }
+//                }
 
                 if (parser.getMethod().equals("CONNECT")) {
                     bytes += resolveConnect(parser, os);

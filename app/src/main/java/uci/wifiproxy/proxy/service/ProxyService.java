@@ -3,18 +3,35 @@ package uci.wifiproxy.proxy.service;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Proxy;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.provider.Settings;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.Toast;
 
+
+import com.stericson.RootShell.exceptions.RootDeniedException;
+import com.stericson.RootShell.execution.Command;
+import com.stericson.RootShell.execution.Shell;
+import com.stericson.RootTools.RootTools;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 
 import uci.wifiproxy.R;
 import uci.wifiproxy.data.firewallRule.FirewallRule;
@@ -64,8 +81,18 @@ public class ProxyService extends Service {
 //            unregisterReceiver(wifiAutoConfigReceiver);
 //        }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && set_global_proxy) {
-//            WifiUtils.unsetWifiProxySettings(this);
+        if (set_global_proxy) {
+            WifiUtils.unsetWifiProxySettings(this);
+//            Settings.Secure.putString(getContentResolver(), "http_proxy", "");
+//            Settings.Secure.putString(getContentResolver(), "global_http_proxy_host", "");
+//            Settings.Secure.putString(getContentResolver(), "global_http_proxy_port", "");
+//            ipTablesForTransparentProxy(false);
+//            System.getProperties().clear();
+//            System.getProperties().put("http.proxyHost", "");
+//            System.getProperties().put("http.proxyPort", "");
+//            System.getProperties().put("https.proxyHost", "");
+//            System.getProperties().put("https.proxyPort", "");
+
 //            Toast.makeText(this, getString(R.string.OnNoProxy), Toast.LENGTH_LONG).show();
         }
 
@@ -96,9 +123,15 @@ public class ProxyService extends Service {
 
         System.out.println("global_proxy: " + String.valueOf(set_global_proxy));
 //        if (set_global_proxy) {
-        if (true) {
-//            WifiUtils.setWifiProxySettings(this, outputport, "");
-            Settings.Secure.putString(getContentResolver(), HTTP_PROXY, "127.0.0.1:" + outputport);
+        if (set_global_proxy) {
+//            setLollipopWebViewProxy(getApplicationContext(), "10.0.0.1", 8080);
+            WifiUtils.setWifiProxySettings(this, outputport, "");
+//            Settings.Secure.putString(getContentResolver(), HTTP_PROXY, "127.0.0.2:" + "7894");
+//            ipTablesForTransparentProxy(true);
+//            System.getProperties().put("http.proxyHost", "127.0.0.1");
+//            System.getProperties().put("http.proxyPort", "8080");
+//            System.getProperties().put("https.proxyHost", "127.0.0.1");
+//            System.getProperties().put("https.proxyPort", "8080");
             Toast.makeText(this, getString(R.string.OnProxy), Toast.LENGTH_LONG).show();
         }
 
@@ -148,6 +181,151 @@ public class ProxyService extends Service {
         notification.flags |= Notification.FLAG_NO_CLEAR;
 
         startForeground(NOTIFICATION, notification);
+    }
+
+
+    //This from <SandroProxy proyect>/projects/SandroProxyPlugin/src/org/sandroproxy/plugin/gui/MainActivity.java
+//    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ProxyService.class.getName());
+    private void ipTablesForTransparentProxy(boolean activate) {
+        int processId = getApplicationInfo().uid;
+        String excludedUid = String.valueOf(processId);
+        String action = (activate) ? "A" : "D";
+        String chainName = "spplugin";
+        String chainName1 = "sppluginOutput";
+        List<String> rules = new ArrayList<String>();
+
+        String r = "iptables -t nat -" + action + " OUTPUT -p 6 -d 10.0.0.1 -j RETURN";
+        String redirectRule = "iptables -t nat -" + action + " OUTPUT -p 6 --dport 80 -m owner ! --uid-owner " + excludedUid + " -j REDIRECT --to-port 8080 ";
+        String redirectRule2 = "iptables -t nat -" + action + " OUTPUT -p 6 --dport 443 -m owner ! --uid-owner " + excludedUid + " -j REDIRECT --to-port 8080 ";
+        String redirectRule3 = "iptables -t nat -" + action + " OUTPUT -p 6 --dport 5228 -m owner ! --uid-owner " + excludedUid + " -j REDIRECT --to-port 8080 ";
+
+        try {
+            Command command0 = new Command(4, r){
+                @Override
+                public void commandOutput(int id, String line) {
+                    super.commandOutput(id, line);
+                    Log.e("command output", line);
+                }
+            };
+            Command command = new Command(0, redirectRule);
+            Command command1 = new Command(1, redirectRule2);
+            Command command2 = new Command(1, redirectRule3);
+            Shell shell = RootTools.getShell(true);
+            shell.add(command0);
+            shell.add(command);
+            shell.add(command1);
+            shell.add(command2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        } catch (RootDeniedException e) {
+            e.printStackTrace();
+        }
+//        String redirectRule2 = "iptables -t nat -" + action + " OUTPUT -p 6 --dport 0:65535 -m owner ! --uid-owner " + excludedUid + " -j REDIRECT --to-port 8080 ";
+//        rules.add(redirectRule2);
+
+//        String rule0 = "iptables -" + action + " POSTROUTING -t nat -j MASQUERADE";
+//        String rule1 = "iptables -t nat -" + action + " OUTPUT -m owner --uid-owner " + excludedUid  + " -j ACCEPT";
+//        String rule2 = "iptables -t nat -" + action + " OUTPUT -p tcp --dport 80 -j REDIRECT --to-port 8080";
+//        String rule3 = "iptables -t nat -" + action + " OUTPUT -p tcp --dport 443 -j REDIRECT --to-port 8080";
+////        String rule3 = "iptables -t nat -" + action + " OUTPUT -p tcp --dport 80 -j DNAT --to :8080";
+//        rules.add(rule0);
+//        rules.add(rule1);
+//        rules.add(rule2);
+//        rules.add(rule3);
+
+
+//        if (activate){
+//            action = "A";
+//            String createChainRule = "iptables --new " + chainName; rules.add(createChainRule);
+//            String createNatChainRule = "iptables -t nat --new " + chainName; rules.add(createNatChainRule);
+//            String createNatChainRule1 = "iptables -t nat --new " + chainName1; rules.add(createNatChainRule1);
+//        }else{
+//            action = "D";
+//            String dettachChainRule = "iptables -D INPUT -j " + chainName; rules.add(dettachChainRule);
+//            String dettachNatChainRule = "iptables -t nat -D PREROUTING -j " + chainName; rules.add(dettachNatChainRule);
+//            String dettachNatChainRule1 = "iptables -t nat -D OUTPUT -j " + chainName1; rules.add(dettachNatChainRule1);
+//        }
+//
+
+//        Process p;
+//        try {
+//            p = Runtime.getRuntime().exec(new String[]{"su", "-c", "sh"});
+//
+//            DataOutputStream stdin = new DataOutputStream(p.getOutputStream());
+//            DataInputStream stdout = new DataInputStream(p.getInputStream());
+//            InputStream stderr = p.getErrorStream();
+//
+//            for (String rule : rules) {
+////                logger.finest(rule);
+//                stdin.writeBytes(rule + "\n");
+//                stdin.writeBytes("echo $?\n");
+//                Thread.sleep(100);
+//                byte[] buffer = new byte[4096];
+//                int read = 0;
+//                String out = new String();
+//                String err = new String();
+//                while (true) {
+//                    read = stdout.read(buffer);
+//                    out += new String(buffer, 0, read);
+//                    if (read < 4096) {
+//                        break;
+//                    }
+//                }
+//                while (stderr.available() > 0) {
+//                    read = stderr.read(buffer);
+//                    err += new String(buffer, 0, read);
+//                    if (read < 4096) {
+//                        break;
+//                    }
+//                }
+//                if (out != null && out.trim().length() > 0) Log.d(getClass().getName(), out);
+//                if (err != null && err.trim().length() > 0) Log.d(getClass().getName(), err);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+////            logger.finest("Error executing rules: " + e.getMessage());
+//        }
+    }
+
+    private static boolean setLollipopWebViewProxy(Context appContext, String host, int port) {
+        System.setProperty("http.proxyHost", host);
+        System.setProperty("http.proxyPort", port + "");
+        System.setProperty("https.proxyHost", host);
+        System.setProperty("https.proxyPort", port + "");
+        try {
+            Class applictionCls = Class.forName("android.app.Application");
+            Field loadedApkField = applictionCls.getDeclaredField("mLoadedApk");
+            loadedApkField.setAccessible(true);
+            Object loadedApk = loadedApkField.get(appContext);
+            Class loadedApkCls = Class.forName("android.app.LoadedApk");
+            Field receiversField = loadedApkCls.getDeclaredField("mReceivers");
+            receiversField.setAccessible(true);
+            ArrayMap receivers = (ArrayMap) receiversField.get(loadedApk);
+            for (Object receiverMap : receivers.values()) {
+                for (Object rec : ((ArrayMap) receiverMap).keySet()) {
+                    Class clazz = rec.getClass();
+                    if (clazz.getName().contains("ProxyChangeListener")) {
+                        Method onReceiveMethod = clazz.getDeclaredMethod("onReceive", Context.class, Intent.class);
+                        Intent intent = new Intent(Proxy.PROXY_CHANGE_ACTION);
+                        /***** In Lollipop, ProxyProperties went public as ProxyInfo *****/
+                        final String CLASS_NAME = "android.net.ProxyInfo";
+                        Class cls = Class.forName(CLASS_NAME);
+                        /***** ProxyInfo lacks constructors, use the static buildDirectProxy method instead *****/
+                        Method buildDirectProxyMethod = cls.getMethod("buildDirectProxy", String.class, Integer.TYPE);
+                        Object proxyInfo = buildDirectProxyMethod.invoke(cls, host, port);
+                        intent.putExtra("proxy", (Parcelable) proxyInfo);
+                        onReceiveMethod.invoke(rec, appContext, intent);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("Setting proxy error", "Setting proxy with >= 5.0 API failed with", e);
+            return false;
+        }
+        Log.d("Setting proxy success", "Setting proxy with >= 5.0 API successful!");
+        return true;
     }
 
 }

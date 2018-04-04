@@ -1,6 +1,5 @@
 package uci.wifiproxy.proxy;
 
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -9,8 +8,6 @@ import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 
-import uci.wifiproxy.data.firewallRule.FirewallRule;
-import uci.wifiproxy.data.firewallRule.FirewallRuleDataSource;
 import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
 import uci.wifiproxy.data.pref.AppPreferencesHelper;
 import uci.wifiproxy.data.profile.Profile;
@@ -19,7 +16,6 @@ import uci.wifiproxy.data.profile.source.ProfilesLocalDataSource;
 import uci.wifiproxy.data.user.User;
 import uci.wifiproxy.data.user.UsersDataSource;
 import uci.wifiproxy.data.user.UsersLocalDataSource;
-import uci.wifiproxy.util.StringUtils;
 
 import static uci.wifiproxy.profile.addEditProfile.AddEditProfilePresenter.MAX_PORTS_LIMIT;
 import static uci.wifiproxy.profile.addEditProfile.AddEditProfilePresenter.MAX_SYSTEM_PORTS_LIMIT;
