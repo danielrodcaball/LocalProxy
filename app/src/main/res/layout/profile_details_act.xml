@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".profile.profileDetails.ProfileDetailsActivity">
+    tools:context=".profilescreens.profiledetails.ProfileDetailsActivity">
 
     <include layout="@layout/app_bar_layout"/>
 

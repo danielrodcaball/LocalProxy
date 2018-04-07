@@ -31,7 +31,7 @@
         android:sharedUserId="android.uid.system">
 
         <activity
-            android:name="uci.wifiproxy.proxy.ProxyActivity"
+            android:name="uci.wifiproxy.proxyscreen.ProxyActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.OverlapSystemBar">
@@ -41,38 +41,41 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".profile.addEditProfile.AddEditProfileActivity" />
-        <activity android:name=".profile.profileDetails.ProfileDetailsActivity" />
+        <activity android:name=".profilescreens.addeditprofile.AddEditProfileActivity" />
+        <activity android:name=".profilescreens.profiledetails.ProfileDetailsActivity" />
 
-        <activity android:name=".firewall.addEditFirewallRule.AddEditFirewallRuleActivity" />
-        <activity android:name=".firewall.firewallRuleDetails.FirewallRuleDetailsActivity" />
+        <activity android:name=".firewallscreens.addeditfirewallrule.AddEditFirewallRuleActivity" />
+        <activity android:name=".firewallscreens.firewallruledetails.FirewallRuleDetailsActivity" />
 
         <activity
-            android:name=".profile.profilesList.ProfilesListActivity"
+            android:name=".profilescreens.profileslist.ProfilesListActivity"
             android:launchMode="singleTop"
             tools:ignore="UnusedAttribute">
         </activity>
 
         <activity
-            android:name=".firewall.firewallRulesList.FirewallRulesListActivity"
+            android:name=".firewallscreens.firewallruleslist.FirewallRulesListActivity"
             android:launchMode="singleTop"
             tools:ignore="UnusedAttribute">
         </activity>
 
         <activity
-            android:name=".trace.tracesList.TracesListActivity"
+            android:name=".tracescreens.traceslist.TracesListActivity"
             android:launchMode="singleTop"
             tools:ignore="UnusedAttribute">
         </activity>
 
         <service
-            android:name="uci.wifiproxy.proxy.service.ProxyService"
+            android:name="uci.wifiproxy.proxycore.ProxyService"
             android:icon="@mipmap/ic_launcher"
             android:label="WifiProxyService"
             android:launchMode="singleTop"
             android:stopWithTask="false">
             <!--android:process=":UCIntlmService"-->
         </service>
+
+        <activity android:name=".aboutscreen.AboutActivity"
+            android:theme="@style/AppTheme.MaterialAboutActivity"/>
 
     </application>
 

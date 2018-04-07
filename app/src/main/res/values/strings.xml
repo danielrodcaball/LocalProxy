@@ -114,5 +114,6 @@
     <string name="clear_all">Clear all</string>
     <string name="search">Search</string>
     <string name="query_hint">app name or url</string>
+    <string name="about_title">About</string>
 
 </resources>

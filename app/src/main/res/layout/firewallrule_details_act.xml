@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".firewall.firewallRuleDetails.FirewallRuleDetailsActivity">
+    tools:context=".firewallscreens.firewallruledetails.FirewallRuleDetailsActivity">
 
     <include layout="@layout/app_bar_layout"/>
 

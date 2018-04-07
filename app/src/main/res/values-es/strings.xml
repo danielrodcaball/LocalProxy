@@ -107,5 +107,6 @@
     <string name="clear_all">Limpiar</string>
     <string name="search">Buscar</string>
     <string name="query_hint">nombre de app o url</string>
+    <string name="about_title">Acerca</string>
 
 </resources>

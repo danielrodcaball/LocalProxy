@@ -6,10 +6,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import uci.wifiproxy.firewall.firewallRulesList.FirewallRulesListActivity;
-import uci.wifiproxy.profile.profilesList.ProfilesListActivity;
-import uci.wifiproxy.proxy.ProxyActivity;
-import uci.wifiproxy.trace.tracesList.TracesListActivity;
+import uci.wifiproxy.aboutscreen.AboutActivity;
+import uci.wifiproxy.firewallscreens.firewallruleslist.FirewallRulesListActivity;
+import uci.wifiproxy.profilescreens.profileslist.ProfilesListActivity;
+import uci.wifiproxy.proxyscreen.ProxyActivity;
+import uci.wifiproxy.tracescreens.traceslist.TracesListActivity;
 
 /**
  * Created by daniel on 17/02/18.
@@ -38,32 +39,36 @@ public abstract class BaseDrawerActivity extends AppCompatActivity {
                             case R.id.profile_navigation_menu_item:
                                 if (BaseDrawerActivity.this instanceof ProfilesListActivity) {
                                     menuItem.setChecked(true);
-                                }
-                                else{
+                                } else {
                                     intent = new Intent(BaseDrawerActivity.this, ProfilesListActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                     startActivity(intent);
                                 }
                                 break;
                             case R.id.firewall_navigation_menu_item:
-                                if (BaseDrawerActivity.this instanceof FirewallRulesListActivity){
+                                if (BaseDrawerActivity.this instanceof FirewallRulesListActivity) {
                                     menuItem.setChecked(true);
-                                }
-                                else {
+                                } else {
                                     intent = new Intent(BaseDrawerActivity.this, FirewallRulesListActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                     startActivity(intent);
                                 }
                                 break;
                             case R.id.traces_navigation_menu_item:
-                                if (BaseDrawerActivity.this instanceof TracesListActivity){
+                                if (BaseDrawerActivity.this instanceof TracesListActivity) {
                                     menuItem.setChecked(true);
-                                }
-                                else{
+                                } else {
                                     intent = new Intent(BaseDrawerActivity.this, TracesListActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                     startActivity(intent);
                                 }
+                                break;
+                            case R.id.about_menu_item:
+                                menuItem.setChecked(true);
+                                intent = new Intent(BaseDrawerActivity.this, AboutActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                startActivity(intent);
+
                                 break;
                             default:
                                 break;

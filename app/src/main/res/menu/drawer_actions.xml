@@ -32,4 +32,8 @@
         android:id="@+id/traces_navigation_menu_item"
         android:icon="@drawable/ic_traces"
         android:title="@string/traces_title" />
+    <item
+        android:id="@+id/about_menu_item"
+        android:icon="@drawable/ic_drawer_about"
+        android:title="@string/about_title" />
 </menu>

@@ -16,7 +16,7 @@ import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.client.methods.HttpGet;
 import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
 import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
-import uci.wifiproxy.proxy.core.HttpForwarder;
+import uci.wifiproxy.proxycore.core.HttpForwarder;
 
 import static org.junit.Assert.assertEquals;
 
