@@ -25,6 +25,7 @@ import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HeaderIterator;
 import cz.msebera.android.httpclient.HttpEntityEnclosingRequest;
 import cz.msebera.android.httpclient.HttpHost;
+import cz.msebera.android.httpclient.HttpRequest;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.auth.AuthScope;
 import cz.msebera.android.httpclient.auth.NTCredentials;
@@ -44,6 +45,11 @@ import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
 import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
 import cz.msebera.android.httpclient.impl.client.ProxyClient;
 import cz.msebera.android.httpclient.impl.conn.PoolingHttpClientConnectionManager;
+import cz.msebera.android.httpclient.impl.io.DefaultHttpRequestParser;
+import cz.msebera.android.httpclient.impl.io.HttpRequestParser;
+import cz.msebera.android.httpclient.impl.io.HttpTransportMetricsImpl;
+import cz.msebera.android.httpclient.impl.io.SessionInputBufferImpl;
+import cz.msebera.android.httpclient.io.HttpMessageParser;
 import uci.wifiproxy.data.applicationPackage.ApplicationPackageLocalDataSource;
 import uci.wifiproxy.data.firewallRule.FirewallRule;
 import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
@@ -204,6 +210,13 @@ public class HttpForwarder extends Thread {
             OutputStream os = null;
             long bytes = 0;
             try {
+//                HttpTransportMetricsImpl metrics = new HttpTransportMetricsImpl();
+//                SessionInputBufferImpl inbuffer = new SessionInputBufferImpl(metrics, 8 * 1024);
+//                inbuffer.bind(this.localSocket.getInputStream());
+//                HttpMessageParser<HttpRequest> requestParser = new DefaultHttpRequestParser(
+//                        inbuffer);
+//                HttpRequest request = requestParser.parse();
+
                 parser = parseInputStream(this.localSocket.getInputStream());
                 os = this.localSocket.getOutputStream();
 
@@ -403,7 +416,10 @@ public class HttpForwarder extends Thread {
         private HttpParser parseInputStream(InputStream is) throws ParseException, IOException {
             HttpParser parser = new HttpParser(is);
             try {
-                parser.parse();
+                for (int i = 0; i < 100 && !parser.parse(); i++){
+                    Log.e("parser", 1+"");
+                }
+//                parser.parse();
 //                while (!parser.parse()) {
 //                    Log.e("parser", "parse");
 //                }

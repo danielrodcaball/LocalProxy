@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Locale;
 
 import uci.wifiproxy.R;
+import uci.wifiproxy.WifiProxyApplication;
 import uci.wifiproxy.data.profile.Profile;
 import uci.wifiproxy.data.user.User;
 import uci.wifiproxy.profilescreens.addeditprofile.AddEditProfileActivity;
@@ -116,7 +118,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
                 String profileId = (mProfileSpinner.getSelectedItem() == null) ? ""
                         : ((Profile) mProfileSpinner.getSelectedItem()).getId();
 
-                mPresenter.startProxy(mUsername.getText().toString(),
+                mPresenter.startProxyFromFabButton(mUsername.getText().toString(),
                         mPassword.getText().toString(),
                         profileId,
                         mLocalPortEditText.getText().toString(),
@@ -148,15 +150,9 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         mLocalPortEditText = (EditText) root.findViewById(R.id.local_port);
 
         mGlobalProxyCheck = (CheckBox) root.findViewById(R.id.globCheckBox);
-//        else{
-//            mWifiSettingsButton = (Button) root.findViewById(R.id.wifiSettingsButton);
-//            mWifiSettingsButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mPresenter.goToWifiConfDialog();
-//                }
-//            });
-//        }
+        if (Build.VERSION.SDK_INT > WifiProxyApplication.MAX_SDK_SUPPORTED_FOR_WIFI_CONF) {
+            mGlobalProxyCheck.setVisibility(View.GONE);
+        }
 
         mProfileSpinner = (Spinner) root.findViewById(R.id.spinner_profiles);
         mProfileSpinner.setAdapter(mProfileArrayAdapter);
@@ -396,15 +392,24 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         final CheckBox dontShowCheckBox = (CheckBox) view.findViewById(R.id.dontShowCheckBox);
         builder.setTitle(getContext().getResources().getString(R.string.wifiSettings));
         builder.setView(view);
-        builder.setPositiveButton(R.string.wifiSettingsPositiveButton, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.wifiSettingsGoToWifi, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mPresenter.goToWifiSettings(dontShowCheckBox.isChecked());
             }
         });
-        builder.setNegativeButton(R.string.wifiSettingsNegativeButton, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.wifiSettingsContinue, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                String profileId = (mProfileSpinner.getSelectedItem() == null) ? ""
+                        : ((Profile) mProfileSpinner.getSelectedItem()).getId();
+                mPresenter.startProxyFromHelpDialog(mUsername.getText().toString(),
+                        mPassword.getText().toString(),
+                        profileId,
+                        mLocalPortEditText.getText().toString(),
+                        mRememberPasswordCheck.isChecked(),
+                        mGlobalProxyCheck.isChecked(),
+                        dontShowCheckBox.isChecked());
                 dialog.cancel();
             }
         });

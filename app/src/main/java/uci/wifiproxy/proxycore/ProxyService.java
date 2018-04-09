@@ -14,6 +14,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 
+import com.bitbucket.lonelydeveloper97.wifiproxysettingslibrary.proxy_change_realisation.wifi_network.WifiProxyChanger;
+import com.bitbucket.lonelydeveloper97.wifiproxysettingslibrary.proxy_change_realisation.wifi_network.exceptions.ApiNotSupportedException;
+import com.bitbucket.lonelydeveloper97.wifiproxysettingslibrary.proxy_change_realisation.wifi_network.exceptions.NullWifiConfigurationException;
 import com.stericson.RootShell.exceptions.RootDeniedException;
 import com.stericson.RootShell.execution.Command;
 import com.stericson.RootShell.execution.Shell;
@@ -21,6 +24,7 @@ import com.stericson.RootTools.RootTools;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +75,12 @@ public class ProxyService extends Service {
 //        }
 
         if (set_global_proxy) {
-            WifiUtils.unsetWifiProxySettings(this);
+            try {
+                WifiProxyChanger.clearProxySettings(this);
+            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | InvocationTargetException |
+                    NoSuchFieldException | IllegalAccessException | NullWifiConfigurationException | ApiNotSupportedException e) {
+                e.printStackTrace();
+            }
 //            Settings.Secure.putString(getContentResolver(), "http_proxy", "");
 //            Settings.Secure.putString(getContentResolver(), "global_http_proxy_host", "");
 //            Settings.Secure.putString(getContentResolver(), "global_http_proxy_port", "");
@@ -82,7 +91,7 @@ public class ProxyService extends Service {
 //            System.getProperties().put("https.proxyHost", "");
 //            System.getProperties().put("https.proxyPort", "");
 
-//            Toast.makeText(this, getString(R.string.OnNoProxy), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.OnNoProxy), Toast.LENGTH_LONG).show();
         }
 
 //        UCIntlmWidget.actualizarWidget(this.getApplicationContext(),
@@ -113,14 +122,16 @@ public class ProxyService extends Service {
         System.out.println("global_proxy: " + String.valueOf(set_global_proxy));
 //        if (set_global_proxy) {
         if (set_global_proxy) {
+            try {
+                WifiProxyChanger.changeWifiStaticProxySettings("127.0.0.1", outputport, this);
+            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | InvocationTargetException |
+                    NoSuchFieldException | IllegalAccessException | NullWifiConfigurationException | ApiNotSupportedException e) {
+                e.printStackTrace();
+            }
 //            setLollipopWebViewProxy(getApplicationContext(), "10.0.0.1", 8080);
             WifiUtils.setWifiProxySettings(this, outputport, "");
 //            Settings.Secure.putString(getContentResolver(), HTTP_PROXY, "127.0.0.2:" + "7894");
 //            ipTablesForTransparentProxy(true);
-//            System.getProperties().put("http.proxyHost", "127.0.0.1");
-//            System.getProperties().put("http.proxyPort", "8080");
-//            System.getProperties().put("https.proxyHost", "127.0.0.1");
-//            System.getProperties().put("https.proxyPort", "8080");
             Toast.makeText(this, getString(R.string.OnProxy), Toast.LENGTH_LONG).show();
         }
 

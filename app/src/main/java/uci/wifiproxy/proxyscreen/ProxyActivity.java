@@ -121,7 +121,7 @@ public class ProxyActivity extends BaseDrawerActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         //no menu needed at this time
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu, menu);
+//        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
@@ -134,21 +134,21 @@ public class ProxyActivity extends BaseDrawerActivity {
 
         switch (id) {
             case R.id.action_about_us:
-                AlertDialog alertDialog = new AlertDialog.Builder(ProxyActivity.this).create();
-                if (themeId == ProxyActivity.DARK_THEME) {
-                    alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(ProxyActivity.this, R.style.AlertDialogCustom)).create();
-                }
-                alertDialog.setTitle(getResources().getString(R.string.createdBy));
-                alertDialog.setMessage("Daniel A. Rodriguez Caballero: \n" +
-                        "darodriguez@estudiantes.uci.cu,\n" + "danielrodcaball@gmail.com");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-
-                alertDialog.show();
+//                AlertDialog alertDialog = new AlertDialog.Builder(ProxyActivity.this).create();
+//                if (themeId == ProxyActivity.DARK_THEME) {
+//                    alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(ProxyActivity.this, R.style.AlertDialogCustom)).create();
+//                }
+//                alertDialog.setTitle(getResources().getString(R.string.createdBy));
+//                alertDialog.setMessage("Daniel A. Rodriguez Caballero: \n" +
+//                        "darodriguez@estudiantes.uci.cu,\n" + "danielrodcaball@gmail.com");
+//                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+//                        new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                dialog.dismiss();
+//                            }
+//                        });
+//
+//                alertDialog.show();
                 return true;
 
             case android.R.id.home:

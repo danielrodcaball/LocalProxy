@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">WifiProxy 1.0</string>
+    <string name="app_name">WifiProxy</string>
     <string name="description">Proxy ntlm para Android</string>
     <string name="action_settings">Configuración</string>
     <string name="user">Usuario</string>
@@ -54,8 +54,8 @@
     <string name="wifiSettings">Configuración de Wi-fi</string>
     <string name="wifiSettingsText">Con el objetivo de configurar el proxy de la Wi-fi, hágalo de la siguiente manera:</string>
     <string name="wifiSettingsCheck">No mostrar de nuevo</string>
-    <string name="wifiSettingsPositiveButton">Ir a opciones de la Wi-fi</string>
-    <string name="wifiSettingsNegativeButton">Cancelar</string>
+    <string name="wifiSettingsGoToWifi">Ir a opciones de la Wi-fi</string>
+    <string name="wifiSettingsContinue">Continuar</string>
     <string name="bubbleNotificationRunning">Burbuja de notificación ejecutandose</string>
     <string name="authScheme">Esquema de autenticación:</string>
     <string name="no_profiles_all">Usted no tiene Perfiles</string>
@@ -108,5 +108,9 @@
     <string name="search">Buscar</string>
     <string name="query_hint">nombre de app o url</string>
     <string name="about_title">Acerca</string>
+    <string name="version_text">Versión</string>
+    <string name="sourcecode_text">Código fuente</string>
+    <string name="author_text">Autor</string>
+
 
 </resources>

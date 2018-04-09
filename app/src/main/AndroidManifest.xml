@@ -16,7 +16,7 @@
     <!--<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>-->
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="15"
         android:targetSdkVersion="24" />
 
     <application
@@ -34,7 +34,8 @@
             android:name="uci.wifiproxy.proxyscreen.ProxyActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.OverlapSystemBar">
+            android:theme="@style/AppTheme.OverlapSystemBar"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

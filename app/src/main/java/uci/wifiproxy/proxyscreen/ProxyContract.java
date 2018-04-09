@@ -17,8 +17,13 @@ public interface ProxyContract {
 
     interface Presenter extends BasePresenter {
 
-        void startProxy(@NonNull String user, @NonNull String pass, @NonNull String profileID,
-                        @NonNull String localPort, @NonNull boolean rememberPass, @NonNull boolean setGlobalProxy);
+        void startProxyFromFabButton(@NonNull String user, @NonNull String pass, @NonNull String profileID,
+                        @NonNull String localPort, @NonNull boolean rememberPass,
+                        @NonNull boolean setGlobalProxy);
+
+        void startProxyFromHelpDialog(@NonNull String user, @NonNull String pass, @NonNull String profileID,
+                                     @NonNull String localPort, @NonNull boolean rememberPass,
+                                     @NonNull boolean setGlobalProxy, @NonNull boolean dontShowAgain);
 
         void stopProxy();
 

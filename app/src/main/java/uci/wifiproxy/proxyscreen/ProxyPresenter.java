@@ -1,5 +1,6 @@
 package uci.wifiproxy.proxyscreen;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -8,6 +9,7 @@ import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 
+import uci.wifiproxy.WifiProxyApplication;
 import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
 import uci.wifiproxy.data.pref.AppPreferencesHelper;
 import uci.wifiproxy.data.profile.Profile;
@@ -51,9 +53,36 @@ public class ProxyPresenter implements ProxyContract.Presenter {
     }
 
     @Override
-    public void startProxy(@NonNull final String username, @NonNull final String password, @NonNull final String profileId,
-                           @NonNull final String localPort, @NonNull boolean rememberPass, @Nullable final boolean setGlobalProxy) {
+    public void startProxyFromFabButton(@NonNull String username, @NonNull String password, @NonNull String profileId,
+                           @NonNull  String localPort, @NonNull boolean rememberPass,
+                           @Nullable boolean setGlobalProxy) {
 
+        if (Build.VERSION.SDK_INT > WifiProxyApplication.MAX_SDK_SUPPORTED_FOR_WIFI_CONF &&
+                !mPrefHelper.getDontShowDialogAgain()
+                ){
+            mProxyView.showWifiConfDialog();
+            return;
+        }
+
+        setGlobalProxy = Build.VERSION.SDK_INT <= WifiProxyApplication.MAX_SDK_SUPPORTED_FOR_WIFI_CONF && setGlobalProxy;
+        startProxy(username, password, profileId, localPort, rememberPass, setGlobalProxy);
+    }
+
+    @Override
+    public void startProxyFromHelpDialog(@NonNull String user, @NonNull String pass,
+                                         @NonNull String profileID, @NonNull String localPort,
+                                         @NonNull boolean rememberPass, @NonNull boolean setGlobalProxy, @NonNull boolean dontShowAgain) {
+        if (dontShowAgain) {
+            mPrefHelper.setDontShowDialogAgain(true);
+        }
+
+        setGlobalProxy = Build.VERSION.SDK_INT <= WifiProxyApplication.MAX_SDK_SUPPORTED_FOR_WIFI_CONF && setGlobalProxy;
+        startProxy(user, pass, profileID, localPort, rememberPass, setGlobalProxy);
+    }
+
+    private void startProxy(@NonNull final String username, @NonNull final String password, @NonNull final String profileId,
+                            @NonNull final String localPort, @NonNull boolean rememberPass,
+                            @Nullable final boolean setGlobalProxy){
         boolean isValidData = validateData(username, password, profileId, localPort);
 
         if (isValidData) {
@@ -85,6 +114,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
             });
 
         }
+
     }
 
     @Override

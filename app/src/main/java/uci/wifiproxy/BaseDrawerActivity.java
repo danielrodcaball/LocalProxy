@@ -64,7 +64,6 @@ public abstract class BaseDrawerActivity extends AppCompatActivity {
                                 }
                                 break;
                             case R.id.about_menu_item:
-                                menuItem.setChecked(true);
                                 intent = new Intent(BaseDrawerActivity.this, AboutActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                 startActivity(intent);
