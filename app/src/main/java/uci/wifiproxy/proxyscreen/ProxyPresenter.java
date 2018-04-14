@@ -8,10 +8,23 @@ import android.util.Log;
 
 import com.google.common.base.Strings;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import cz.msebera.android.httpclient.HttpHost;
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.StatusLine;
+import cz.msebera.android.httpclient.auth.AuthScope;
+import cz.msebera.android.httpclient.auth.NTCredentials;
+import cz.msebera.android.httpclient.client.CredentialsProvider;
+import cz.msebera.android.httpclient.client.methods.HttpGet;
+import cz.msebera.android.httpclient.impl.client.BasicCredentialsProvider;
+import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
+import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
 import uci.wifiproxy.WifiProxyApplication;
 import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
 import uci.wifiproxy.data.pref.AppPreferencesHelper;
@@ -379,17 +392,35 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            mProxyView.showProgressDialog(true);
+            mProxyView.showProgressDialog(true);
         }
 
         @Override
         protected Boolean doInBackground(Object... objects) {
-//            try {
-//                Thread.sleep(10000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-            return true;
+            try {
+                CredentialsProvider credentials = new BasicCredentialsProvider();
+
+                credentials.setCredentials(new AuthScope(AuthScope.ANY),
+                        new NTCredentials(username, password, InetAddress.getLocalHost().getHostName(),
+                                (Strings.isNullOrEmpty(domain) ? null : domain)
+                        )
+                );
+                CloseableHttpClient client = HttpClientBuilder.create()
+                        .setProxy(new HttpHost(proxyHost, proxyPort))
+                        .setDefaultCredentialsProvider(credentials)
+                        .build();
+
+                HttpResponse response = client.execute(new HttpGet("http://google.com"));
+                Log.e("auth_status_code", response.getStatusLine().getStatusCode()+"");
+                if (response.getStatusLine().getStatusCode() == 407) {
+                    return false;
+                }
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return false;
         }
 
         @Override
