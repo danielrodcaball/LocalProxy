@@ -76,6 +76,9 @@ public class ProxyPresenter implements ProxyContract.Presenter {
                                         @NonNull String localPort, @NonNull boolean rememberPass,
                                         @Nullable boolean setGlobalProxy) {
 
+        boolean isValidData = validateData(username, password, profileId, localPort);
+        if (!isValidData) return;
+
         if (Build.VERSION.SDK_INT > WifiProxyApplication.MAX_SDK_SUPPORTED_FOR_WIFI_CONF &&
                 !mPrefHelper.getDontShowDialogAgain()
                 ) {
@@ -96,6 +99,9 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         }
 
         setGlobalProxy = Build.VERSION.SDK_INT <= WifiProxyApplication.MAX_SDK_SUPPORTED_FOR_WIFI_CONF && setGlobalProxy;
+
+        boolean isValidData = validateData(user, pass, profileID, localPort);
+        if (!isValidData) return;
         startProxy(user, pass, profileID, localPort, rememberPass, setGlobalProxy);
     }
 
@@ -103,9 +109,6 @@ public class ProxyPresenter implements ProxyContract.Presenter {
                             @NonNull final String localPort, @NonNull boolean rememberPass,
                             @Nullable final boolean setGlobalProxy) {
 
-        boolean isValidData = validateData(username, password, profileId, localPort);
-
-        if (!isValidData) return;
 
         saveUpdateUser(username, password, rememberPass);
         saveConfiguration(username, profileId, localPort, setGlobalProxy);
