@@ -80,7 +80,9 @@ public interface ProxyContract {
 
         void showAddProfile();
 
-        boolean isProxyServiceRunning();
+//        boolean isProxyServiceRunning();
+
+        boolean isConnectedToAWiffi();
 
         void stopProxyService();
 
@@ -95,6 +97,8 @@ public interface ProxyContract {
         void showProgressDialog(boolean show);
 
         void showWrongCredentialsDialog();
+
+        void showNetworkError();
 
     }
 }

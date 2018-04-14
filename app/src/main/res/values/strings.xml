@@ -132,5 +132,7 @@
     <string name="proxy_credentials_error">Credentials error</string>
     <string name="proxy_credentials_error_message">Please check your username and password</string>
     <string name="accept_text">Accept</string>
+    <string name="proxy_network_error_message">Please connect to a wifi network before start the service</string>
+    <string name="proxy_network_error">Error de red</string>
 
 </resources>

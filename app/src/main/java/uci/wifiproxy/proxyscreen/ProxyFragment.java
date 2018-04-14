@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -331,21 +333,28 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         startActivityForResult(intent, AddEditProfileActivity.REQUEST_ADD_PROFILE);
     }
 
-
     @Override
-    public boolean isProxyServiceRunning() {
-        ActivityManager manager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager
-                .getRunningServices(Integer.MAX_VALUE)) {
-            if (ProxyService.class.getName().equals(
-                    service.service.getClassName())) {
-                Log.i(ProxyActivity.class.getName(), "Service running");
-                return true;
-            }
-        }
-        Log.i(ProxyActivity.class.getName(), "Service not running");
-        return false;
+    public boolean isConnectedToAWiffi() {
+            ConnectivityManager connManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            return mWifi.isConnected();
     }
+
+
+//    @Override
+//    public boolean isProxyServiceRunning() {
+//        ActivityManager manager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
+//        for (ActivityManager.RunningServiceInfo service : manager
+//                .getRunningServices(Integer.MAX_VALUE)) {
+//            if (ProxyService.class.getName().equals(
+//                    service.service.getClassName())) {
+//                Log.i(ProxyActivity.class.getName(), "Service running");
+//                return true;
+//            }
+//        }
+//        Log.i(ProxyActivity.class.getName(), "Service not running");
+//        return false;
+//    }
 
     @Override
     public void startProxyService(String username,
@@ -397,6 +406,20 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(getString(R.string.proxy_credentials_error));
         builder.setMessage(getString(R.string.proxy_credentials_error_message));
+        builder.setPositiveButton(getString(R.string.accept_text), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.create().show();
+    }
+
+    @Override
+    public void showNetworkError() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getString(R.string.proxy_network_error));
+        builder.setMessage(getString(R.string.proxy_network_error_message));
         builder.setPositiveButton(getString(R.string.accept_text), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

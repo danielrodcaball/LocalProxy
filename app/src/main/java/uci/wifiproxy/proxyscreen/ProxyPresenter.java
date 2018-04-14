@@ -1,5 +1,7 @@
 package uci.wifiproxy.proxyscreen;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -34,6 +36,7 @@ import uci.wifiproxy.data.profile.source.ProfilesLocalDataSource;
 import uci.wifiproxy.data.user.User;
 import uci.wifiproxy.data.user.UsersDataSource;
 import uci.wifiproxy.data.user.UsersLocalDataSource;
+import uci.wifiproxy.proxycore.ProxyService;
 
 import static uci.wifiproxy.profilescreens.addeditprofile.AddEditProfilePresenter.MAX_PORTS_LIMIT;
 import static uci.wifiproxy.profilescreens.addeditprofile.AddEditProfilePresenter.MAX_SYSTEM_PORTS_LIMIT;
@@ -106,6 +109,11 @@ public class ProxyPresenter implements ProxyContract.Presenter {
 
         saveUpdateUser(username, password, rememberPass);
         saveConfiguration(username, profileId, localPort, setGlobalProxy);
+
+        if (!mProxyView.isConnectedToAWiffi()){
+            mProxyView.showNetworkError();
+            return;
+        }
 
         mProfileLocalDataSource.getProfile(profileId, new ProfilesDataSource.GetProfileCallback() {
             @Override
@@ -261,7 +269,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         loadProfiles();
         loadLastConfiguration();
 
-        if (mProxyView.isProxyServiceRunning()) {
+        if (ProxyService.IS_SERVICE_RUNNING) {
             mProxyView.setStopView();
             mProxyView.disableAllViews();
         } else {
@@ -408,6 +416,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
                 CloseableHttpClient client = HttpClientBuilder.create()
                         .setProxy(new HttpHost(proxyHost, proxyPort))
                         .setDefaultCredentialsProvider(credentials)
+                        .disableRedirectHandling()
                         .build();
 
                 HttpResponse response = client.execute(new HttpGet("http://google.com"));

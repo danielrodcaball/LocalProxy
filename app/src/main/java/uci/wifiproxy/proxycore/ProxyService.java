@@ -43,6 +43,9 @@ public class ProxyService extends Service {
      * Este es el servicio que inicia el servidor
      * Permanece en el área de notificación
      * */
+
+    public static boolean IS_SERVICE_RUNNING = false;
+
     private String user = "";
 
     //    private ServerTask s;
@@ -75,23 +78,14 @@ public class ProxyService extends Service {
 //        }
 
         if (set_global_proxy) {
+            Toast.makeText(this, getString(R.string.OnNoProxy), Toast.LENGTH_LONG).show();
             try {
                 WifiProxyChanger.clearProxySettings(this);
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | InvocationTargetException |
                     NoSuchFieldException | IllegalAccessException | NullWifiConfigurationException | ApiNotSupportedException e) {
                 e.printStackTrace();
             }
-//            Settings.Secure.putString(getContentResolver(), "http_proxy", "");
-//            Settings.Secure.putString(getContentResolver(), "global_http_proxy_host", "");
-//            Settings.Secure.putString(getContentResolver(), "global_http_proxy_port", "");
-//            ipTablesForTransparentProxy(false);
-//            System.getProperties().clear();
-//            System.getProperties().put("http.proxyHost", "");
-//            System.getProperties().put("http.proxyPort", "");
-//            System.getProperties().put("https.proxyHost", "");
-//            System.getProperties().put("https.proxyPort", "");
-
-            Toast.makeText(this, getString(R.string.OnNoProxy), Toast.LENGTH_LONG).show();
+            IS_SERVICE_RUNNING = false;
         }
 
 //        UCIntlmWidget.actualizarWidget(this.getApplicationContext(),
@@ -120,19 +114,14 @@ public class ProxyService extends Service {
         String domain = intent.getStringExtra("domain");
 
         System.out.println("global_proxy: " + String.valueOf(set_global_proxy));
-//        if (set_global_proxy) {
         if (set_global_proxy) {
+            Toast.makeText(this, getString(R.string.OnProxy), Toast.LENGTH_LONG).show();
             try {
                 WifiProxyChanger.changeWifiStaticProxySettings("127.0.0.1", outputport, this);
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | InvocationTargetException |
                     NoSuchFieldException | IllegalAccessException | NullWifiConfigurationException | ApiNotSupportedException e) {
                 e.printStackTrace();
             }
-//            setLollipopWebViewProxy(getApplicationContext(), "10.0.0.1", 8080);
-            WifiUtils.setWifiProxySettings(this, outputport, "");
-//            Settings.Secure.putString(getContentResolver(), HTTP_PROXY, "127.0.0.2:" + "7894");
-//            ipTablesForTransparentProxy(true);
-            Toast.makeText(this, getString(R.string.OnProxy), Toast.LENGTH_LONG).show();
         }
 
         Log.i(getClass().getName(), "Starting for user " + user + ", server " + server + ", input port " + String.valueOf(inputport) + ", output port" + String.valueOf(outputport) + " and bypass string: " + bypass);
@@ -147,6 +136,8 @@ public class ProxyService extends Service {
 
         executor.execute(proxyThread);
         notifyit();
+
+        IS_SERVICE_RUNNING = true;
 
         //START_REDELIVER_INTENT permite que si el sistema mata el servicio entonces cuando intenta reiniciarlo envia el mismo Intent que se envio para
         //iniciarlo por primera vez
@@ -169,6 +160,7 @@ public class ProxyService extends Service {
                 .setContentText(getApplicationContext().getString(R.string.notif2) + " " + user)
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(contentIntent);
+
 
         Notification notification;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
