@@ -140,35 +140,45 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
 
     @Override
     public void setProfileEqualNameError() {
-        mName.setError("There is a profile with that name");
+        mName.setError(getString(R.string.profile_equal_name_error));
     }
 
     @Override
     public void setNameEmptyError() {
-        mName.setError("Name cannot be empty");
+        mName.setError(getString(R.string.profile_name_empty_error));
     }
 
     @Override
     public void setServerEmptyError() {
-        mServer.setError("Server cannot be empty");
+        mServer.setError(getString(R.string.profile_server_empty_error));
+    }
+
+    @Override
+    public void setServerInvalidError() {
+        mServer.setError(getString(R.string.profile_server_invalid_error));
     }
 
     @Override
     public void setInPortEmptyError() {
-        mInPort.setError("Input port cannot be empty");
+        mInPort.setError(getString(R.string.profile_port_empty_error));
     }
 
     @Override
     public void setInputPortOutOfRangeError() {
         mInPort.setError(
-                String.format(Locale.ENGLISH, "Input port must be between %d and %d",
+                String.format(Locale.ENGLISH, getString(R.string.profile_port_outofrange_error),
                         0, AddEditProfilePresenter.MAX_PORTS_LIMIT)
         );
     }
 
     @Override
     public void setBypassSyntaxError() {
-        mBypass.setError("Bypass syntax error");
+        mBypass.setError(getString(R.string.profile_bypass_syntax_error));
+    }
+
+    @Override
+    public void setDomainInvalidError() {
+        mDomain.setError(getString(R.string.profile_domain_invalid_error));
     }
 
 }

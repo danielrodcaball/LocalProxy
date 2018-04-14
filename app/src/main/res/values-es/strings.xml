@@ -111,6 +111,19 @@
     <string name="version_text">Versión</string>
     <string name="sourcecode_text">Código fuente</string>
     <string name="author_text">Autor</string>
-
+    <string name="profile_name_empty_error">El nombre no puede ser vacío</string>
+    <string name="profile_equal_name_error">Ya existe un perfil con ese nombre</string>
+    <string name="profile_server_empty_error">El servidor no puede ser vacío</string>
+    <string name="profile_port_empty_error">El puerto de entrada no puede ser vacío</string>
+    <string name="profile_port_outofrange_error">El puerto de entrada debe estar entre %d y %d</string>
+    <string name="profile_bypass_syntax_error">Error en la sintaxis del bypass</string>
+    <string name="profile_server_invalid_error">Servidor inválido</string>
+    <string name="profile_domain_invalid_error">Dominio inválido</string>
+    <string name="proxy_port_empty_error">Puerto local no puede ser vacío</string>
+    <string name="proxy_port_outofrange_error">El puerto local debe estar entre %d y %d</string>
+    <string name="proxy_credentials_check_message">Comprobando credenciales</string>
+    <string name="proxy_credentials_error">Error de credenciales</string>
+    <string name="proxy_credentials_error_message">Por favor revise su usuario y contraseña</string>
+    <string name="accept_text">Aceptar</string>
 
 </resources>

@@ -92,5 +92,9 @@ public interface ProxyContract {
 
         void startWifiConfActivity();
 
+        void showProgressDialog(boolean show);
+
+        void showWrongCredentialsDialog();
+
     }
 }

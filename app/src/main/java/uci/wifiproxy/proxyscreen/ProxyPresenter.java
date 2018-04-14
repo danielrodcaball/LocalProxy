@@ -1,13 +1,16 @@
 package uci.wifiproxy.proxyscreen;
 
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.common.base.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import uci.wifiproxy.WifiProxyApplication;
 import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
@@ -54,12 +57,12 @@ public class ProxyPresenter implements ProxyContract.Presenter {
 
     @Override
     public void startProxyFromFabButton(@NonNull String username, @NonNull String password, @NonNull String profileId,
-                           @NonNull  String localPort, @NonNull boolean rememberPass,
-                           @Nullable boolean setGlobalProxy) {
+                                        @NonNull String localPort, @NonNull boolean rememberPass,
+                                        @Nullable boolean setGlobalProxy) {
 
         if (Build.VERSION.SDK_INT > WifiProxyApplication.MAX_SDK_SUPPORTED_FOR_WIFI_CONF &&
                 !mPrefHelper.getDontShowDialogAgain()
-                ){
+                ) {
             mProxyView.showWifiConfDialog();
             return;
         }
@@ -82,39 +85,39 @@ public class ProxyPresenter implements ProxyContract.Presenter {
 
     private void startProxy(@NonNull final String username, @NonNull final String password, @NonNull final String profileId,
                             @NonNull final String localPort, @NonNull boolean rememberPass,
-                            @Nullable final boolean setGlobalProxy){
+                            @Nullable final boolean setGlobalProxy) {
+
         boolean isValidData = validateData(username, password, profileId, localPort);
 
-        if (isValidData) {
+        if (!isValidData) return;
 
-            saveUpdateUser(username, password, rememberPass);
-            saveConfiguration(username, profileId, localPort, setGlobalProxy);
+        saveUpdateUser(username, password, rememberPass);
+        saveConfiguration(username, profileId, localPort, setGlobalProxy);
 
-            mProfileLocalDataSource.getProfile(profileId, new ProfilesDataSource.GetProfileCallback() {
-                @Override
-                public void onProfileLoaded(Profile profile) {
-                    //start proxy
-                    mProxyView.startProxyService(username, password,
-                            profile.getHost(),
-                            profile.getInPort(),
-                            Integer.parseInt(localPort),
-                            profile.getBypass(),
-                            profile.getDomain(),
-                            setGlobalProxy
-                    );
+        mProfileLocalDataSource.getProfile(profileId, new ProfilesDataSource.GetProfileCallback() {
+            @Override
+            public void onProfileLoaded(Profile profile) {
 
-                    mProxyView.disableAllViews();
-                    mProxyView.setStopView();
-                }
+                CredentialsCheckTask task = new CredentialsCheckTask(
+                        username,
+                        password,
+                        profile.getHost(),
+                        profile.getInPort(),
+                        Integer.parseInt(localPort),
+                        profile.getBypass(),
+                        profile.getDomain(),
+                        setGlobalProxy
+                );
 
-                @Override
-                public void onDataNoAvailable() {
-                    //never happens in this scenario
-                }
-            });
+                task.execute();
 
-        }
+            }
 
+            @Override
+            public void onDataNoAvailable() {
+                //never happens in this scenario
+            }
+        });
     }
 
     @Override
@@ -308,6 +311,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
 
     }
 
+
     private void loadLastConfiguration() {
 
         String userId = mPrefHelper.getCurrentUserId();
@@ -347,5 +351,67 @@ public class ProxyPresenter implements ProxyContract.Presenter {
 
         boolean globProxy = mPrefHelper.getCurrentIsSetGlobProxy();
         mProxyView.setGlobalProxyChecked(globProxy);
+    }
+
+    private class CredentialsCheckTask extends AsyncTask<Object, Object, Boolean> {
+
+        private String username;
+        private String password;
+        private String proxyHost;
+        private int proxyPort;
+        private int localPort;
+        private String bypass;
+        private String domain;
+        private boolean setGlobProxy;
+
+        public CredentialsCheckTask(String username, String password, String proxyHost, int proxyPort, int localPort, String bypass, String domain, boolean setGlobProxy) {
+            this.username = username;
+            this.password = password;
+            this.proxyHost = proxyHost;
+            this.proxyPort = proxyPort;
+            this.localPort = localPort;
+            this.bypass = bypass;
+            this.domain = domain;
+            this.setGlobProxy = setGlobProxy;
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+//            mProxyView.showProgressDialog(true);
+        }
+
+        @Override
+        protected Boolean doInBackground(Object... objects) {
+//            try {
+//                Thread.sleep(10000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            mProxyView.showProgressDialog(false);
+            if (aBoolean) {
+                //start proxy
+                mProxyView.startProxyService(username, password,
+                        proxyHost,
+                        proxyPort,
+                        localPort,
+                        bypass,
+                        domain,
+                        setGlobProxy
+                );
+
+                mProxyView.disableAllViews();
+                mProxyView.setStopView();
+            } else {
+                mProxyView.showWrongCredentialsDialog();
+            }
+        }
     }
 }

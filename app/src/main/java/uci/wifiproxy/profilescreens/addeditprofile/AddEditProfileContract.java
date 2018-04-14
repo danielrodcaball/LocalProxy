@@ -33,11 +33,15 @@ public interface AddEditProfileContract {
 
         void setServerEmptyError();
 
+        void setServerInvalidError();
+
         void setInPortEmptyError();
 
         void setInputPortOutOfRangeError();
 
         void setBypassSyntaxError();
+
+        void setDomainInvalidError();
 
     }
 

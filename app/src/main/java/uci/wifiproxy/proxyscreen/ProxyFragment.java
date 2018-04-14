@@ -1,6 +1,7 @@
 package uci.wifiproxy.proxyscreen;
 
 import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -80,6 +81,8 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
 
     private UsersArrayAdapter mUserArrayAdapter;
 
+    private ProgressDialog mProgressDialog;
+
 
     public static ProxyFragment newInstance() {
         return new ProxyFragment();
@@ -90,7 +93,6 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         super.onCreate(savedInstanceState);
         mProfileArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item);
         mProfileArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         mUserArrayAdapter = new UsersArrayAdapter(getContext(), new ArrayList<User>(0));
     }
 
@@ -134,6 +136,8 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
                 mPresenter.stopProxy();
             }
         });
+
+        mProgressDialog = new ProgressDialog(getActivity());
     }
 
     @Nullable
@@ -306,12 +310,12 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
 
     @Override
     public void setLocalPortEmptyError() {
-        mLocalPortEditText.setError("Local port cannot be empty");
+        mLocalPortEditText.setError(getString(R.string.proxy_port_empty_error));
     }
 
     @Override
     public void setLocalPortOutOfRangeError() {
-        mLocalPortEditText.setError(String.format(Locale.ENGLISH, "Local port must be between %d and %d",
+        mLocalPortEditText.setError(String.format(Locale.ENGLISH, getString(R.string.profile_port_outofrange_error),
                 AddEditProfilePresenter.MAX_SYSTEM_PORTS_LIMIT,
                 AddEditProfilePresenter.MAX_PORTS_LIMIT));
     }
@@ -375,6 +379,31 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         Intent i = new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK);
         i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         getContext().startActivity(i);
+    }
+
+    @Override
+    public void showProgressDialog(boolean show) {
+        if (show) {
+            mProgressDialog.setMessage(getString(R.string.proxy_credentials_check_message));
+            mProgressDialog.show();
+        }
+        else {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showWrongCredentialsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getString(R.string.proxy_credentials_error));
+        builder.setMessage(getString(R.string.proxy_credentials_error_message));
+        builder.setPositiveButton(getString(R.string.accept_text), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.create().show();
     }
 
     @Override

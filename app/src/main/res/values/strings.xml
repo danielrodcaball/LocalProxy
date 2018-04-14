@@ -118,5 +118,19 @@
     <string name="version_text">Version</string>
     <string name="sourcecode_text">Source code</string>
     <string name="author_text">Author</string>
+    <string name="profile_name_empty_error">Name cannot be empty</string>
+    <string name="profile_equal_name_error">There is a profile with that name</string>
+    <string name="profile_server_empty_error">Server cannot be empty</string>
+    <string name="profile_port_empty_error">Input port cannot be empty</string>
+    <string name="profile_port_outofrange_error">Input port must be between %d and %d</string>
+    <string name="profile_bypass_syntax_error">Bypass syntax error</string>
+    <string name="profile_server_invalid_error">Server invalid</string>
+    <string name="profile_domain_invalid_error">Domain invalid</string>
+    <string name="proxy_port_empty_error">Local port cannot be empty</string>
+    <string name="proxy_port_outofrange_error">Local port must be between %d and %d</string>
+    <string name="proxy_credentials_check_message">Checking credentials</string>
+    <string name="proxy_credentials_error">Credentials error</string>
+    <string name="proxy_credentials_error_message">Please check your username and password</string>
+    <string name="accept_text">Accept</string>
 
 </resources>

@@ -2,9 +2,19 @@ package uci.wifiproxy.profilescreens.addeditprofile;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.webkit.URLUtil;
 
 import com.google.common.base.Strings;
+import com.google.common.net.InetAddresses;
+import com.google.common.net.InternetDomainName;
 
+import java.net.InetAddress;
+import java.net.URL;
+import java.util.Formatter;
+import java.util.Locale;
+import java.util.regex.Pattern;
+
+import cz.msebera.android.httpclient.conn.util.InetAddressUtils;
 import uci.wifiproxy.data.profile.Profile;
 import uci.wifiproxy.data.profile.source.ProfilesDataSource;
 import uci.wifiproxy.data.profile.source.ProfilesLocalDataSource;
@@ -104,7 +114,7 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
                                String inPort, String bypass, String domain) {
 
         boolean isValidData = validateData(name, server,
-                inPort, bypass);
+                inPort, bypass, domain);
 
         if (!isValidData) return;
 
@@ -131,7 +141,7 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
                                String inPort, String bypass, String domain) {
 
         boolean isValidData = validateData(name, server,
-                inPort, bypass);
+                inPort, bypass, domain);
 
         if (!isValidData) return;
 
@@ -154,7 +164,7 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
     }
 
     private boolean validateData(String name, String server,
-                                 String inPort, String bypass) {
+                                 String inPort, String bypass, String domain) {
         boolean isValid = true;
 
         if (Strings.isNullOrEmpty(name)) {
@@ -166,6 +176,13 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
             mAddProfileView.setServerEmptyError();
             isValid = false;
         }
+
+        //TODO>
+        if (!InternetDomainName.isValid(server) && !InetAddresses.isInetAddress(server)){
+            mAddProfileView.setServerInvalidError();
+            isValid = false;
+        }
+
         if (Strings.isNullOrEmpty(inPort)) {
             mAddProfileView.setInPortEmptyError();
             isValid = false;
@@ -180,8 +197,14 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
 
         }
 
+        if (!Strings.isNullOrEmpty(domain) && !InternetDomainName.isValid(domain)){
+            mAddProfileView.setDomainInvalidError();
+            isValid = false;
+        }
+
         if (!isValidBypassSyntax(bypass)) {
             mAddProfileView.setBypassSyntaxError();
+            isValid = false;
         }
 
         return isValid;
@@ -189,6 +212,18 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
 
     //TODO
     private boolean isValidBypassSyntax(String bypass) {
+//        String validIpAddressRegex = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
+//        String validHostnameRegex = "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$";
+//
+//        StringBuilder regexSb = new StringBuilder();
+//        Formatter formatter = new Formatter(regexSb, Locale.US);
+//
+//        String regex = "%1 | %2 | +([%1],%2) ";
+//        regex = regex.replace("%1", validIpAddressRegex);
+//        regex = regex.replace("%2", validHostnameRegex);
+//
+//        Pattern pattern = Pattern.compile(regex);
+//        return pattern.matcher(bypass).find();
         return true;
     }
 }

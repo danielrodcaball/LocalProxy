@@ -2,8 +2,14 @@ package uci.wifiproxy.util.Security;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
+import android.util.Log;
 
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+
+import java.security.Provider;
+import java.security.Security;
+
+import javax.crypto.KeyGenerator;
 
 
 /* *
@@ -14,7 +20,20 @@ import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 public class Encripter {
     static private String encriptPass = Build.SERIAL;
 
+
+    /**
+    Password Based Encryption (PBE) is the algorithm used by this methods.
+     The strength of its cipher depends on the strength of the secret key
+     */
+
     public static String encrypt(String cadena) {
+
+//        for (Provider provider : Security.getProviders()) {
+//            Log.e("Provider", provider.getName());
+//            for (Provider.Service service : provider.getServices()) {
+//                Log.e("Algorithm", service.getAlgorithm());
+//            }
+//        }
         StandardPBEStringEncryptor s = new StandardPBEStringEncryptor();
         s.setPassword(encriptPass);
         return s.encrypt(cadena);
