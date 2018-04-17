@@ -82,7 +82,7 @@ public interface ProxyContract {
 
 //        boolean isProxyServiceRunning();
 
-        boolean isConnectedToAWiffi();
+        boolean isConnectedToAWifi();
 
         void stopProxyService();
 

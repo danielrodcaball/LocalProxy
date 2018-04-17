@@ -122,8 +122,8 @@
     <string name="proxy_port_empty_error">Puerto local no puede ser vacío</string>
     <string name="proxy_port_outofrange_error">El puerto local debe estar entre %d y %d</string>
     <string name="proxy_credentials_check_message">Comprobando credenciales</string>
-    <string name="proxy_credentials_error">Error de credenciales</string>
-    <string name="proxy_credentials_error_message">Por favor revise su usuario y contraseña</string>
+    <string name="proxy_credentials_error">Error de credenciales/Dominio</string>
+    <string name="proxy_credentials_error_message">Por favor revise su usuario, contraseña y el campo de Dominio en la configuración del Perfil</string>
     <string name="accept_text">Aceptar</string>
     <string name="proxy_network_error_message">Por favor conéctese a una red wifi antes de iniciar el servicio</string>
     <string name="proxy_network_error">Error de red</string>

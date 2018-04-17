@@ -334,7 +334,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     }
 
     @Override
-    public boolean isConnectedToAWiffi() {
+    public boolean isConnectedToAWifi() {
             ConnectivityManager connManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             return mWifi.isConnected();

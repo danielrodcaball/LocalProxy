@@ -177,7 +177,6 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
             isValid = false;
         }
 
-        //TODO>
         if (!InternetDomainName.isValid(server) && !InetAddresses.isInetAddress(server)){
             mAddProfileView.setServerInvalidError();
             isValid = false;

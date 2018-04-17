@@ -129,8 +129,8 @@
     <string name="proxy_port_empty_error">Local port cannot be empty</string>
     <string name="proxy_port_outofrange_error">Local port must be between %d and %d</string>
     <string name="proxy_credentials_check_message">Checking credentials</string>
-    <string name="proxy_credentials_error">Credentials error</string>
-    <string name="proxy_credentials_error_message">Please check your username and password</string>
+    <string name="proxy_credentials_error">Credentials/Domain error</string>
+    <string name="proxy_credentials_error_message">Please check your username, password and the Domain filed in the Profile configuration</string>
     <string name="accept_text">Accept</string>
     <string name="proxy_network_error_message">Please connect to a wifi network before start the service</string>
     <string name="proxy_network_error">Error de red</string>

@@ -1,7 +1,5 @@
 package uci.wifiproxy.proxyscreen;
 
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -15,15 +13,15 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import cz.msebera.android.httpclient.HttpHost;
 import cz.msebera.android.httpclient.HttpResponse;
-import cz.msebera.android.httpclient.StatusLine;
 import cz.msebera.android.httpclient.auth.AuthScope;
 import cz.msebera.android.httpclient.auth.NTCredentials;
+import cz.msebera.android.httpclient.client.ClientProtocolException;
 import cz.msebera.android.httpclient.client.CredentialsProvider;
 import cz.msebera.android.httpclient.client.methods.HttpGet;
+import cz.msebera.android.httpclient.conn.ConnectTimeoutException;
 import cz.msebera.android.httpclient.impl.client.BasicCredentialsProvider;
 import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
 import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
@@ -46,6 +44,10 @@ import static uci.wifiproxy.profilescreens.addeditprofile.AddEditProfilePresente
  */
 
 public class ProxyPresenter implements ProxyContract.Presenter {
+
+    private static int UNKNOWN_HOST = 1;
+    private static int CONNECTION_TIMEOUT = 2;
+
 
     @NonNull
     private ProxyContract.View mProxyView;
@@ -113,7 +115,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         saveUpdateUser(username, password, rememberPass);
         saveConfiguration(username, profileId, localPort, setGlobalProxy);
 
-        if (!mProxyView.isConnectedToAWiffi()){
+        if (!mProxyView.isConnectedToAWifi()) {
             mProxyView.showNetworkError();
             return;
         }
@@ -422,12 +424,18 @@ public class ProxyPresenter implements ProxyContract.Presenter {
                         .disableRedirectHandling()
                         .build();
 
-                HttpResponse response = client.execute(new HttpGet("http://google.com"));
-                Log.e("auth_status_code", response.getStatusLine().getStatusCode()+"");
+                HttpResponse response = client.execute(new HttpGet("http://xyz.com"));
+                Log.e("auth_status_code", response.getStatusLine().getStatusCode() + "");
                 if (response.getStatusLine().getStatusCode() == 407) {
                     return false;
                 }
                 return true;
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (ConnectTimeoutException e) {
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -436,10 +444,10 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         }
 
         @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
             mProxyView.showProgressDialog(false);
-            if (aBoolean) {
+            if (result) {
                 //start proxy
                 mProxyView.startProxyService(username, password,
                         proxyHost,
