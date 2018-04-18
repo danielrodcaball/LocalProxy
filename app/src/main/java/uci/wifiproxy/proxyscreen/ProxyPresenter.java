@@ -310,6 +310,14 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         });
     }
 
+    @Override
+    public void startServiceResult(int message) {
+        if (message == ProxyService.ERROR_STARTING_SERVICE){
+            mProxyView.showErrorStartingService();
+            stopProxy();
+        }
+    }
+
     private void loadProfiles() {
         mProfileLocalDataSource.getProfiles(new ProfilesDataSource.LoadProfilesCallback() {
             @Override

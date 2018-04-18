@@ -215,7 +215,30 @@ public class HttpForwarder extends Thread {
 //                inbuffer.bind(this.localSocket.getInputStream());
 //                HttpMessageParser<HttpRequest> requestParser = new DefaultHttpRequestParser(
 //                        inbuffer);
-//                delegateClient.execute(requestParser.parse().getRequestLine().)
+//                HttpClient client;
+//
+//                HttpRequest request = requestParser.parse();
+//
+//                boolean matches = (bypass != null) && StringUtils.matches(request.getRequestLine().getUri(), bypass);
+//                if (matches) {
+//                    client = HttpForwarder.this.noDelegateClient;
+//                    Log.i(getClass().getName(), "url matches bypass " + request.getRequestLine().getUri());
+//                } else {
+//                    client = HttpForwarder.this.delegateClient;
+//                    Log.i(getClass().getName(), "url does not matches bypass " + request.getRequestLine().getUri());
+//                }
+//
+//                HttpResponse response = client.execute(null, request);
+//                os = localSocket.getOutputStream();
+//                os.write(response.getStatusLine().toString().getBytes());
+////                Log.e("STATUS-LINE", response.getStatusLine().toString());
+//                os.write("\r\n".getBytes());
+//                if (response.getEntity() != null) {
+//                    InputStream inRemote = response.getEntity().getContent();
+//                    bytes += new Piper(inRemote, os).startCopy();
+//                    inRemote.close();
+//                }
+
 
                 parser = parseInputStream(this.localSocket.getInputStream());
                 os = this.localSocket.getOutputStream();

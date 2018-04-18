@@ -1,10 +1,11 @@
 package uci.wifiproxy.proxyscreen;
 
-import android.app.ActivityManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
@@ -15,6 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -85,6 +87,15 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
 
     private ProgressDialog mProgressDialog;
 
+    private BroadcastReceiver serviceReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int message = intent.getIntExtra(ProxyService.MESSAGE_TAG, ProxyService.SERVICE_STARTED_SUCCESSFUL);
+            Log.e("serviceMessage", message+"");
+            mPresenter.startServiceResult(message);
+        }
+    };
+
 
     public static ProxyFragment newInstance() {
         return new ProxyFragment();
@@ -102,7 +113,16 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     public void onResume() {
         super.onResume();
         mPresenter.start();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(
+                serviceReceiver, new IntentFilter(ProxyService.SERVICE_RECIVER_NAME));
 //        mUsername.requestFocus();
+    }
+
+    @Override
+    public void onPause() {
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(
+                serviceReceiver);
+        super.onPause();
     }
 
     @Override
@@ -430,6 +450,12 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     public void showConnectionError() {
         createAlertDialog(getString(R.string.proxy_connection_error),
                 getString(R.string.proxy_connection_error_message)).show();
+    }
+
+    @Override
+    public void showErrorStartingService() {
+        createAlertDialog(getString(R.string.error_starting_proxy_service_title),
+                getString(R.string.error_starting_proxy_service_message)).show();
     }
 
     private AlertDialog createAlertDialog(String title, String message){

@@ -9,6 +9,7 @@ import android.net.Proxy;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.widget.Toast;
@@ -34,6 +35,8 @@ import java.util.concurrent.TimeoutException;
 
 import uci.wifiproxy.R;
 import uci.wifiproxy.proxycore.core.HttpForwarder;
+import uci.wifiproxy.proxyscreen.ProxyFragment;
+import uci.wifiproxy.proxyscreen.ProxyPresenter;
 import uci.wifiproxy.util.WifiUtils;
 import uci.wifiproxy.proxyscreen.ProxyActivity;
 
@@ -43,6 +46,14 @@ public class ProxyService extends Service {
      * Este es el servicio que inicia el servidor
      * Permanece en el área de notificación
      * */
+
+    public static final String MESSAGE_TAG = "message";
+
+    public static final String SERVICE_RECIVER_NAME = "service-receiver";
+
+    public static final int SERVICE_STARTED_SUCCESSFUL = 0;
+
+    public static final int ERROR_STARTING_SERVICE = 1;
 
     public static boolean IS_SERVICE_RUNNING = false;
 
@@ -69,37 +80,26 @@ public class ProxyService extends Service {
 
     @Override
     public void onDestroy() {
-        proxyThread.halt();
-        executor.shutdown();
-//        mNM.cancel(NOTIFICATION);
-
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && wifiAutoConfigReceiver != null){
-//            unregisterReceiver(wifiAutoConfigReceiver);
-//        }
-
-        if (set_global_proxy) {
-            Toast.makeText(this, getString(R.string.OnNoProxy), Toast.LENGTH_LONG).show();
-            try {
-                WifiProxyChanger.clearProxySettings(this);
-            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | InvocationTargetException |
-                    NoSuchFieldException | IllegalAccessException | NullWifiConfigurationException | ApiNotSupportedException e) {
-                e.printStackTrace();
+        if (proxyThread != null) {
+            proxyThread.halt();
+            executor.shutdown();
+            if (set_global_proxy) {
+                Toast.makeText(this, getString(R.string.OnNoProxy), Toast.LENGTH_LONG).show();
+                try {
+                    WifiProxyChanger.clearProxySettings(this);
+                } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | InvocationTargetException |
+                        NoSuchFieldException | IllegalAccessException | NullWifiConfigurationException | ApiNotSupportedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         IS_SERVICE_RUNNING = false;
-
-//        UCIntlmWidget.actualizarWidget(this.getApplicationContext(),
-//                AppWidgetManager.getInstance(this.getApplicationContext()),
-//                "off");
         super.onDestroy();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (android.os.Debug.isDebuggerConnected()) {
-            android.os.Debug.waitForDebugger();
-        }
 
         if (intent.getExtras() == null) {
             Log.e(getClass().getName(), "Error starting service");
@@ -114,31 +114,34 @@ public class ProxyService extends Service {
         String bypass = intent.getStringExtra("bypass");
         String domain = intent.getStringExtra("domain");
 
-        System.out.println("global_proxy: " + String.valueOf(set_global_proxy));
-        if (set_global_proxy) {
-            Toast.makeText(this, getString(R.string.OnProxy), Toast.LENGTH_LONG).show();
-            try {
-                WifiProxyChanger.changeWifiStaticProxySettings("127.0.0.1", outputport, this);
-            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | InvocationTargetException |
-                    NoSuchFieldException | IllegalAccessException | NullWifiConfigurationException | ApiNotSupportedException e) {
-                e.printStackTrace();
-            }
-        }
 
         Log.i(getClass().getName(), "Starting for user " + user + ", server " + server + ", input port " + String.valueOf(inputport) + ", output port" + String.valueOf(outputport) + " and bypass string: " + bypass);
 
         try {
             proxyThread = new HttpForwarder(server, inputport, user, pass, outputport, true, bypass,
                     domain, getApplicationContext());
+
+            executor.execute(proxyThread);
+            IS_SERVICE_RUNNING = true;
+            notifyit();
+
+            //configuring wifi settings
+            try {
+                if (set_global_proxy) {
+                    Toast.makeText(this, getString(R.string.OnProxy), Toast.LENGTH_LONG).show();
+                    WifiProxyChanger.changeWifiStaticProxySettings("127.0.0.1", outputport, this);
+                }
+            }catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | InvocationTargetException |
+                    NoSuchFieldException | IllegalAccessException | NullWifiConfigurationException | ApiNotSupportedException e) {
+                e.printStackTrace();
+            }
+
         } catch (IOException e) {
-            Log.e(getClass().getName(), "The proxy thread can not be started: " + e.getMessage());
-            return START_NOT_STICKY;
+            e.printStackTrace();
+            Intent i = new Intent(SERVICE_RECIVER_NAME);
+            i.putExtra(MESSAGE_TAG, ERROR_STARTING_SERVICE);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(i);
         }
-
-        executor.execute(proxyThread);
-        notifyit();
-
-        IS_SERVICE_RUNNING = true;
 
         //START_REDELIVER_INTENT permite que si el sistema mata el servicio entonces cuando intenta reiniciarlo envia el mismo Intent que se envio para
         //iniciarlo por primera vez
@@ -193,7 +196,7 @@ public class ProxyService extends Service {
         String redirectRule3 = "iptables -t nat -" + action + " OUTPUT -p 6 --dport 5228 -m owner ! --uid-owner " + excludedUid + " -j REDIRECT --to-port 8080 ";
 
         try {
-            Command command0 = new Command(4, r){
+            Command command0 = new Command(4, r) {
                 @Override
                 public void commandOutput(int id, String line) {
                     super.commandOutput(id, line);

@@ -38,6 +38,8 @@ public interface ProxyContract {
         void filterUsers(String constraint);
 
         void loadUsers();
+
+        void startServiceResult(int message);
     }
 
     interface View extends BaseView<Presenter> {
@@ -105,6 +107,8 @@ public interface ProxyContract {
         void showUnknownHostError();
 
         void showConnectionError();
+
+        void showErrorStartingService();
 
     }
 }
