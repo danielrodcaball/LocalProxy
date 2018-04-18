@@ -34,7 +34,7 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
 
     private TextView mBypass;
 
-    private TextView mDomain;
+//    private TextView mDomain;
 
     public AddEditProfileFragment() {
         // Required empty public constructor
@@ -62,8 +62,7 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
                         mName.getText().toString(),
                         mServer.getText().toString(),
                         mInPort.getText().toString(),
-                        mBypass.getText().toString(),
-                        mDomain.getText().toString()
+                        mBypass.getText().toString()
                 );
             }
         });
@@ -79,7 +78,7 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
         mInPort = (TextView) root.findViewById(R.id.einputport);
         mBypass = (TextView) root.findViewById(R.id.ebypass);
         mBypass.setText(getString(R.string.bypassInitText));
-        mDomain = (TextView) root.findViewById(R.id.domain);
+//        mDomain = (TextView) root.findViewById(R.id.domain);
 
         setHasOptionsMenu(true);
 
@@ -128,10 +127,10 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
         mBypass.setText(bypass);
     }
 
-    @Override
-    public void setDomain(String domain) {
-        mDomain.setText(domain);
-    }
+//    @Override
+//    public void setDomain(String domain) {
+//        mDomain.setText(domain);
+//    }
 
     @Override
     public boolean isActive() {
@@ -176,9 +175,9 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
         mBypass.setError(getString(R.string.profile_bypass_syntax_error));
     }
 
-    @Override
-    public void setDomainInvalidError() {
-        mDomain.setError(getString(R.string.profile_domain_invalid_error));
-    }
+//    @Override
+//    public void setDomainInvalidError() {
+//        mDomain.setError(getString(R.string.profile_domain_invalid_error));
+//    }
 
 }

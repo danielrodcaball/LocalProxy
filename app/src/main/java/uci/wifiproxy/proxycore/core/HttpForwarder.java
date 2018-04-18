@@ -215,7 +215,7 @@ public class HttpForwarder extends Thread {
 //                inbuffer.bind(this.localSocket.getInputStream());
 //                HttpMessageParser<HttpRequest> requestParser = new DefaultHttpRequestParser(
 //                        inbuffer);
-//                HttpRequest request = requestParser.parse();
+//                delegateClient.execute(requestParser.parse().getRequestLine().)
 
                 parser = parseInputStream(this.localSocket.getInputStream());
                 os = this.localSocket.getOutputStream();
@@ -416,8 +416,8 @@ public class HttpForwarder extends Thread {
         private HttpParser parseInputStream(InputStream is) throws ParseException, IOException {
             HttpParser parser = new HttpParser(is);
             try {
-                for (int i = 0; i < 100 && !parser.parse(); i++){
-                    Log.e("parser", 1+"");
+                for (int i = 0; i < 100 && !parser.parse(); i++) {
+//                    Log.e("parser", 1 + "");
                 }
 //                parser.parse();
 //                while (!parser.parse()) {
@@ -522,6 +522,13 @@ public class HttpForwarder extends Thread {
             OutputStream outRemote = null;
 
             try {
+//                BufferedReader i = new BufferedReader(
+//                        new InputStreamReader(parser));
+//                String line = null;
+//                while ((line = i.readLine()) != null) {
+//                    Log.e("InputStream", line);
+//                }
+
                 ProxyClient client = new ProxyClient();
                 HttpHost proxyHost = new HttpHost(addr, inport);
                 HttpHost targetHost = new HttpHost(uri[0], Integer.parseInt(uri[1]));

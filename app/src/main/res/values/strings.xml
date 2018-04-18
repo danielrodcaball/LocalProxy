@@ -6,7 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="user">User</string>
     <string name="blank"></string>
-    <string name="Username">user</string>
+    <string name="Username">user or domain\\user</string>
     <string name="Password">Password</string>
     <string name="ShowPassword">Show password</string>
     <string name="Domain">Domain(only if you know it):</string>
@@ -129,10 +129,16 @@
     <string name="proxy_port_empty_error">Local port cannot be empty</string>
     <string name="proxy_port_outofrange_error">Local port must be between %d and %d</string>
     <string name="proxy_credentials_check_message">Checking credentials</string>
-    <string name="proxy_credentials_error">Credentials/Domain error</string>
-    <string name="proxy_credentials_error_message">Please check your username, password and the Domain filed in the Profile configuration</string>
+    <string name="proxy_credentials_error">Credentials error</string>
+    <string name="proxy_credentials_error_message">Please check your username and password</string>
     <string name="accept_text">Accept</string>
     <string name="proxy_network_error_message">Please connect to a wifi network before start the service</string>
-    <string name="proxy_network_error">Error de red</string>
+    <string name="proxy_network_error">Network error</string>
+    <string name="proxy_connectiontimeout_error">Connection timeout</string>
+    <string name="proxy_connectiontimeout_error_message">Connection timeout, please check your profile configuration</string>
+    <string name="proxy_unknownhost_error">Unknown proxy server</string>
+    <string name="proxy_unknownhost_error_message">Please check your profile configuration</string>
+    <string name="proxy_connection_error">Connection error</string>
+    <string name="proxy_connection_error_message">Connection error, please check your profile configuration</string>
 
 </resources>

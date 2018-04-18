@@ -45,8 +45,11 @@ import static uci.wifiproxy.profilescreens.addeditprofile.AddEditProfilePresente
 
 public class ProxyPresenter implements ProxyContract.Presenter {
 
-    private static int UNKNOWN_HOST = 1;
-    private static int CONNECTION_TIMEOUT = 2;
+    private static final int UNKNOWN_HOST = 1;
+    private static final int CONNECTION_TIMEOUT = 2;
+    private static final int AUTHENTICATION_FAILED = 3;
+    private static final int AUTHENTICATION_SUCCEED = 4;
+    private static final int CONNECTION_ERROR = 5;
 
 
     @NonNull
@@ -124,14 +127,23 @@ public class ProxyPresenter implements ProxyContract.Presenter {
             @Override
             public void onProfileLoaded(Profile profile) {
 
+                String user = username;
+                String domain = "";
+
+                if (username.contains("\\")) {
+                    int backSlashPos = username.indexOf("\\");
+                    domain = username.substring(0, backSlashPos);
+                    user = username.substring(backSlashPos + 1, username.length());
+                }
+
                 CredentialsCheckTask task = new CredentialsCheckTask(
-                        username,
+                        user,
                         password,
                         profile.getHost(),
                         profile.getInPort(),
                         Integer.parseInt(localPort),
                         profile.getBypass(),
-                        profile.getDomain(),
+                        domain,
                         setGlobalProxy
                 );
 
@@ -379,7 +391,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         mProxyView.setGlobalProxyChecked(globProxy);
     }
 
-    private class CredentialsCheckTask extends AsyncTask<Object, Object, Boolean> {
+    private class CredentialsCheckTask extends AsyncTask<Object, Object, Integer> {
 
         private String username;
         private String password;
@@ -409,7 +421,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         }
 
         @Override
-        protected Boolean doInBackground(Object... objects) {
+        protected Integer doInBackground(Object... objects) {
             try {
                 CredentialsProvider credentials = new BasicCredentialsProvider();
 
@@ -424,44 +436,61 @@ public class ProxyPresenter implements ProxyContract.Presenter {
                         .disableRedirectHandling()
                         .build();
 
-                HttpResponse response = client.execute(new HttpGet("http://xyz.com"));
+                HttpResponse response = client.execute(new HttpGet("http://google.com"));
                 Log.e("auth_status_code", response.getStatusLine().getStatusCode() + "");
+
                 if (response.getStatusLine().getStatusCode() == 407) {
-                    return false;
+                    return AUTHENTICATION_FAILED;
                 }
-                return true;
+
+                return AUTHENTICATION_SUCCEED;
+
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
+                return CONNECTION_ERROR;
             } catch (UnknownHostException e) {
                 e.printStackTrace();
+                return UNKNOWN_HOST;
             } catch (ConnectTimeoutException e) {
-
+                e.printStackTrace();
+                return CONNECTION_TIMEOUT;
             } catch (IOException e) {
                 e.printStackTrace();
+                return CONNECTION_ERROR;
             }
 
-            return false;
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
             mProxyView.showProgressDialog(false);
-            if (result) {
-                //start proxy
-                mProxyView.startProxyService(username, password,
-                        proxyHost,
-                        proxyPort,
-                        localPort,
-                        bypass,
-                        domain,
-                        setGlobProxy
-                );
-
-                mProxyView.disableAllViews();
-                mProxyView.setStopView();
-            } else {
-                mProxyView.showWrongCredentialsDialog();
+            switch (result) {
+                case AUTHENTICATION_SUCCEED:
+                    //start proxy
+                    mProxyView.startProxyService(username, password,
+                            proxyHost,
+                            proxyPort,
+                            localPort,
+                            bypass,
+                            (Strings.isNullOrEmpty(domain) ? null : domain),
+                            setGlobProxy
+                    );
+                    mProxyView.disableAllViews();
+                    mProxyView.setStopView();
+                    break;
+                case AUTHENTICATION_FAILED:
+                    mProxyView.showWrongCredentialsDialog();
+                    break;
+                case UNKNOWN_HOST:
+                    mProxyView.showUnknownHostError();
+                    break;
+                case CONNECTION_TIMEOUT:
+                    mProxyView.showConnectionTimeOutError();
+                    break;
+                case CONNECTION_ERROR:
+                    mProxyView.showConnectionError();
+                    break;
             }
         }
     }

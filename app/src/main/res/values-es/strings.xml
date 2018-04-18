@@ -6,7 +6,7 @@
     <string name="action_settings">Configuración</string>
     <string name="user">Usuario</string>
     <string name="blank"></string>
-    <string name="Username">usuario</string>
+    <string name="Username">usuario o dominio\\usuario</string>
     <string name="Password">Contraseña</string>
     <string name="ShowPassword">Mostrar contraseña</string>
     <string name="Domain">Dominio(solo si lo conoce):</string>
@@ -122,10 +122,16 @@
     <string name="proxy_port_empty_error">Puerto local no puede ser vacío</string>
     <string name="proxy_port_outofrange_error">El puerto local debe estar entre %d y %d</string>
     <string name="proxy_credentials_check_message">Comprobando credenciales</string>
-    <string name="proxy_credentials_error">Error de credenciales/Dominio</string>
-    <string name="proxy_credentials_error_message">Por favor revise su usuario, contraseña y el campo de Dominio en la configuración del Perfil</string>
+    <string name="proxy_credentials_error">Error de credenciales</string>
+    <string name="proxy_credentials_error_message">Por favor revise su usuario y contraseña</string>
     <string name="accept_text">Aceptar</string>
     <string name="proxy_network_error_message">Por favor conéctese a una red wifi antes de iniciar el servicio</string>
     <string name="proxy_network_error">Error de red</string>
+    <string name="proxy_connectiontimeout_error">El tiempo de conexión expiró</string>
+    <string name="proxy_connectiontimeout_error_message">El tiempo de conexión expiró, por favor revise la configuración del perfil</string>
+    <string name="proxy_unknownhost_error">Servidor proxy desconocido</string>
+    <string name="proxy_unknownhost_error_message">Por favor revise la configuración del perfil</string>
+    <string name="proxy_connection_error">Error de conexión</string>
+    <string name="proxy_connection_error_message">Error en la conexión de red, por favor revise la configuración del perfil</string>
 
 </resources>

@@ -100,5 +100,11 @@ public interface ProxyContract {
 
         void showNetworkError();
 
+        void showConnectionTimeOutError();
+
+        void showUnknownHostError();
+
+        void showConnectionError();
+
     }
 }

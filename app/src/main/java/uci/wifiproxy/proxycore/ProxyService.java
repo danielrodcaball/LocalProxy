@@ -85,8 +85,9 @@ public class ProxyService extends Service {
                     NoSuchFieldException | IllegalAccessException | NullWifiConfigurationException | ApiNotSupportedException e) {
                 e.printStackTrace();
             }
-            IS_SERVICE_RUNNING = false;
         }
+
+        IS_SERVICE_RUNNING = false;
 
 //        UCIntlmWidget.actualizarWidget(this.getApplicationContext(),
 //                AppWidgetManager.getInstance(this.getApplicationContext()),

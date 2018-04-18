@@ -24,34 +24,30 @@ public class Profile extends RealmObject {
     @Required
     private String host;
 
-    private String domain;
-
     private int inPort;
 
     private String bypass;
 
     public static Profile newProfile(String name, String server,
-                                     int inPort, String bypass, String domain){
+                                     int inPort, String bypass){
         Profile p = new Profile();
         p.setId(UUID.randomUUID().toString());
         p.setName(name);
         p.setHost(server);
         p.setInPort(inPort);
         p.setBypass(bypass);
-        p.setDomain(domain);
 
         return p;
     }
 
     public static Profile newProfile(String profileId, String name,
-                                     String server, int inPort, String bypass, String domain){
+                                     String server, int inPort, String bypass){
         Profile p = new Profile();
         p.setId(profileId);
         p.setName(name);
         p.setHost(server);
         p.setInPort(inPort);
         p.setBypass(bypass);
-        p.setDomain(domain);
 
         return p;
     }
@@ -94,14 +90,6 @@ public class Profile extends RealmObject {
 
     public String getId() {
         return id;
-    }
-
-    public String getDomain() {
-        return domain;
-    }
-
-    public void setDomain(String domain) {
-        this.domain = domain;
     }
 
     @Override

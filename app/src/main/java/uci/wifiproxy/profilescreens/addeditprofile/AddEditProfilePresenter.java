@@ -61,11 +61,11 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
 
     @Override
     public void saveProfile(String name, String server,
-                            String inPort, String bypass, String domain) {
+                            String inPort, String bypass) {
         if (isNewProfile()) {
-            createProfile(name, server, inPort, bypass, domain);
+            createProfile(name, server, inPort, bypass);
         } else {
-            updateProfile(name, server, inPort, bypass, domain);
+            updateProfile(name, server, inPort, bypass);
         }
     }
 
@@ -83,7 +83,6 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
                 mAddProfileView.setServer(profile.getHost());
                 mAddProfileView.setBypass(profile.getBypass());
                 mAddProfileView.setInPort(String.valueOf(profile.getInPort()));
-                mAddProfileView.setDomain(profile.getDomain());
 
                 mIsDataMissing = false;
             }
@@ -111,15 +110,15 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
     }
 
     private void createProfile(String name, String server,
-                               String inPort, String bypass, String domain) {
+                               String inPort, String bypass) {
 
         boolean isValidData = validateData(name, server,
-                inPort, bypass, domain);
+                inPort, bypass);
 
         if (!isValidData) return;
 
         Profile profile = Profile.newProfile(name, server,
-                Integer.parseInt(inPort), bypass, domain);
+                Integer.parseInt(inPort), bypass);
 
         mProfilesDataSource.saveProfile(profile, new ProfilesDataSource.SaveProfileCallback() {
             @Override
@@ -138,15 +137,15 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
     }
 
     private void updateProfile(String name, String server,
-                               String inPort, String bypass, String domain) {
+                               String inPort, String bypass) {
 
         boolean isValidData = validateData(name, server,
-                inPort, bypass, domain);
+                inPort, bypass);
 
         if (!isValidData) return;
 
         Profile profile = Profile.newProfile(mProfileId, name, server,
-                Integer.parseInt(inPort), bypass, domain);
+                Integer.parseInt(inPort), bypass);
 
         mProfilesDataSource.updateProfile(profile, new ProfilesDataSource.UpdateProfileCallback() {
             @Override
@@ -164,7 +163,7 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
     }
 
     private boolean validateData(String name, String server,
-                                 String inPort, String bypass, String domain) {
+                                 String inPort, String bypass) {
         boolean isValid = true;
 
         if (Strings.isNullOrEmpty(name)) {
@@ -196,10 +195,10 @@ public class AddEditProfilePresenter implements AddEditProfileContract.Presenter
 
         }
 
-        if (!Strings.isNullOrEmpty(domain) && !InternetDomainName.isValid(domain)){
-            mAddProfileView.setDomainInvalidError();
-            isValid = false;
-        }
+//        if (!Strings.isNullOrEmpty(domain) && !InternetDomainName.isValid(domain)){
+//            mAddProfileView.setDomainInvalidError();
+//            isValid = false;
+//        }
 
         if (!isValidBypassSyntax(bypass)) {
             mAddProfileView.setBypassSyntaxError();

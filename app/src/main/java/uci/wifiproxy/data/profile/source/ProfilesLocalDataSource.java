@@ -16,7 +16,7 @@ public class ProfilesLocalDataSource implements ProfilesDataSource {
 
     private Realm realm;
 
-    //Prevent direct instatntiation
+    //Prevent direct instantiation
     private ProfilesLocalDataSource() {
         realm = Realm.getDefaultInstance();
     }
@@ -77,7 +77,6 @@ public class ProfilesLocalDataSource implements ProfilesDataSource {
             profileToUpdate.setHost(profile.getHost());
             profileToUpdate.setBypass(profile.getBypass());
             profileToUpdate.setInPort(profile.getInPort());
-            profileToUpdate.setDomain(profile.getDomain());
             realm.commitTransaction();
 
             callback.onProfileUpdated();

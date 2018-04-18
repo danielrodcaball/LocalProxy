@@ -33,7 +33,7 @@ public interface ProfileDetailsContract {
 
         void showBypass(String bypass);
 
-        void showDomain(String domain);
+//        void showDomain(String domain);
 
         void showEditProfile(String profileId);
 

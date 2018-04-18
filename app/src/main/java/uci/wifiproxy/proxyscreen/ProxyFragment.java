@@ -394,6 +394,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     public void showProgressDialog(boolean show) {
         if (show) {
             mProgressDialog.setMessage(getString(R.string.proxy_credentials_check_message));
+            mProgressDialog.setCancelable(false);
             mProgressDialog.show();
         }
         else {
@@ -403,30 +404,45 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
 
     @Override
     public void showWrongCredentialsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(getString(R.string.proxy_credentials_error));
-        builder.setMessage(getString(R.string.proxy_credentials_error_message));
-        builder.setPositiveButton(getString(R.string.accept_text), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.create().show();
+        createAlertDialog(getString(R.string.proxy_credentials_error),
+                getString(R.string.proxy_credentials_error_message)).show();
     }
 
     @Override
     public void showNetworkError() {
+        createAlertDialog(getString(R.string.proxy_network_error),
+                getString(R.string.proxy_network_error_message)).show();
+    }
+
+    @Override
+    public void showConnectionTimeOutError() {
+        createAlertDialog(getString(R.string.proxy_connectiontimeout_error),
+                getString(R.string.proxy_connectiontimeout_error_message)).show();
+    }
+
+    @Override
+    public void showUnknownHostError() {
+        createAlertDialog(getString(R.string.proxy_unknownhost_error),
+                getString(R.string.proxy_unknownhost_error_message)).show();
+    }
+
+    @Override
+    public void showConnectionError() {
+        createAlertDialog(getString(R.string.proxy_connection_error),
+                getString(R.string.proxy_connection_error_message)).show();
+    }
+
+    private AlertDialog createAlertDialog(String title, String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(getString(R.string.proxy_network_error));
-        builder.setMessage(getString(R.string.proxy_network_error_message));
+        builder.setTitle(title);
+        builder.setMessage(message);
         builder.setPositiveButton(getString(R.string.accept_text), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });
-        builder.create().show();
+        return builder.create();
     }
 
     @Override
