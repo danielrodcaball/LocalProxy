@@ -15,6 +15,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.concurrent.Executors;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HeaderIterator;
+import cz.msebera.android.httpclient.HttpConnectionFactory;
 import cz.msebera.android.httpclient.HttpEntityEnclosingRequest;
 import cz.msebera.android.httpclient.HttpHost;
 import cz.msebera.android.httpclient.HttpRequest;
@@ -31,6 +33,7 @@ import cz.msebera.android.httpclient.auth.AuthScope;
 import cz.msebera.android.httpclient.auth.NTCredentials;
 import cz.msebera.android.httpclient.client.CredentialsProvider;
 import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.config.RequestConfig;
 import cz.msebera.android.httpclient.client.methods.HttpDelete;
 import cz.msebera.android.httpclient.client.methods.HttpGet;
 import cz.msebera.android.httpclient.client.methods.HttpHead;
@@ -40,16 +43,20 @@ import cz.msebera.android.httpclient.client.methods.HttpPut;
 import cz.msebera.android.httpclient.client.methods.HttpTrace;
 import cz.msebera.android.httpclient.client.methods.HttpUriRequest;
 import cz.msebera.android.httpclient.client.methods.RequestBuilder;
+import cz.msebera.android.httpclient.config.ConnectionConfig;
 import cz.msebera.android.httpclient.impl.client.BasicCredentialsProvider;
 import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
 import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
 import cz.msebera.android.httpclient.impl.client.ProxyClient;
+import cz.msebera.android.httpclient.impl.conn.ManagedHttpClientConnectionFactory;
 import cz.msebera.android.httpclient.impl.conn.PoolingHttpClientConnectionManager;
 import cz.msebera.android.httpclient.impl.io.DefaultHttpRequestParser;
 import cz.msebera.android.httpclient.impl.io.HttpRequestParser;
 import cz.msebera.android.httpclient.impl.io.HttpTransportMetricsImpl;
 import cz.msebera.android.httpclient.impl.io.SessionInputBufferImpl;
 import cz.msebera.android.httpclient.io.HttpMessageParser;
+import cz.msebera.android.httpclient.message.BasicHttpRequest;
+import cz.msebera.android.httpclient.params.CoreProtocolPNames;
 import uci.wifiproxy.data.applicationPackage.ApplicationPackageLocalDataSource;
 import uci.wifiproxy.data.firewallRule.FirewallRule;
 import uci.wifiproxy.data.firewallRule.FirewallRuleLocalDataSource;
@@ -422,7 +429,11 @@ public class HttpForwarder extends Thread {
         }
 
         private long resolveConnect(HttpParser parser, OutputStream os) {
-            Log.i(getClass().getName(), "CONNECT " + parser.getUri());
+            Log.e(getClass().getName(), "CONNECT " + parser.getUri());
+//            for (Header h : parser.getHeaders()){
+//                Log.e("Header", h.getName() + " : " + h.getValue());
+//            }
+
             long bytes = 0;
             boolean matches = (bypass != null) && StringUtils.matches(parser.getUri(), bypass);
             if (!matches) {
@@ -552,11 +563,26 @@ public class HttpForwarder extends Thread {
 //                    Log.e("InputStream", line);
 //                }
 
-                ProxyClient client = new ProxyClient();
+                AdaptedProxyClient client = new AdaptedProxyClient();
                 HttpHost proxyHost = new HttpHost(addr, inport);
                 HttpHost targetHost = new HttpHost(uri[0], Integer.parseInt(uri[1]));
 
-                remoteSocket = client.tunnel(proxyHost, targetHost, credentials.getCredentials(AuthScope.ANY));
+                List<Header> headers = new ArrayList<>();
+                for (Header h : parser.getHeaders()){
+                    if(!stripHeadersIn.contains(h.getName()))
+                        headers.add(h);
+                }
+
+                Header[] arr = new Header[headers.size()];
+                arr = headers.toArray(arr);
+
+                remoteSocket = client.tunnel(
+                        proxyHost,
+                        targetHost,
+                        credentials.getCredentials(AuthScope.ANY),
+                        arr
+                        );
+
                 inRemote = remoteSocket.getInputStream();
                 outRemote = remoteSocket.getOutputStream();
 
