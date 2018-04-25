@@ -35,9 +35,6 @@ import java.util.concurrent.TimeoutException;
 
 import uci.wifiproxy.R;
 import uci.wifiproxy.proxycore.core.HttpForwarder;
-import uci.wifiproxy.proxyscreen.ProxyFragment;
-import uci.wifiproxy.proxyscreen.ProxyPresenter;
-import uci.wifiproxy.util.WifiUtils;
 import uci.wifiproxy.proxyscreen.ProxyActivity;
 
 
@@ -161,7 +158,7 @@ public class ProxyService extends Service {
         Notification.Builder builder = new Notification.Builder(this)
                 .setContentTitle(getApplicationContext().getString(R.string.app_name))
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentText(getApplicationContext().getString(R.string.notif2) + " " + user)
+                .setContentText(getApplicationContext().getString(R.string.excuting_proxy_service_notification) + " " + user)
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(contentIntent);
 

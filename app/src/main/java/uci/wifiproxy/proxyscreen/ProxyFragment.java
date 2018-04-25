@@ -191,18 +191,18 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
             }
         });
 
-        ButtonAwesome buttonViewPass = (ButtonAwesome) root.findViewById(R.id.buttonViewPass);
-        buttonViewPass.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    mPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    mPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                }
-                return false;
-            }
-        });
+//        ButtonAwesome buttonViewPass = (ButtonAwesome) root.findViewById(R.id.buttonViewPass);
+//        buttonViewPass.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                    mPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+//                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+//                    mPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+//                }
+//                return false;
+//            }
+//        });
 
         setHasOptionsMenu(true);
 
