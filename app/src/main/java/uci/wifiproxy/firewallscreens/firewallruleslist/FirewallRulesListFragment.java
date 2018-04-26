@@ -83,13 +83,13 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
         View root = inflater.inflate(R.layout.firewallrules_list_frag, container, false);
 
         //Set up FirewallRules view
-        ListView listView = (ListView) root.findViewById(R.id.firewallRules_list);
+        ListView listView = root.findViewById(R.id.firewallRules_list);
         listView.setAdapter(mListAdapter);
-        mFirewallRulesView = (LinearLayout) root.findViewById(R.id.firewallRulesLL);
+        mFirewallRulesView = root.findViewById(R.id.firewallRulesLL);
 
         //Set up no FirewallRules view
         mNoFirewallRulesView = root.findViewById(R.id.noFirewallRules);
-        TextView noFirewallRulesAddView = (TextView) root.findViewById(R.id.noFirewallRulesAdd);
+        TextView noFirewallRulesAddView = root.findViewById(R.id.noFirewallRulesAdd);
         noFirewallRulesAddView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,7 +98,7 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
         });
 
         //Set up floating action button
-        FloatingActionButton fab = (FloatingActionButton) getActivity()
+        FloatingActionButton fab = getActivity()
                 .findViewById(R.id.fab_add_firewall_rule);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -224,10 +224,10 @@ public class FirewallRulesListFragment extends Fragment implements FirewallRules
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
                 rowView = inflater.inflate(R.layout.firewallrule_list_item, parent, false);
                 ViewHolder viewHolder = new ViewHolder();
-                viewHolder.applicationName = (TextView) rowView.findViewById(R.id.applicationName);
-                viewHolder.packageLogo = (ImageView) rowView.findViewById(R.id.packageLogo);
-                viewHolder.ruleTv = (TextView) rowView.findViewById(R.id.rule);
-                viewHolder.checked = (CheckBox) rowView.findViewById(R.id.active);
+                viewHolder.applicationName = rowView.findViewById(R.id.applicationName);
+                viewHolder.packageLogo = rowView.findViewById(R.id.packageLogo);
+                viewHolder.ruleTv = rowView.findViewById(R.id.rule);
+                viewHolder.checked = rowView.findViewById(R.id.active);
                 rowView.setTag(viewHolder);
             }
 

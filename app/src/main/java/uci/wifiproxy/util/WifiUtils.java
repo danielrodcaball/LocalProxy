@@ -114,7 +114,7 @@ public class WifiUtils {
             manager.updateNetwork(config);
             manager.disconnect();
             manager.reconnect();
-            Log.i("WifiUtils details after set", getUserProxy(context)[0] + ":" + getUserProxy(context)[1]);
+//            Log.i("WifiUtils details after set", getUserProxy(context)[0] + ":" + getUserProxy(context)[1]);
         } catch (Exception e) {
         }
     }
@@ -150,7 +150,7 @@ public class WifiUtils {
             manager.updateNetwork(config);
             manager.disconnect();
             manager.reconnect();
-            Log.i("WifiUtils details after unset", getUserProxy(context)[0] + ":" + getUserProxy(context)[1]);
+//            Log.i("WifiUtils details after unset", getUserProxy(context)[0] + ":" + getUserProxy(context)[1]);
         } catch (Exception e) {
         }
     }
@@ -213,7 +213,7 @@ public class WifiUtils {
         userProxy[0] = (String) method.invoke(pp);
 
         method = c.getMethod("getPort");
-        userProxy[1] = String.valueOf((Integer) method.invoke(pp));
+        userProxy[1] = String.valueOf(method.invoke(pp));
 
 
         method = c.getMethod("getExclusionList");

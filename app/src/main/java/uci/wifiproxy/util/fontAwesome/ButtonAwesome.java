@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.widget.Button;
 
 
-public class ButtonAwesome extends Button{
+public class ButtonAwesome extends android.support.v7.widget.AppCompatButton{
 
 	private final static String NAME = "FONTAWESOME";
 	private static LruCache<String, Typeface> sTypefaceCache = new LruCache<String, Typeface>(12);

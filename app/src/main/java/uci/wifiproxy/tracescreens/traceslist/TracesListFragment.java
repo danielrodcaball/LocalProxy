@@ -80,9 +80,9 @@ public class TracesListFragment extends Fragment implements TracesListContract.V
         View root = inflater.inflate(R.layout.traces_list_frag, container, false);
 
         mNoTracesView = root.findViewById(R.id.noTraces);
-        mTracesView = (LinearLayout) root.findViewById(R.id.tracesLL);
+        mTracesView = root.findViewById(R.id.tracesLL);
 
-        RecyclerView tracesRecycler = (RecyclerView) root.findViewById(R.id.traces_recycler_view);
+        RecyclerView tracesRecycler = root.findViewById(R.id.traces_recycler_view);
 //        tracesRecycler.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         tracesRecycler.setLayoutManager(layoutManager);
@@ -92,7 +92,7 @@ public class TracesListFragment extends Fragment implements TracesListContract.V
 
         // Set up progress indicator
         final ScrollChildSwipeRefreshLayout swipeRefreshLayout =
-                (ScrollChildSwipeRefreshLayout) root.findViewById(R.id.refresh_layout);
+                root.findViewById(R.id.refresh_layout);
         swipeRefreshLayout.setColorSchemeColors(
                 ContextCompat.getColor(getActivity(), R.color.colorPrimary),
                 ContextCompat.getColor(getActivity(), R.color.colorAccent),
@@ -155,14 +155,14 @@ public class TracesListFragment extends Fragment implements TracesListContract.V
         });
 
         // Get the search close button image view
-        ImageView closeButton = (ImageView) searchView.findViewById(R.id.search_close_btn);
+        ImageView closeButton = searchView.findViewById(R.id.search_close_btn);
 
         // Set on click listener
         closeButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                EditText et = (EditText) searchView.findViewById(R.id.search_src_text);
+                EditText et = searchView.findViewById(R.id.search_src_text);
                 //Clear the text from EditText view
                 et.setText("");
                 //Clear query
@@ -200,7 +200,7 @@ public class TracesListFragment extends Fragment implements TracesListContract.V
         if (getView() == null) return;
 
         final SwipeRefreshLayout srl =
-                (SwipeRefreshLayout) getView().findViewById(R.id.refresh_layout);
+                getView().findViewById(R.id.refresh_layout);
 
         // Make sure setRefreshing() is called after the layout is done with everything else.
         srl.post(new Runnable() {

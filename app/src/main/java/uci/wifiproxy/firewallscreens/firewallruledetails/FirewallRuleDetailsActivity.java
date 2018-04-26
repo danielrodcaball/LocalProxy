@@ -25,7 +25,7 @@ public class FirewallRuleDetailsActivity extends AppCompatActivity{
         setContentView(R.layout.firewallrule_details_act);
 
         //Set up the toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);

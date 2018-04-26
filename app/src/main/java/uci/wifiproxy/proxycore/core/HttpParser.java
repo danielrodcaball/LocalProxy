@@ -16,7 +16,7 @@ import java.util.List;
 
 public class HttpParser extends InputStream {
 
-    static List methods = Arrays.asList(new String[]{"GET", "HEAD", "POST"});
+    static List methods = Arrays.asList("GET", "HEAD", "POST");
     int index;
     boolean first;
     byte[] buffer = new byte[4096];

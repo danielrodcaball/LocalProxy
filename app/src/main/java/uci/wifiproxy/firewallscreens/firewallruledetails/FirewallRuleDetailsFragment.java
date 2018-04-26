@@ -69,12 +69,12 @@ public class FirewallRuleDetailsFragment extends Fragment implements FirewallRul
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.firewallrule_details_frag, container, false);
-        mRuleTv = (TextView) root.findViewById(R.id.firewallrule_detail_rule);
-        mDescriptionTv = (TextView) root.findViewById(R.id.firewallrule_detail_description);
-        mApplicationNameTv = (TextView) root.findViewById(R.id.applicationName);
-        mPackageLogoTv = (ImageView) root.findViewById(R.id.packageLogo);
+        mRuleTv = root.findViewById(R.id.firewallrule_detail_rule);
+        mDescriptionTv = root.findViewById(R.id.firewallrule_detail_description);
+        mApplicationNameTv = root.findViewById(R.id.applicationName);
+        mPackageLogoTv = root.findViewById(R.id.packageLogo);
 
-        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_edit_firewallrule);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab_edit_firewallrule);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

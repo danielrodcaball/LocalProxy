@@ -29,7 +29,7 @@ public class AddEditFirewallRuleActivity extends AppCompatActivity {
         setContentView(R.layout.addfirewallrule_act);
 
         // Set up the toolbar.
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);

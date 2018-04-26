@@ -26,7 +26,7 @@ public class FirewallRulesListActivity extends BaseDrawerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.firewallrules_list_act);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setTitle(R.string.firewall_title);
@@ -34,9 +34,9 @@ public class FirewallRulesListActivity extends BaseDrawerActivity {
         ab.setDisplayHomeAsUpEnabled(true);
 
         //Set up navigation drawer
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackground(R.color.colorPrimaryDark);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         if (navigationView != null) {
             setupDrawerContent(navigationView);
             navigationView.getMenu().findItem(R.id.firewall_navigation_menu_item).setChecked(true);

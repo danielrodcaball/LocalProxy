@@ -69,13 +69,13 @@ public class ProfilesListFragment extends Fragment implements ProfilesListContra
         View root =  inflater.inflate(R.layout.profiles_list_frag, container, false);
 
         //Set up profiles view
-        ListView listView = (ListView) root.findViewById(R.id.profiles_list);
+        ListView listView = root.findViewById(R.id.profiles_list);
         listView.setAdapter(mListAdapter);
-        mProfilesView = (LinearLayout) root.findViewById(R.id.profilesLL);
+        mProfilesView = root.findViewById(R.id.profilesLL);
 
         //Set up no profiles view
         mNoProfilesView = root.findViewById(R.id.noProfiles);
-        TextView mNoProfilesAddView = (TextView) root.findViewById(R.id.noProfilesAdd);
+        TextView mNoProfilesAddView = root.findViewById(R.id.noProfilesAdd);
         mNoProfilesAddView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +85,7 @@ public class ProfilesListFragment extends Fragment implements ProfilesListContra
 
         // Set up floating action button
         FloatingActionButton fab =
-                (FloatingActionButton) getActivity().findViewById(R.id.fab_add_task);
+                getActivity().findViewById(R.id.fab_add_task);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,7 +207,7 @@ public class ProfilesListFragment extends Fragment implements ProfilesListContra
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
                 rowView = inflater.inflate(R.layout.profiles_list_item, parent, false);
                 ViewHolder viewHolder = new ViewHolder();
-                viewHolder.titleTV = (TextView) rowView.findViewById(R.id.title);
+                viewHolder.titleTV = rowView.findViewById(R.id.title);
                 rowView.setTag(viewHolder);
             }
 

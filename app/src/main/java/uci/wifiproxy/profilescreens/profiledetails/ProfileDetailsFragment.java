@@ -61,13 +61,13 @@ public class ProfileDetailsFragment extends Fragment implements ProfileDetailsCo
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.profile_details_frag, container, false);
-        mDetailName = (TextView) root.findViewById(R.id.nameTv);
-        mDetailServer = (TextView) root.findViewById(R.id.serverTv);
-        mDetailInPort = (TextView) root.findViewById(R.id.inPortTv);
-        mDetailBypass = (TextView) root.findViewById(R.id.bypassTv);
+        mDetailName = root.findViewById(R.id.nameTv);
+        mDetailServer = root.findViewById(R.id.serverTv);
+        mDetailInPort = root.findViewById(R.id.inPortTv);
+        mDetailBypass = root.findViewById(R.id.bypassTv);
 //        mDomain = (TextView) root.findViewById(R.id.domainTv);
 
-        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_edit_profile);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab_edit_profile);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

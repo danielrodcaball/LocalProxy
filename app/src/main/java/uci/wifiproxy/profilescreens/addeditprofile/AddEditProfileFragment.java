@@ -54,7 +54,7 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_edit_profile_done);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab_edit_profile_done);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,10 +73,10 @@ public class AddEditProfileFragment extends Fragment implements AddEditProfileCo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View root = inflater.inflate(R.layout.addprofile_frag, container, false);
-        mName = (TextView) root.findViewById(R.id.ename);
-        mServer = (TextView) root.findViewById(R.id.eserver);
-        mInPort = (TextView) root.findViewById(R.id.einputport);
-        mBypass = (TextView) root.findViewById(R.id.ebypass);
+        mName = root.findViewById(R.id.ename);
+        mServer = root.findViewById(R.id.eserver);
+        mInPort = root.findViewById(R.id.einputport);
+        mBypass = root.findViewById(R.id.ebypass);
         mBypass.setText(getString(R.string.bypassInitText));
 //        mDomain = (TextView) root.findViewById(R.id.domain);
 

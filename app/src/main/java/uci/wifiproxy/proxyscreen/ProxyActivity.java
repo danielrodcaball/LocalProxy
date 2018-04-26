@@ -39,16 +39,16 @@ public class ProxyActivity extends BaseDrawerActivity {
         super.onCreate(savedInstanceState);
 //        chargeTheme();
         setContentView(R.layout.proxy_act);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setLogo(getApplicationContext().getResources().getDrawable(R.mipmap.ic_launcher));
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackground(R.color.colorPrimaryDark);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         if (navigationView != null) {
             setupDrawerContent(navigationView);
             navigationView.getMenu().findItem(R.id.proxy_navigation_menu_item).setChecked(true);

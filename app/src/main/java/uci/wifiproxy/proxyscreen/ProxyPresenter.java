@@ -411,9 +411,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
     }
 
     private boolean isLocalPortAvailable(int port) {
-        if (PortsUtils.isPortAvailable(port))
-            return true;
-        return false;
+        return PortsUtils.isPortAvailable(port);
     }
 
     private class CredentialsCheckTask extends AsyncTask<Object, Object, Integer> {

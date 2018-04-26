@@ -132,7 +132,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mFabStartProxy = (FloatingActionButton) getActivity().findViewById(R.id.fab_start_proxy);
+        mFabStartProxy = getActivity().findViewById(R.id.fab_start_proxy);
         mFabStartProxy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +148,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
             }
         });
 
-        mFabStopProxy = (FloatingActionButton) getActivity().findViewById(R.id.fab_stop_proxy);
+        mFabStopProxy = getActivity().findViewById(R.id.fab_stop_proxy);
         mFabStopProxy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,23 +164,23 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.proxy_frag, container, false);
 
-        mUsername = (AutoCompleteTextView) root.findViewById(R.id.euser);
+        mUsername = root.findViewById(R.id.euser);
         mUsername.setAdapter(mUserArrayAdapter);
 
-        mPassword = (TextView) root.findViewById(R.id.epass);
-        mRememberPasswordCheck = (CheckBox) root.findViewById(R.id.check_rem_pass);
+        mPassword = root.findViewById(R.id.epass);
+        mRememberPasswordCheck = root.findViewById(R.id.check_rem_pass);
 
-        mLocalPortEditText = (EditText) root.findViewById(R.id.local_port);
+        mLocalPortEditText = root.findViewById(R.id.local_port);
 
-        mGlobalProxyCheck = (CheckBox) root.findViewById(R.id.globCheckBox);
+        mGlobalProxyCheck = root.findViewById(R.id.globCheckBox);
         if (Build.VERSION.SDK_INT > WifiProxyApplication.MAX_SDK_SUPPORTED_FOR_WIFI_CONF) {
             mGlobalProxyCheck.setVisibility(View.GONE);
         }
 
-        mProfileSpinner = (Spinner) root.findViewById(R.id.spinner_profiles);
+        mProfileSpinner = root.findViewById(R.id.spinner_profiles);
         mProfileSpinner.setAdapter(mProfileArrayAdapter);
 
-        mAddProfileButton = (Button) root.findViewById(R.id.add_profile_button);
+        mAddProfileButton = root.findViewById(R.id.add_profile_button);
         mAddProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -485,9 +485,9 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = ((AppCompatActivity) getContext()).getLayoutInflater();
         View view = inflater.inflate(R.layout.wifi_alert_dialog, null);
-        ImageView wifiConfigImage = (ImageView) view.findViewById(R.id.wifiConfigImageView);
+        ImageView wifiConfigImage = view.findViewById(R.id.wifiConfigImageView);
         PhotoViewAttacher mAtacher = new PhotoViewAttacher(wifiConfigImage);
-        final CheckBox dontShowCheckBox = (CheckBox) view.findViewById(R.id.dontShowCheckBox);
+        final CheckBox dontShowCheckBox = view.findViewById(R.id.dontShowCheckBox);
         builder.setTitle(getContext().getResources().getString(R.string.wifiSettings));
         builder.setView(view);
         builder.setPositiveButton(R.string.wifiSettingsGoToWifi, new DialogInterface.OnClickListener() {
@@ -545,7 +545,7 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
 
             final User user = getItem(position);
 
-            TextView username = (TextView) rowView.findViewById(R.id.user_username);
+            TextView username = rowView.findViewById(R.id.user_username);
 
             if (user != null) {
                 username.setText(user.getUsername());

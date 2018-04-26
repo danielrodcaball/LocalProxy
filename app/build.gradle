@@ -7,13 +7,20 @@ android {
     defaultConfig {
         applicationId 'uci.wifiproxy'
         minSdkVersion 15
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 18
         versionName '1.0'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+//            shrinkResources true
+//            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'proguard-rules.pro'
+        }
         release {
+//            shrinkResources true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
@@ -33,6 +40,11 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
+    lintOptions{
+        disable 'MissingTranslation'
+    }
+
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')

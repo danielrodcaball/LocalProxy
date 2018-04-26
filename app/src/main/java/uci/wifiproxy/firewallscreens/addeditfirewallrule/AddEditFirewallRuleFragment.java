@@ -67,7 +67,7 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_edit_firewallRule_done);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab_edit_firewallRule_done);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,9 +82,9 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root  = inflater.inflate(R.layout.addfirewallrule_frag, container, false);
-        mRule = (TextView) root.findViewById(R.id.add_firewallRule_rule);
-        mDescription = (TextView) root.findViewById(R.id.add_firewallRule_description);
-        mPackageNameSpinner = (Spinner) root.findViewById(R.id.applicationSpinner);
+        mRule = root.findViewById(R.id.add_firewallRule_rule);
+        mDescription = root.findViewById(R.id.add_firewallRule_description);
+        mPackageNameSpinner = root.findViewById(R.id.applicationSpinner);
         mPackageNameSpinner.setAdapter(mApplicationPackageAdapter);
 
         setHasOptionsMenu(true);
@@ -211,8 +211,8 @@ public class AddEditFirewallRuleFragment extends Fragment implements AddEditFire
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
                 rowView = inflater.inflate(itemViewResourceId, parent, false);
                 ViewHolder viewHolder = new ViewHolder();
-                viewHolder.logo = (ImageView) rowView.findViewById(R.id.application_package_item_logo);;
-                viewHolder.packageName = (TextView) rowView.findViewById(R.id.application_package_item_name);
+                viewHolder.logo = rowView.findViewById(R.id.application_package_item_logo);
+                viewHolder.packageName = rowView.findViewById(R.id.application_package_item_name);
                 rowView.setTag(viewHolder);
             }
 
