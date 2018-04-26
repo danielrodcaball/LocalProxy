@@ -135,9 +135,9 @@ public class ProxyService extends Service {
 
         } catch (IOException e) {
             e.printStackTrace();
-            Intent i = new Intent(SERVICE_RECIVER_NAME);
-            i.putExtra(MESSAGE_TAG, ERROR_STARTING_SERVICE);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+//            Intent i = new Intent(SERVICE_RECIVER_NAME);
+//            i.putExtra(MESSAGE_TAG, ERROR_STARTING_SERVICE);
+//            LocalBroadcastManager.getInstance(this).sendBroadcast(i);
         }
 
         //START_REDELIVER_INTENT permite que si el sistema mata el servicio entonces cuando intenta reiniciarlo envia el mismo Intent que se envio para

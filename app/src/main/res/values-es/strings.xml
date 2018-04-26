@@ -108,6 +108,7 @@
     <string name="proxy_connection_error">Error de conexión</string>
     <string name="proxy_connection_error_message">Error en la conexión de red, por favor revise la configuración del perfil</string>
     <string name="error_starting_proxy_service_title">Error iniciando el servicio de proxy</string>
-    <string name="error_starting_proxy_service_message">Por favor asegurese que el puerto local no está siendo usado por otra aplicación</string>
+    <string name="local_port_not_available">Por favor asegurese que el puerto local no está siendo usado por otra aplicación</string>
+    <string name="port_not_available_title">Puerto no disponible</string>
 
 </resources>

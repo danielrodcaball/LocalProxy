@@ -110,6 +110,7 @@
     <string name="proxy_connection_error">Connection error</string>
     <string name="proxy_connection_error_message">Connection error, please check your profile configuration</string>
     <string name="error_starting_proxy_service_title">Error starting proxy service</string>
-    <string name="error_starting_proxy_service_message">Please ensure the local port is not being used by other application</string>
+    <string name="local_port_not_available">Please ensure the local port is not being used by other application</string>
+    <string name="port_not_available_title">Port not available</string>
 
 </resources>

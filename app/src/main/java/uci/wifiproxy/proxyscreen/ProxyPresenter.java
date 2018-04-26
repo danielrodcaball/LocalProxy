@@ -9,7 +9,10 @@ import android.util.Log;
 import com.google.common.base.Strings;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +38,7 @@ import uci.wifiproxy.data.user.User;
 import uci.wifiproxy.data.user.UsersDataSource;
 import uci.wifiproxy.data.user.UsersLocalDataSource;
 import uci.wifiproxy.proxycore.ProxyService;
+import uci.wifiproxy.util.network.PortsUtils;
 
 import static uci.wifiproxy.profilescreens.addeditprofile.AddEditProfilePresenter.MAX_PORTS_LIMIT;
 import static uci.wifiproxy.profilescreens.addeditprofile.AddEditProfilePresenter.MAX_SYSTEM_PORTS_LIMIT;
@@ -228,8 +232,15 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         if (!Strings.isNullOrEmpty(localPort) &&
                 (Integer.parseInt(localPort) <= MAX_SYSTEM_PORTS_LIMIT ||
                         Integer.parseInt(localPort) > MAX_PORTS_LIMIT)) {
-
             mProxyView.setLocalPortOutOfRangeError();
+            isValid = false;
+        }
+
+        if (!Strings.isNullOrEmpty(localPort) &&
+                Integer.parseInt(localPort) > MAX_SYSTEM_PORTS_LIMIT &&
+                Integer.parseInt(localPort) <= MAX_PORTS_LIMIT &&
+                !isLocalPortAvailable(Integer.parseInt(localPort))) {
+            mProxyView.setLocalPortNotAvailable();
             isValid = false;
         }
 
@@ -312,7 +323,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
 
     @Override
     public void startServiceResult(int message) {
-        if (message == ProxyService.ERROR_STARTING_SERVICE){
+        if (message == ProxyService.ERROR_STARTING_SERVICE) {
             mProxyView.showErrorStartingService();
             stopProxy();
         }
@@ -397,6 +408,12 @@ public class ProxyPresenter implements ProxyContract.Presenter {
 
         boolean globProxy = mPrefHelper.getCurrentIsSetGlobProxy();
         mProxyView.setGlobalProxyChecked(globProxy);
+    }
+
+    private boolean isLocalPortAvailable(int port) {
+        if (PortsUtils.isPortAvailable(port))
+            return true;
+        return false;
     }
 
     private class CredentialsCheckTask extends AsyncTask<Object, Object, Integer> {

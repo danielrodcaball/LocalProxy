@@ -19,10 +19,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -48,7 +46,6 @@ import uci.wifiproxy.data.user.User;
 import uci.wifiproxy.profilescreens.addeditprofile.AddEditProfileActivity;
 import uci.wifiproxy.profilescreens.addeditprofile.AddEditProfilePresenter;
 import uci.wifiproxy.proxycore.ProxyService;
-import uci.wifiproxy.util.fontAwesome.ButtonAwesome;
 
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
@@ -87,14 +84,14 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
 
     private ProgressDialog mProgressDialog;
 
-    private BroadcastReceiver serviceReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int message = intent.getIntExtra(ProxyService.MESSAGE_TAG, ProxyService.SERVICE_STARTED_SUCCESSFUL);
-            Log.e("serviceMessage", message+"");
-            mPresenter.startServiceResult(message);
-        }
-    };
+//    private BroadcastReceiver serviceReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            int message = intent.getIntExtra(ProxyService.MESSAGE_TAG, ProxyService.SERVICE_STARTED_SUCCESSFUL);
+//            Log.e("serviceMessage", message+"");
+//            mPresenter.startServiceResult(message);
+//        }
+//    };
 
 
     public static ProxyFragment newInstance() {
@@ -113,15 +110,15 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     public void onResume() {
         super.onResume();
         mPresenter.start();
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(
-                serviceReceiver, new IntentFilter(ProxyService.SERVICE_RECIVER_NAME));
+//        LocalBroadcastManager.getInstance(getContext()).registerReceiver(
+//                serviceReceiver, new IntentFilter(ProxyService.SERVICE_RECIVER_NAME));
 //        mUsername.requestFocus();
     }
 
     @Override
     public void onPause() {
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(
-                serviceReceiver);
+//        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(
+//                serviceReceiver);
         super.onPause();
     }
 
@@ -455,7 +452,14 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     @Override
     public void showErrorStartingService() {
         createAlertDialog(getString(R.string.error_starting_proxy_service_title),
-                getString(R.string.error_starting_proxy_service_message)).show();
+                getString(R.string.local_port_not_available)).show();
+    }
+
+    @Override
+    public void setLocalPortNotAvailable() {
+        createAlertDialog(getString(R.string.port_not_available_title),
+                getString(R.string.local_port_not_available)).show();
+//        mLocalPortEditText.setError(getString(R.string.port_not_available_title));
     }
 
     private AlertDialog createAlertDialog(String title, String message){

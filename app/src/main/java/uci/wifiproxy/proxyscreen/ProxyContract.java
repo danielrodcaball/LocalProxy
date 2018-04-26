@@ -78,6 +78,8 @@ public interface ProxyContract {
 
         void setLocalPortOutOfRangeError();
 
+        void setLocalPortNotAvailable();
+
         void setUsers(@NonNull List<User> users);
 
         void showAddProfile();
