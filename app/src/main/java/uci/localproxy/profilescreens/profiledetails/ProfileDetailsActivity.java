@@ -29,6 +29,7 @@ public class ProfileDetailsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setTitle(R.string.profile_details_title);
 
         String profileId = getIntent().getStringExtra(EXTRA_PROFILE_ID);
 

@@ -30,6 +30,7 @@ public class FirewallRuleDetailsActivity extends AppCompatActivity{
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setTitle(R.string.firewallrule_details_title);
 
         String firewallRuleId = getIntent().getStringExtra(EXTRA_FIREWALL_RULE_ID);
 
