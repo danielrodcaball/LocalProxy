@@ -28,6 +28,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'}
     }
+
+
 //    packagingOptions {
 //        exclude 'META-INF/LICENSE.txt'
 //        exclude 'META-INF/DEPENDENCIES'

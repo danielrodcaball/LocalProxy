@@ -77,8 +77,8 @@ public class ProxyService extends Service {
     @Override
     public void onDestroy() {
         if (proxyThread != null) {
-            proxyThread.halt();
             executor.shutdown();
+            proxyThread.halt();
             if (set_global_proxy) {
                 Toast.makeText(this, getString(R.string.OnNoProxy), Toast.LENGTH_LONG).show();
                 try {
