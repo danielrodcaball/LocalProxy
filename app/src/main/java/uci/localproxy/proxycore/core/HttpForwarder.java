@@ -250,7 +250,7 @@ public class HttpForwarder extends Thread {
                         os.write("HTTP/1.1 403 Forbidden".getBytes());
                         os.write("\r\n".getBytes());
                         os.write("\r\n".getBytes());
-                        os.write("<h1>Forbidden by WifiProxy's firewall</h1>".getBytes());
+                        os.write("<h1>Forbidden by LocalProxy's firewall</h1>".getBytes());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
