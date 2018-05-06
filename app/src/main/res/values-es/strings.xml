@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">WifiProxy</string>
+    <string name="app_name">LocalProxy</string>
     <string name="description">Servicio de proxy local para Android</string>
     <string name="action_settings">Configuración</string>
     <string name="user">Usuario</string>
@@ -17,13 +17,13 @@
     <string name="portHint">8080</string>
     <string name="run">iniciar</string>
     <string name="stop">parar</string>
-    <string name="excuting_proxy_service_notification">Ejecutando WifiProxy para el usuario: </string>
+    <string name="excuting_proxy_service_notification">Ejecutando LocalProxy para el usuario: </string>
     <string name="passwordHint">contraseña</string>
     <string name="Bypass">Omitir proxy para:</string>
     <string name="BypassHint">127.0.0.1,localhost,*ejemplo.cu</string>
     <string name="OnProxy">Cambiando Wi-Fi a configuración con Proxy</string>
     <string name="OnNoProxy">Cambiando Wi-Fi a configuración sin Proxy</string>
-    <string name="GlobalProxy">Establecer como proxy global</string>
+    <string name="GlobalProxy">Configurar Wi-Fi para el uso del proxy</string>
     <string name="aboutUs">Acerca de</string>
     <string name="createdBy">Creado por:</string>
     <string name="wifiSettings">Configuración de Wi-fi</string>

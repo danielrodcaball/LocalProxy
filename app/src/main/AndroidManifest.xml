@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="uci.wifiproxy">
+    package="uci.localproxy">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,23 +15,23 @@
     <!--<uses-permission android:name="android.permission.WRITE_SETTINGS"/>-->
     <!--<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>-->
 
-    <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="24" />
+    <!--<uses-sdk-->
+        <!--android:minSdkVersion="15"-->
+        <!--android:targetSdkVersion="24" />-->
 
     <application
-        android:name=".WifiProxyApplication"
+        android:name="uci.localproxy.LocalProxyApplication"
         android:allowBackup="true"
         android:description="@string/description"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme">
 
-        android:sharedUserId="android.uid.system">
+        <!--android:sharedUserId="android.uid.system">-->
 
         <activity
-            android:name="uci.wifiproxy.proxyscreen.ProxyActivity"
+            android:name="uci.localproxy.proxyscreen.ProxyActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.OverlapSystemBar"
@@ -42,32 +42,32 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".profilescreens.addeditprofile.AddEditProfileActivity" />
-        <activity android:name=".profilescreens.profiledetails.ProfileDetailsActivity" />
+        <activity android:name="uci.localproxy.profilescreens.addeditprofile.AddEditProfileActivity" />
+        <activity android:name="uci.localproxy.profilescreens.profiledetails.ProfileDetailsActivity" />
 
-        <activity android:name=".firewallscreens.addeditfirewallrule.AddEditFirewallRuleActivity" />
-        <activity android:name=".firewallscreens.firewallruledetails.FirewallRuleDetailsActivity" />
+        <activity android:name="uci.localproxy.firewallscreens.addeditfirewallrule.AddEditFirewallRuleActivity" />
+        <activity android:name="uci.localproxy.firewallscreens.firewallruledetails.FirewallRuleDetailsActivity" />
 
         <activity
-            android:name=".profilescreens.profileslist.ProfilesListActivity"
+            android:name="uci.localproxy.profilescreens.profileslist.ProfilesListActivity"
             android:launchMode="singleTop"
             tools:ignore="UnusedAttribute">
         </activity>
 
         <activity
-            android:name=".firewallscreens.firewallruleslist.FirewallRulesListActivity"
+            android:name="uci.localproxy.firewallscreens.firewallruleslist.FirewallRulesListActivity"
             android:launchMode="singleTop"
             tools:ignore="UnusedAttribute">
         </activity>
 
         <activity
-            android:name=".tracescreens.traceslist.TracesListActivity"
+            android:name="uci.localproxy.tracescreens.traceslist.TracesListActivity"
             android:launchMode="singleTop"
             tools:ignore="UnusedAttribute">
         </activity>
 
         <service
-            android:name="uci.wifiproxy.proxycore.ProxyService"
+            android:name="uci.localproxy.proxycore.ProxyService"
             android:icon="@mipmap/ic_launcher"
             android:label="WifiProxyService"
             android:launchMode="singleTop"
@@ -75,7 +75,7 @@
             <!--android:process=":UCIntlmService"-->
         </service>
 
-        <activity android:name=".aboutscreen.AboutActivity"
+        <activity android:name="uci.localproxy.aboutscreen.AboutActivity"
             android:theme="@style/AppTheme.MaterialAboutActivity"/>
 
     </application>
