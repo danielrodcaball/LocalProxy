@@ -110,9 +110,7 @@
     <string name="error_starting_proxy_service_title">Error iniciando el servicio de proxy</string>
     <string name="local_port_not_available">Por favor asegurese que el puerto local no está siendo usado por otra aplicación</string>
     <string name="port_not_available_title">Puerto no disponible</string>
-    <string name="profile_details_title">Detalles del perfil</string>
-    <string name="firewallrule_details_title">Detalles de la regla</string>
-
-
+    <string name="profile_details_title">Detalles</string>
+    <string name="firewallrule_details_title">Detalles</string>
 
 </resources>

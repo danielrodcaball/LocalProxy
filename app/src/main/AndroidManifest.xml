@@ -23,7 +23,7 @@
         android:name="uci.localproxy.LocalProxyApplication"
         android:allowBackup="true"
         android:description="@string/description"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher5"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">

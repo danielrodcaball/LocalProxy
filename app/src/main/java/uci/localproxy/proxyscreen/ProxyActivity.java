@@ -36,7 +36,7 @@ public class ProxyActivity extends BaseDrawerActivity {
 //        chargeTheme();
         setContentView(R.layout.proxy_act);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setLogo(getApplicationContext().getResources().getDrawable(R.mipmap.ic_launcher));
+        toolbar.setLogo(getApplicationContext().getResources().getDrawable(R.mipmap.ic_launcher5));
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);

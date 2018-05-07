@@ -16,7 +16,7 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="192dp"
+    android:layout_height="wrap_content"
     android:background="?attr/colorPrimaryDark"
     android:gravity="bottom"
     android:orientation="vertical"
@@ -30,10 +30,30 @@
     <!--android:text="@string/app_name"-->
     <!--android:textAppearance="@style/TextAppearance.AppCompat.Body1" />-->
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="left|center"
-        android:src="@drawable/ic_drawer_launcher" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <!--Google font: Original Surfer-->
+        <ImageView
+            android:id="@+id/dr_img"
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="start|center"
+            android:src="@drawable/ic_launcher_drawer" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="90dp"
+            android:layout_marginLeft="140dp"
+            android:text="@string/app_name"
+            android:textSize="20sp"/>
+
+    </RelativeLayout>
+
 
 </FrameLayout>

@@ -30,9 +30,9 @@ public class AboutActivity extends MaterialAboutActivity {
         // Add items to card
 
         appCardBuilder.addItem(new MaterialAboutTitleItem.Builder()
-                .text("WifiProxy")
+                .text(getString(R.string.app_name))
                 .desc("© 2018 Daniel A. Rodríguez")
-                .icon(R.mipmap.ic_launcher)
+                .icon(R.mipmap.ic_launcher5)
                 .build());
 
         appCardBuilder.addItem(ConvenienceBuilder.createVersionActionItem(getApplicationContext(),
@@ -45,7 +45,7 @@ public class AboutActivity extends MaterialAboutActivity {
                 new DrawableAwesome(R.string.fa_github, 40,Color.GRAY, false, false, 0, 0, 0, 0, this),
                 getString(R.string.sourcecode_text),
                 true,
-                Uri.parse("https://github.com/darodriguez1994/WifiProxy")
+                Uri.parse("https://github.com/darodriguez1994/LocalProxy")
         ));
 
 
