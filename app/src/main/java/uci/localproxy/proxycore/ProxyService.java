@@ -98,7 +98,7 @@ public class ProxyService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         if (intent.getExtras() == null) {
-            Log.e(getClass().getName(), "Error starting service");
+//            Log.e(getClass().getName(), "Error starting service");
         }
 
         user = intent.getStringExtra("user");
@@ -111,7 +111,7 @@ public class ProxyService extends Service {
         String domain = intent.getStringExtra("domain");
 
 
-        Log.i(getClass().getName(), "Starting for user " + user + ", server " + server + ", input port " + String.valueOf(inputport) + ", output port" + String.valueOf(outputport) + " and bypass string: " + bypass);
+//        Log.i(getClass().getName(), "Starting for user " + user + ", server " + server + ", input port " + String.valueOf(inputport) + ", output port" + String.valueOf(outputport) + " and bypass string: " + bypass);
 
         try {
             proxyThread = new HttpForwarder(server, inputport, user, pass, outputport, true, bypass,
@@ -156,7 +156,7 @@ public class ProxyService extends Service {
 
         Notification.Builder builder = new Notification.Builder(this)
                 .setContentTitle(getApplicationContext().getString(R.string.app_name))
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.ic_launcher5)
                 .setContentText(getApplicationContext().getString(R.string.excuting_proxy_service_notification) + " " + user)
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(contentIntent);
@@ -196,7 +196,7 @@ public class ProxyService extends Service {
                 @Override
                 public void commandOutput(int id, String line) {
                     super.commandOutput(id, line);
-                    Log.e("command output", line);
+//                    Log.e("command output", line);
                 }
             };
             Command command = new Command(0, redirectRule);
@@ -280,44 +280,4 @@ public class ProxyService extends Service {
 ////            logger.finest("Error executing rules: " + e.getMessage());
 //        }
     }
-
-    private static boolean setLollipopWebViewProxy(Context appContext, String host, int port) {
-        System.setProperty("http.proxyHost", host);
-        System.setProperty("http.proxyPort", port + "");
-        System.setProperty("https.proxyHost", host);
-        System.setProperty("https.proxyPort", port + "");
-        try {
-            Class applictionCls = Class.forName("android.app.Application");
-            Field loadedApkField = applictionCls.getDeclaredField("mLoadedApk");
-            loadedApkField.setAccessible(true);
-            Object loadedApk = loadedApkField.get(appContext);
-            Class loadedApkCls = Class.forName("android.app.LoadedApk");
-            Field receiversField = loadedApkCls.getDeclaredField("mReceivers");
-            receiversField.setAccessible(true);
-            ArrayMap receivers = (ArrayMap) receiversField.get(loadedApk);
-            for (Object receiverMap : receivers.values()) {
-                for (Object rec : ((ArrayMap) receiverMap).keySet()) {
-                    Class clazz = rec.getClass();
-                    if (clazz.getName().contains("ProxyChangeListener")) {
-                        Method onReceiveMethod = clazz.getDeclaredMethod("onReceive", Context.class, Intent.class);
-                        Intent intent = new Intent(Proxy.PROXY_CHANGE_ACTION);
-                        /***** In Lollipop, ProxyProperties went public as ProxyInfo *****/
-                        final String CLASS_NAME = "android.net.ProxyInfo";
-                        Class cls = Class.forName(CLASS_NAME);
-                        /***** ProxyInfo lacks constructors, use the static buildDirectProxy method instead *****/
-                        Method buildDirectProxyMethod = cls.getMethod("buildDirectProxy", String.class, Integer.TYPE);
-                        Object proxyInfo = buildDirectProxyMethod.invoke(cls, host, port);
-                        intent.putExtra("proxy", (Parcelable) proxyInfo);
-                        onReceiveMethod.invoke(rec, appContext, intent);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.e("Setting proxy error", "Setting proxy with >= 5.0 API failed with", e);
-            return false;
-        }
-        Log.d("Setting proxy success", "Setting proxy with >= 5.0 API successful!");
-        return true;
-    }
-
 }

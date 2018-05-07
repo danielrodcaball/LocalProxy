@@ -161,7 +161,7 @@ public class HttpForwarder extends Thread {
     }
 
     public void halt() {
-        Log.e(getClass().getName(), "Stoping proxy");
+//        Log.e(getClass().getName(), "Stoping proxy");
         running = false;
 
         manager.shutdown();
@@ -241,8 +241,8 @@ public class HttpForwarder extends Thread {
                         localSocket.getInetAddress().getHostAddress());
                 String packageNameSource = connectionDescriptor.getNamespace();
 
-                Log.e("Request:", connectionDescriptor.getNamespace() +
-                        "(" + connectionDescriptor.getName() + ")" + ": " + parser.getUri());
+//                Log.e("Request:", connectionDescriptor.getNamespace() +
+//                        "(" + connectionDescriptor.getName() + ")" + ": " + parser.getUri());
 
                 //Firewall action
                 if (!firewallFilter(packageNameSource, parser.getUri())) {
@@ -277,7 +277,7 @@ public class HttpForwarder extends Thread {
                         (connectionDescriptor.getName() != null) ? connectionDescriptor.getName() : Trace.UNKNOWN_APP_NAME,
                         parser.getUri(), bytes);
 
-                Log.e("bytes:", packageNameSource + ": " + bytes + "");
+//                Log.e("bytes:", packageNameSource + ": " + bytes + "");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -337,16 +337,16 @@ public class HttpForwarder extends Thread {
             boolean matches = (bypass != null) && StringUtils.matches(parser.getUri(), bypass);
             if (matches) {
                 client = HttpForwarder.this.noDelegateClient;
-                Log.i(getClass().getName(), "url matches bypass " + parser.getUri());
+//                Log.i(getClass().getName(), "url matches bypass " + parser.getUri());
             } else {
                 client = HttpForwarder.this.delegateClient;
-                Log.i(getClass().getName(), "url does not matches bypass " + parser.getUri());
+//                Log.i(getClass().getName(), "url does not matches bypass " + parser.getUri());
             }
             HttpUriRequest request;
             HttpResponse response;
             try {
 
-                Log.i(getClass().getName(), parser.getMethod() + " " + parser.getUri());
+//                Log.i(getClass().getName(), parser.getMethod() + " " + parser.getUri());
                 if (parser.getMethod().equals("GET")) {
                     request = new HttpGet(parser.getUri());
                 } else if (parser.getMethod().equals("POST")) {
@@ -416,7 +416,7 @@ public class HttpForwarder extends Thread {
         }
 
         private long resolveConnect(HttpParser parser, OutputStream os) {
-            Log.e(getClass().getName(), "CONNECT " + parser.getUri());
+//            Log.e(getClass().getName(), "CONNECT " + parser.getUri());
 //            for (Header h : parser.getHeaders()){
 //                Log.e("Header", h.getName() + " : " + h.getValue());
 //            }
@@ -424,10 +424,10 @@ public class HttpForwarder extends Thread {
             long bytes = 0;
             boolean matches = (bypass != null) && StringUtils.matches(parser.getUri(), bypass);
             if (!matches) {
-                Log.i(getClass().getName(), "url does not matches bypass " + parser.getUri());
+//                Log.i(getClass().getName(), "url does not matches bypass " + parser.getUri());
                 bytes += doConnect(parser, os);
             } else {
-                Log.i(getClass().getName(), "url matches bypass " + parser.getUri());
+//                Log.i(getClass().getName(), "url matches bypass " + parser.getUri());
                 bytes += doConnectNoProxy(parser, os);
             }
             return bytes;

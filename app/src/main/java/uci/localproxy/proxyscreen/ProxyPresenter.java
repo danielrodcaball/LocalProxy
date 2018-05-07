@@ -457,7 +457,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
                         .build();
 
                 HttpResponse response = client.execute(new HttpGet("http://google.com"));
-                Log.e("auth_status_code", response.getStatusLine().getStatusCode() + "");
+//                Log.e("auth_status_code", response.getStatusLine().getStatusCode() + "");
 
                 if (response.getStatusLine().getStatusCode() == 407) {
                     return AUTHENTICATION_FAILED;
