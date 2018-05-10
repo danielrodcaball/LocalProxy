@@ -84,7 +84,7 @@ public class TraceDataSource {
     }
 
     public void deleteAllTraces(){
-        realm.executeTransaction(new Realm.Transaction() {
+        realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.where(Trace.class).findAll().deleteAllFromRealm();

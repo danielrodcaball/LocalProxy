@@ -13,7 +13,7 @@ public class Piper
 
     InputStream is;
     OutputStream os;
-    byte[] buffer = new byte[1500];
+    byte[] buffer = new byte[2048];
     int read;
 
     public Piper(InputStream is, OutputStream os) {
@@ -27,8 +27,8 @@ public class Piper
     public void run() {
         startCopy();
     }
-    
-    public long startCopy(){
+
+    public long startCopy() {
         long bytesRead = 0;
         try {
             while (true) {
@@ -38,15 +38,16 @@ public class Piper
                 if (read == -1) {
                     break;
                 }
-                
+
                 this.os.write(this.buffer, 0, read);
-                
+
                 bytesRead += read;
             }
         } catch (IOException e) {
-            e.printStackTrace();
         }
-//        close();
+
+            close();
+
         return bytesRead;
     }
 
@@ -70,13 +71,11 @@ public class Piper
         try {
             this.is.close();
         } catch (Exception ex) {
-            ex.printStackTrace();
         }
         try {
             //esto provoca que se cierre el socket que esta por debajo del stream hacia donde se esta copiando.
             this.os.close();
         } catch (Exception ex) {
-            ex.printStackTrace();
         }
     }
 }

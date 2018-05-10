@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,16 +22,22 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HeaderIterator;
 import cz.msebera.android.httpclient.HttpEntityEnclosingRequest;
+import cz.msebera.android.httpclient.HttpException;
 import cz.msebera.android.httpclient.HttpHost;
 import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.HttpStatus;
+import cz.msebera.android.httpclient.NoHttpResponseException;
+import cz.msebera.android.httpclient.StatusLine;
 import cz.msebera.android.httpclient.auth.AuthScope;
 import cz.msebera.android.httpclient.auth.NTCredentials;
 import cz.msebera.android.httpclient.client.CredentialsProvider;
 import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.HttpRequestRetryHandler;
 import cz.msebera.android.httpclient.client.methods.HttpDelete;
 import cz.msebera.android.httpclient.client.methods.HttpGet;
 import cz.msebera.android.httpclient.client.methods.HttpHead;
@@ -44,6 +51,7 @@ import cz.msebera.android.httpclient.impl.client.BasicCredentialsProvider;
 import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
 import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
 import cz.msebera.android.httpclient.impl.conn.PoolingHttpClientConnectionManager;
+import cz.msebera.android.httpclient.protocol.HttpContext;
 import uci.localproxy.data.applicationPackage.ApplicationPackageLocalDataSource;
 import uci.localproxy.data.firewallRule.FirewallRule;
 import uci.localproxy.data.firewallRule.FirewallRuleLocalDataSource;
@@ -60,11 +68,18 @@ import uci.localproxy.util.network.ConnectionDescriptor;
 public class HttpForwarder extends Thread {
 
     private static List<String> stripHeadersIn = Arrays.asList(
-            "Content-Type", "Content-Length", "Proxy-Connection"
+            "Content-Type", "Content-Length", "Proxy-Connection", "Keep-Alive"
     );
     private static List<String> stripHeadersOut = Arrays.asList(
             "Proxy-Authentication", "Proxy-Authorization", "Transfer-Encoding"
     );
+    private static List<String> stripHeaders = Arrays.asList(
+            "Proxy-Authentication", "Proxy-Authorization", "Transfer-Encoding",
+            "Connection", "Content-Type", "Content-Length", "Proxy-Connection", "Keep-Alive",
+            "TE", "Trailer", "Upgrade"
+    );
+
+    private static String CONNECTION_HEADER = "Connection";
 
     private ServerSocket ssocket;
     private PoolingHttpClientConnectionManager manager;
@@ -110,7 +125,7 @@ public class HttpForwarder extends Thread {
 
         clientResolver = new ClientResolver(context);
 
-        Log.e(getClass().getName(), "Starting proxy");
+//        Log.e(getClass().getName(), "Starting proxy");
     }
 
     public void run() {
@@ -128,7 +143,7 @@ public class HttpForwarder extends Thread {
         }
 
         this.delegateClient = HttpClientBuilder.create()
-//                .setConnectionManager(manager)
+                .setConnectionManager(manager)
                 .setProxy(new HttpHost(this.addr, this.inport))
                 .setDefaultCredentialsProvider(credentials)
                 .disableRedirectHandling()
@@ -139,7 +154,7 @@ public class HttpForwarder extends Thread {
                 .build();
 
         this.noDelegateClient = HttpClientBuilder.create()
-//                .setConnectionManager(manager)
+                .setConnectionManager(manager)
                 .disableRedirectHandling()
                 .disableCookieManagement()
                 .disableAutomaticRetries()
@@ -198,108 +213,134 @@ public class HttpForwarder extends Thread {
             this.localSocket = localSocket;
         }
 
+        private CloseableHttpClient createDelegateClient() {
+            CloseableHttpClient client = HttpClientBuilder.create()
+//                .setConnectionManager(manager)
+                    .setProxy(new HttpHost(HttpForwarder.this.addr, HttpForwarder.this.inport))
+                    .setDefaultCredentialsProvider(credentials)
+                    .disableRedirectHandling()
+                    .disableCookieManagement()
+//                .disableAuthCaching()
+                    .disableAutomaticRetries()
+                    .setRetryHandler(new HttpRequestRetryHandler() {
+                        @Override
+                        public boolean retryRequest(IOException exception, int executionCount,
+                                                    HttpContext context) {
+                            if (executionCount > 3) {
+//                                LOGGER.warn("Maximum tries reached for client http pool ");
+                                return false;
+                            }
+                            if (exception instanceof NoHttpResponseException) {
+//                                LOGGER.warn("No response from server on " + executionCount + " call");
+                                return true;
+                            }
+                            return false;
+                        }
+                    })
+//                    .disableConnectionState()
+                    .build();
+
+            return client;
+        }
+
+
+        private CloseableHttpClient createNoDelegateClient() {
+            return HttpClientBuilder.create()
+//                .setConnectionManager(manager)
+                    .disableRedirectHandling()
+                    .disableCookieManagement()
+                    .disableAutomaticRetries()
+//                    .disableConnectionState()
+                    .setRetryHandler(new HttpRequestRetryHandler() {
+                        @Override
+                        public boolean retryRequest(IOException exception, int executionCount,
+                                                    HttpContext context) {
+                            if (executionCount > 3) {
+//                                LOGGER.warn("Maximum tries reached for client http pool ");
+                                return false;
+                            }
+                            if (exception instanceof NoHttpResponseException) {
+//                                LOGGER.warn("No response from server on " + executionCount + " call");
+                                return true;
+                            }
+                            return false;
+                        }
+                    })
+                    .build();
+        }
+
+
+        private Header[] getValidHeaders(Header[] parserHeaders) {
+            ArrayList<Header> resultHeaders = new ArrayList<>();
+            ArrayList<String> cnnHeaders = new ArrayList<>();
+            for (Header h : parserHeaders) {
+                if (h.getName().equals(CONNECTION_HEADER)) {
+                    String[] connectionHeaders = h.getValue().split(", ");
+                    cnnHeaders.addAll(Arrays.asList(connectionHeaders));
+                    break;
+                }
+            }
+            for (Header h : parserHeaders) {
+                if (stripHeaders.contains(h.getName()) || cnnHeaders.contains(h.getName()))
+                    continue;
+                resultHeaders.add(h);
+            }
+
+
+            return resultHeaders.toArray(new Header[resultHeaders.size()]);
+        }
 
         public void run() {
             HttpParser parser = null;
             OutputStream os = null;
             long bytes = 0;
+
             try {
-//                HttpTransportMetricsImpl metrics = new HttpTransportMetricsImpl();
-//                SessionInputBufferImpl inbuffer = new SessionInputBufferImpl(metrics, 8 * 1024);
-//                inbuffer.bind(this.localSocket.getInputStream());
-//                HttpMessageParser<HttpRequest> requestParser = new DefaultHttpRequestParser(
-//                        inbuffer);
-//                HttpClient client;
-//
-//                HttpRequest request = requestParser.parse();
-//
-//                boolean matches = (bypass != null) && StringUtils.matches(request.getRequestLine().getUri(), bypass);
-//                if (matches) {
-//                    client = HttpForwarder.this.noDelegateClient;
-//                    Log.i(getClass().getName(), "url matches bypass " + request.getRequestLine().getUri());
-//                } else {
-//                    client = HttpForwarder.this.delegateClient;
-//                    Log.i(getClass().getName(), "url does not matches bypass " + request.getRequestLine().getUri());
-//                }
-//
-//                HttpResponse response = client.execute(null, request);
-//                os = localSocket.getOutputStream();
-//                os.write(response.getStatusLine().toString().getBytes());
-////                Log.e("STATUS-LINE", response.getStatusLine().toString());
-//                os.write("\r\n".getBytes());
-//                if (response.getEntity() != null) {
-//                    InputStream inRemote = response.getEntity().getContent();
-//                    bytes += new Piper(inRemote, os).startCopy();
-//                    inRemote.close();
-//                }
-
-
-                parser = parseInputStream(this.localSocket.getInputStream());
+                parser = new HttpParser(this.localSocket.getInputStream());
+                boolean validRequest = parser.parse();
                 os = this.localSocket.getOutputStream();
-
-                ConnectionDescriptor connectionDescriptor = getPackageConnectionDescritor(localSocket.getPort(),
-                        localSocket.getInetAddress().getHostAddress());
-                String packageNameSource = connectionDescriptor.getNamespace();
-
-//                Log.e("Request:", connectionDescriptor.getNamespace() +
-//                        "(" + connectionDescriptor.getName() + ")" + ": " + parser.getUri());
-
-                //Firewall action
-                if (!firewallFilter(packageNameSource, parser.getUri())) {
-                    try {
-                        os.write("HTTP/1.1 403 Forbidden".getBytes());
-                        os.write("\r\n".getBytes());
-                        os.write("\r\n".getBytes());
-                        os.write("<h1>Forbidden by LocalProxy's firewall</h1>".getBytes());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                if (!validRequest) {
+                    os.write("HTTP/1.1 400 Bad Request".getBytes());
+                    os.write("\r\n\n".getBytes());
                     return;
                 }
-
-                //changing headers
-//                Header [] headers = parser.getHeaders();
-//                for (int i = 0; i < headers.length; i++){
-//                    Header h = headers[i];
-//                    if (h.getName().equalsIgnoreCase("user-agent")){
-//                        Log.e("yes", "yes");
-//                        headers[i] = new BasicHeader("User-agent", "firefox");
-//                    }
-//                }
-
-                if (parser.getMethod().equals("CONNECT")) {
-                    bytes += resolveConnect(parser, os);
-                } else {
-                    bytes += resolveOtherMethods(parser, os);
-                }
-
-                saveTrace(packageNameSource,
-                        (connectionDescriptor.getName() != null) ? connectionDescriptor.getName() : Trace.UNKNOWN_APP_NAME,
-                        parser.getUri(), bytes);
-
-//                Log.e("bytes:", packageNameSource + ": " + bytes + "");
-
             } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (parser != null) parser.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    if (os != null) os.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    this.localSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                parser = null;
-                os = null;
+                return;
             }
+
+            ConnectionDescriptor connectionDescriptor = getPackageConnectionDescritor(localSocket.getPort(),
+                    localSocket.getInetAddress().getHostAddress());
+            String packageNameSource = connectionDescriptor.getNamespace();
+
+            Log.e("Request:", connectionDescriptor.getNamespace() +
+                    "(" + connectionDescriptor.getName() + ")" + ": " + parser.getUri());
+
+//            for (Header h : parser.getHeaders()) {
+//                Log.e("Header", h.getName() + ":" + h.getValue());
+//            }
+
+            //Firewall action
+            if (!firewallFilter(packageNameSource, parser.getUri())) {
+                try {
+                    os.write("HTTP/1.1 403 Forbidden".getBytes());
+                    os.write("\r\n".getBytes());
+                    os.write("\r\n".getBytes());
+                    os.write("<h1>Forbidden by LocalProxy's firewall</h1>".getBytes());
+                } catch (Exception e) {
+                }
+                return;
+            }
+
+            if (parser.getMethod().equals("CONNECT")) {
+                bytes += resolveConnect(parser, os);
+            } else {
+                bytes += resolveOtherMethods(parser, os);
+            }
+
+            saveTrace(packageNameSource,
+                    (connectionDescriptor.getName() != null) ? connectionDescriptor.getName() : Trace.UNKNOWN_APP_NAME,
+                    parser.getUri(), bytes);
+
         }
 
         private void saveTrace(String packageName, String name, String requestedUrl, long bytesSpent) {
@@ -333,13 +374,15 @@ public class HttpForwarder extends Thread {
             long bytes = 0;
             InputStream inRemote = null;
 
-            HttpClient client;
+            CloseableHttpClient client;
             boolean matches = (bypass != null) && StringUtils.matches(parser.getUri(), bypass);
             if (matches) {
-                client = HttpForwarder.this.noDelegateClient;
+                client = createNoDelegateClient();
+//                client = HttpForwarder.this.noDelegateClient;
 //                Log.i(getClass().getName(), "url matches bypass " + parser.getUri());
             } else {
-                client = HttpForwarder.this.delegateClient;
+                client = createDelegateClient();
+//                client = HttpForwarder.this.delegateClient;
 //                Log.i(getClass().getName(), "url does not matches bypass " + parser.getUri());
             }
             HttpUriRequest request;
@@ -372,44 +415,45 @@ public class HttpForwarder extends Thread {
                     request1.setEntity(new StreamingRequestEntity(parser));
                 }
 
-                Header[] headers = parser.getHeaders();
-                for (Header h : headers) {
-                    if (stripHeadersIn.contains(h.getName())) continue;
-                    request.addHeader(h);
-                }
+                Header[] requestHeaders = getValidHeaders(parser.getHeaders());
+                request.setHeaders(requestHeaders);
 
                 response = client.execute(request);
+                this.localSocket.shutdownInput();
 
                 os.write(response.getStatusLine().toString().getBytes());
 //                Log.e("STATUS-LINE", response.getStatusLine().toString());
                 os.write("\r\n".getBytes());
 
-                HeaderIterator it = response.headerIterator();
-                while (it.hasNext()) {
-                    Header h = (Header) it.next();
-                    if (stripHeadersOut.contains(h.getName())) continue;
+                Header[] responseHeaders = getValidHeaders(response.getAllHeaders());
+                for (Header h : responseHeaders) {
                     os.write((h.toString() + "\r\n").getBytes());
                 }
 
-                os.write("\r\n".getBytes());
-
                 if (response.getEntity() != null) {
+                    os.write("\r\n".getBytes());
                     inRemote = response.getEntity().getContent();
                     bytes += new Piper(inRemote, os).startCopy();
-                    inRemote.close();
                 }
+
             } catch (Exception e) {
-                e.printStackTrace();
             } finally {
-                try {
-                    if (inRemote != null) inRemote.close();
+                if (inRemote != null) try {
+                    inRemote.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
                 }
-                inRemote = null;
-                client = null;
-                request = null;
-                response = null;
+                try {
+                    os.close();
+                } catch (IOException e) {
+                }
+                try {
+                    this.localSocket.close();
+                } catch (IOException e) {
+                }
+                try {
+                    client.close();
+                } catch (IOException e) {
+                }
             }
 
             return bytes;
@@ -433,22 +477,6 @@ public class HttpForwarder extends Thread {
             return bytes;
         }
 
-
-        private HttpParser parseInputStream(InputStream is) throws ParseException, IOException {
-            HttpParser parser = new HttpParser(is);
-            try {
-                for (int i = 0; i < 100 && !parser.parse(); i++) {
-//                    Log.e("parser", 1 + "");
-                }
-//                parser.parse();
-//                while (!parser.parse()) {
-//                    Log.e("parser", "parse");
-//                }
-            } catch (IOException e) {
-                parser.close();
-            }
-            return parser;
-        }
 
         private void printResponse(HttpResponse response) throws IOException {
             String line;
@@ -500,35 +528,29 @@ public class HttpForwarder extends Thread {
                 inRemote = remoteSocket.getInputStream();
                 outRemote = remoteSocket.getOutputStream();
 
-                os.write("HTTP/1.1 200 Connection established".getBytes());
+                os.write("HTTP/1.1 200 OK".getBytes());
                 os.write("\r\n\r\n".getBytes());
-                threadPool.execute(new Piper(parser, outRemote));
 
+                threadPool.execute(new Piper(parser, outRemote));
                 bytes += new Piper(inRemote, os).startCopy();
 
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e("Error", parser.getMethod() + parser.getUri());
             } finally {
-                try {
-                    if (inRemote != null) inRemote.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    if (outRemote != null) outRemote.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 if (remoteSocket != null) {
                     try {
                         remoteSocket.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } catch (Exception fe) {
                     }
                 }
-                remoteSocket = null;
-                inRemote = null;
-                outRemote = null;
+                try {
+                    os.close();
+                } catch (IOException e) {
+                }
+                try {
+                    parser.close();
+                } catch (IOException e) {
+                }
             }
 
             return bytes;
@@ -554,14 +576,7 @@ public class HttpForwarder extends Thread {
                 HttpHost proxyHost = new HttpHost(addr, inport);
                 HttpHost targetHost = new HttpHost(uri[0], Integer.parseInt(uri[1]));
 
-                List<Header> headers = new ArrayList<>();
-                for (Header h : parser.getHeaders()){
-                    if(!stripHeadersIn.contains(h.getName()))
-                        headers.add(h);
-                }
-
-                Header[] arr = new Header[headers.size()];
-                arr = headers.toArray(arr);
+                Header[] arr = getValidHeaders(parser.getHeaders());
 
                 remoteSocket = client.tunnel(
                         proxyHost,
@@ -573,35 +588,28 @@ public class HttpForwarder extends Thread {
                 inRemote = remoteSocket.getInputStream();
                 outRemote = remoteSocket.getOutputStream();
 
-                os.write("HTTP/1.1 200 Connection established".getBytes());
+                os.write("HTTP/1.1 200 OK".getBytes());
                 os.write("\r\n\r\n".getBytes());
                 threadPool.execute(new Piper(parser, outRemote));
 
                 bytes += new Piper(inRemote, os).startCopy();
 
             } catch (Exception e) {
-                e.printStackTrace();
             } finally {
                 try {
                     if (inRemote != null) inRemote.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
                 }
                 try {
                     if (outRemote != null) outRemote.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
                 }
                 if (remoteSocket != null) {
                     try {
                         remoteSocket.close();
                     } catch (Exception fe) {
-                        fe.printStackTrace();
                     }
                 }
-                remoteSocket = null;
-                inRemote = null;
-                outRemote = null;
             }
 
             return bytes;
