@@ -53,7 +53,7 @@
     <string name="no_firewall_rules_add">Adicione un Regla de Cortafuegos +</string>
     <string name="successfully_saved_firewallRule_message">Regla de Cortafuegos guardada</string>
     <string name="firewall_rule_activated">Regla de Cortafuegos activada</string>
-    <string name="firewall_rule_deactivated">Regla de >Cortafuegos desctivada</string>
+    <string name="firewall_rule_deactivated">Regla de Cortafuegos desctivada</string>
     <string name="firewall_title">Cortafuegos</string>
     <string name="firewallRule_rule_tv">Regla:</string>
     <string name="firewallRule_description_tv">Descripción:</string>
