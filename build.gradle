@@ -2,9 +2,9 @@
 
 buildscript {
     repositories {
-//        maven { url 'http://nexus.prod.uci.cu/repository/maven-all/' }
-        google()
-        jcenter()
+        maven { url 'http://nexus.prod.uci.cu/repository/maven-all/' }
+//        google()
+//        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
@@ -22,10 +22,10 @@ buildscript {
 
 allprojects {
     repositories {
-//        maven { url 'http://nexus.prod.uci.cu/repository/maven-all/' }
-        maven {url 'https://jitpack.io'}
-        google()
-        jcenter()
+        maven { url 'http://nexus.prod.uci.cu/repository/maven-all/' }
+//        maven {url 'https://jitpack.io'}
+//        google()
+//        jcenter()
     }
 }
 
