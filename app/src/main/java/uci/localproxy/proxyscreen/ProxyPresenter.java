@@ -119,10 +119,10 @@ public class ProxyPresenter implements ProxyContract.Presenter {
         saveUpdateUser(username, password, rememberPass);
         saveConfiguration(username, profileId, localPort, setGlobalProxy);
 
-        if (!mProxyView.isConnectedToAWifi()) {
-            mProxyView.showNetworkError();
-            return;
-        }
+//        if (!mProxyView.isConnectedToAWifi()) {
+//            mProxyView.showNetworkError();
+//            return;
+//        }
 
         mProfileLocalDataSource.getProfile(profileId, new ProfilesDataSource.GetProfileCallback() {
             @Override
