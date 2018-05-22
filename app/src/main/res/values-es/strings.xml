@@ -49,8 +49,8 @@
     <string name="password_empty_error">contraseña no puede estar vacía</string>
     <string name="add_profile_text">Nuevo perfil +</string>
     <string name="no_profile_selected_error">Por favor seleccione un perfil</string>
-    <string name="no_firewall_rules_all">Usted no tine Reglas de Cortafuegos</string>
-    <string name="no_firewall_rules_add">Adicione un Regla de Cortafuegos +</string>
+    <string name="no_firewall_rules_all">Usted no tiene Reglas de Cortafuegos</string>
+    <string name="no_firewall_rules_add">Adicione una Regla de Cortafuegos +</string>
     <string name="successfully_saved_firewallRule_message">Regla de Cortafuegos guardada</string>
     <string name="firewall_rule_activated">Regla de Cortafuegos activada</string>
     <string name="firewall_rule_deactivated">Regla de Cortafuegos desctivada</string>
