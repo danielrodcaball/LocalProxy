@@ -57,7 +57,7 @@ public class HttpForwarderTest {
     @Test
     public void httpRequestsValidator() {
         try {
-            HttpGet request0 = new HttpGet("http://cubadebate.cu");
+            HttpGet request0 = new HttpGet("http://mella.uci.cu");
             HttpGet request1 = new HttpGet("http://google.com.cu");
             HttpResponse response = null;
             response = delegateClient.execute(request0);
@@ -75,7 +75,7 @@ public class HttpForwarderTest {
     public void httpsRequestsValidator() {
         try {
             HttpGet request0 = new HttpGet("https://stackoverflow.com");
-            HttpGet request1 = new HttpGet("http://github.com");
+            HttpGet request1 = new HttpGet("https://correo.estudiantes.uci.cu");
             HttpResponse response = null;
             response = delegateClient.execute(request0);
             assertEquals(response.getStatusLine().toString(), "HTTP/1.1 200 OK");
