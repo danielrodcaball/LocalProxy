@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import uci.localproxy.aboutscreen.AboutActivity;
 import uci.localproxy.firewallscreens.firewallruleslist.FirewallRulesListActivity;
+import uci.localproxy.headerscreen.HeaderListActivity;
 import uci.localproxy.profilescreens.profileslist.ProfilesListActivity;
 import uci.localproxy.proxyscreen.ProxyActivity;
 import uci.localproxy.tracescreens.traceslist.TracesListActivity;
@@ -50,6 +51,15 @@ public abstract class BaseDrawerActivity extends AppCompatActivity {
                                     menuItem.setChecked(true);
                                 } else {
                                     intent = new Intent(BaseDrawerActivity.this, FirewallRulesListActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                    startActivity(intent);
+                                }
+                                break;
+                            case R.id.headers_navigation_menu_item:
+                                if (BaseDrawerActivity.this instanceof HeaderListActivity) {
+                                    menuItem.setChecked(true);
+                                } else {
+                                    intent = new Intent(BaseDrawerActivity.this, HeaderListActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                     startActivity(intent);
                                 }

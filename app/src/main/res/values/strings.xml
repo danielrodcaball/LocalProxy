@@ -50,7 +50,7 @@
     <string name="add_profile_text">Add profile +</string>
     <string name="no_profile_selected_error">Please select a profile</string>
     <string name="bypassInitText">127.0.0.1,localhost</string>
-    <string name="no_firewall_rules_all">You have not Firewall Rules</string>
+    <string name="no_firewall_rules_all">You have no Firewall Rules</string>
     <string name="no_firewall_rules_add">Add a Firewall Rule item +</string>
     <string name="successfully_saved_firewallRule_message">Firewall Rule saved</string>
     <string name="firewall_rule_activated">Firewall Rule activated</string>
@@ -114,5 +114,16 @@
     <string name="port_not_available_title">Port not available</string>
     <string name="profile_details_title">Details</string>
     <string name="firewallrule_details_title">Details</string>
-
+    <string name="no_headers_all">There are no headers</string>
+    <string name="no_headers_add">Add a Header item +</string>
+    <string name="successfully_saved_header_message">Header saved</string>
+    <string name="header_removed_message">Header removed</string>
+    <string name="error_title">Error</string>
+    <string name="header_name_already_exist_message">Header name already exist</string>
+    <string name="headers_title">Headers</string>
+    <string name="header_name_hint">name</string>
+    <string name="header_value_hint">value</string>
+    <string name="new_h">New</string>
+    <string name="edit_h">Edit</string>
+    <string name="ok">Ok</string>
 </resources>

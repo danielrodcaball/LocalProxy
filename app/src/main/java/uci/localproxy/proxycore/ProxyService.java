@@ -1,6 +1,8 @@
 package uci.localproxy.proxycore;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -42,6 +44,10 @@ public class ProxyService extends Service {
      * Este es el servicio que inicia el servidor
      * Permanece en el área de notificación
      * */
+
+    public static final String CHANNEL_ONE_ID = "uci.localproxy.proxycore.proxyservice";
+
+    public static final String CHANNEL_ONE_NAME = "Proxy Service";
 
     public static final String MESSAGE_TAG = "message";
 
@@ -127,7 +133,7 @@ public class ProxyService extends Service {
                     Toast.makeText(this, getString(R.string.OnProxy), Toast.LENGTH_LONG).show();
                     WifiProxyChanger.changeWifiStaticProxySettings("127.0.0.1", outputport, this);
                 }
-            }catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | InvocationTargetException |
+            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | InvocationTargetException |
                     NoSuchFieldException | IllegalAccessException | NullWifiConfigurationException | ApiNotSupportedException e) {
                 e.printStackTrace();
             }
@@ -154,12 +160,25 @@ public class ProxyService extends Service {
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, i, 0);
 
 
-        Notification.Builder builder = new Notification.Builder(this)
-                .setContentTitle(getApplicationContext().getString(R.string.app_name))
+        Notification.Builder builder = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ?
+                new Notification.Builder(this, CHANNEL_ONE_ID) : new Notification.Builder(this);
+
+        builder.setContentTitle(getApplicationContext().getString(R.string.app_name))
                 .setSmallIcon(R.mipmap.ic_launcher5)
                 .setContentText(getApplicationContext().getString(R.string.excuting_proxy_service_notification) + " " + user)
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(contentIntent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ONE_ID,
+                    CHANNEL_ONE_NAME, NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(getColor(R.color.colorPrimary));
+            notificationChannel.setShowBadge(true);
+            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(notificationChannel);
+        }
 
 
         Notification notification;

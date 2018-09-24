@@ -36,8 +36,101 @@ public class HttpForwarderTest {
 
     HttpForwarder httpForwarder;
 
-    @Before
-    public void initVars() {
+//    @Before
+//    public void initVars() {
+//        executor = Executors.newSingleThreadExecutor();
+//        mMockContext = InstrumentationRegistry.getTargetContext();
+//        delegateClient = HttpClientBuilder.create()
+//                .setProxy(new HttpHost("127.0.0.1", 8080))
+//                .build();
+//        httpForwarder = null;
+//        try {
+//            httpForwarder = new HttpForwarder("10.0.0.1", 8080,
+//                    "darodriguez", "Estoesparaquemesirvaelpi098", 8080,
+//                    true, "", "", mMockContext);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        executor.execute(httpForwarder);
+//    }
+
+    @Test
+    public void okHttpRequestsValidator() {
+        initProxy("darodriguez", "Yaeslaultimavez@.");
+        try {
+            HttpGet request0 = new HttpGet("http://mella.uci.cu");
+            HttpGet request1 = new HttpGet("http://cubadebate.cu");
+            HttpResponse response = null;
+            response = delegateClient.execute(request0);
+            assertEquals(response.getStatusLine().toString(), "HTTP/1.0 200 OK");
+            response = delegateClient.execute(request1);
+            assertEquals(response.getStatusLine().toString(), "HTTP/1.0 200 OK");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stopProxy();
+    }
+
+    @Test
+    public void okHttpsRequestsValidator() {
+        initProxy("darodriguez", "Yaeslaultimavez@.");
+        try {
+            HttpGet request0 = new HttpGet("https://coursera.org");
+            HttpGet request1 = new HttpGet("https://ecured.cu");
+            HttpResponse response = null;
+            response = delegateClient.execute(request0);
+            assertEquals(response.getStatusLine().toString(), "HTTP/1.1 200 OK");
+            response = delegateClient.execute(request1);
+            assertEquals(response.getStatusLine().toString(), "HTTP/1.1 200 OK");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stopProxy();
+    }
+
+    @Test
+    public void badAuthenticationHttpRequestsValidator() {
+        initProxy("pepe", "pepe@.");
+        try {
+            HttpGet request0 = new HttpGet("http://cubadebate.cu");
+            HttpResponse response = null;
+            response = delegateClient.execute(request0);
+            assertEquals(response.getStatusLine().toString(), "HTTP/1.0 407 Proxy Authentication Required");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stopProxy();
+    }
+
+    @Test
+    public void badAuthenticationHttpsRequestsValidator() {
+        initProxy("pepe", "pepe@.");
+        try {
+            HttpGet request0 = new HttpGet("http://cubadebate.cu");
+            HttpResponse response = null;
+            response = delegateClient.execute(request0);
+            assertEquals(response.getStatusLine().toString(), "HTTP/1.0 407 Proxy Authentication Required");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stopProxy();
+    }
+
+//    @Test
+//    public void badRequestsValidator() {
+//        initProxy("darodriguez", "Yaeslaultimavez@.");
+//        try {
+//            HttpGet request0 = new HttpGet("ppp");
+//            HttpResponse response = null;
+//            response = delegateClient.execute(request0);
+//            assertEquals(response.getStatusLine().toString(), "407 Proxy Authentication Required");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        stopProxy();
+//    }
+
+    private void initProxy(String username, String pass){
         executor = Executors.newSingleThreadExecutor();
         mMockContext = InstrumentationRegistry.getTargetContext();
         delegateClient = HttpClientBuilder.create()
@@ -46,7 +139,7 @@ public class HttpForwarderTest {
         httpForwarder = null;
         try {
             httpForwarder = new HttpForwarder("10.0.0.1", 8080,
-                    "darodriguez", "Estoesparaquemesirvaelpi098", 8080,
+                    username, pass, 8080,
                     true, "", "", mMockContext);
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,36 +147,7 @@ public class HttpForwarderTest {
         executor.execute(httpForwarder);
     }
 
-    @Test
-    public void httpRequestsValidator() {
-        try {
-            HttpGet request0 = new HttpGet("http://mella.uci.cu");
-            HttpGet request1 = new HttpGet("http://google.com.cu");
-            HttpResponse response = null;
-            response = delegateClient.execute(request0);
-            assertEquals(response.getStatusLine().toString(), "HTTP/1.0 200 OK");
-            response = delegateClient.execute(request1);
-            assertEquals(response.getStatusLine().toString(), "HTTP/1.0 200 OK");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        httpForwarder.halt();
-        executor.shutdown();
-    }
-
-    @Test
-    public void httpsRequestsValidator() {
-        try {
-            HttpGet request0 = new HttpGet("https://stackoverflow.com");
-            HttpGet request1 = new HttpGet("https://correo.estudiantes.uci.cu");
-            HttpResponse response = null;
-            response = delegateClient.execute(request0);
-            assertEquals(response.getStatusLine().toString(), "HTTP/1.1 200 OK");
-            response = delegateClient.execute(request1);
-            assertEquals(response.getStatusLine().toString(), "HTTP/1.1 200 OK");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void stopProxy(){
         httpForwarder.halt();
         executor.shutdown();
     }

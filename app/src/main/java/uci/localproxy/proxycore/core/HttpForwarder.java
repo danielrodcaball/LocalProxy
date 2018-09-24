@@ -28,6 +28,7 @@ import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HeaderIterator;
 import cz.msebera.android.httpclient.HttpEntityEnclosingRequest;
 import cz.msebera.android.httpclient.HttpException;
+import cz.msebera.android.httpclient.HttpHeaders;
 import cz.msebera.android.httpclient.HttpHost;
 import cz.msebera.android.httpclient.HttpResponse;
 import cz.msebera.android.httpclient.HttpStatus;
@@ -51,10 +52,12 @@ import cz.msebera.android.httpclient.impl.client.BasicCredentialsProvider;
 import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
 import cz.msebera.android.httpclient.impl.client.HttpClientBuilder;
 import cz.msebera.android.httpclient.impl.conn.PoolingHttpClientConnectionManager;
+import cz.msebera.android.httpclient.message.BasicHeader;
 import cz.msebera.android.httpclient.protocol.HttpContext;
 import uci.localproxy.data.applicationPackage.ApplicationPackageLocalDataSource;
 import uci.localproxy.data.firewallRule.FirewallRule;
 import uci.localproxy.data.firewallRule.FirewallRuleLocalDataSource;
+import uci.localproxy.data.header.HeaderDataSource;
 import uci.localproxy.data.trace.Trace;
 import uci.localproxy.data.trace.TraceDataSource;
 import uci.localproxy.util.StringUtils;
@@ -270,7 +273,7 @@ public class HttpForwarder extends Thread {
         }
 
 
-        private Header[] getValidHeaders(Header[] parserHeaders) {
+        private List<Header> getValidHeaders(Header[] parserHeaders) {
             ArrayList<Header> resultHeaders = new ArrayList<>();
             ArrayList<String> cnnHeaders = new ArrayList<>();
             for (Header h : parserHeaders) {
@@ -286,8 +289,26 @@ public class HttpForwarder extends Thread {
                 resultHeaders.add(h);
             }
 
+            return resultHeaders;
+        }
 
-            return resultHeaders.toArray(new Header[resultHeaders.size()]);
+        private List<Header> replaceOrAddHeaders(List<Header> headers){
+            HeaderDataSource headerDataSource = HeaderDataSource.newInstance();
+            List<uci.localproxy.data.header.Header> headersToAddOrModify = headerDataSource.getAllHeaders();
+            if (!headersToAddOrModify.isEmpty()){
+                for (uci.localproxy.data.header.Header dataHeader : headersToAddOrModify){
+                    boolean contains = false;
+                    for (int i = 0; i < headers.size(); i++){
+                        Header h = headers.get(i);
+                        if (dataHeader.getName().equalsIgnoreCase(h.getName())){
+                            headers.set(i, new BasicHeader(h.getName(), dataHeader.getValue()));
+                            contains = true;
+                        }
+                    }
+                    if (!contains) headers.add(new BasicHeader(dataHeader.getName(), dataHeader.getValue()));
+                }
+            }
+            return headers;
         }
 
         public void run() {
@@ -351,25 +372,6 @@ public class HttpForwarder extends Thread {
             traceDataSource = null;
         }
 
-//        private long resolveOtherMethods1(HttpParser parser, OutputStream os) throws IOException {
-//            long bytes = 0;
-//            HttpClientContext clientContext = HttpClientContext.create();
-//            clientContext.setCredentialsProvider(credentials);
-//            PlainConnectionSocketFactory sf = PlainConnectionSocketFactory.getSocketFactory();
-//            InetSocketAddress remoteAddress = new InetSocketAddress(
-//                    InetAddress.getByAddress(new byte[]{10,0,0,1}), HttpForwarder.this.inport);
-//            Socket socket = sf.connectSocket(1000, null, new HttpHost("/"),
-//                    remoteAddress, null, clientContext);
-//
-//            InputStream inRemote = socket.getInputStream();
-//            OutputStream outRemote = socket.getOutputStream();
-//            os.write("HTTP/1.1 200 Connection established".getBytes());
-//            os.write("\r\n\r\n".getBytes());
-//            threadPool.execute(new Piper(parser, outRemote));
-//            bytes += new Piper(inRemote, os).startCopy();
-//            return bytes;
-//        }
-
         private long resolveOtherMethods(HttpParser parser, OutputStream os) {
             long bytes = 0;
             InputStream inRemote = null;
@@ -415,8 +417,9 @@ public class HttpForwarder extends Thread {
                     request1.setEntity(new StreamingRequestEntity(parser));
                 }
 
-                Header[] requestHeaders = getValidHeaders(parser.getHeaders());
-                request.setHeaders(requestHeaders);
+                List<Header> requestHeaders = getValidHeaders(parser.getHeaders());
+                List<Header> modifiedHeaders = replaceOrAddHeaders(requestHeaders);
+                request.setHeaders(modifiedHeaders.toArray(new Header[modifiedHeaders.size()]));
 
                 response = client.execute(request);
                 this.localSocket.shutdownInput();
@@ -425,7 +428,7 @@ public class HttpForwarder extends Thread {
 //                Log.e("STATUS-LINE", response.getStatusLine().toString());
                 os.write("\r\n".getBytes());
 
-                Header[] responseHeaders = getValidHeaders(response.getAllHeaders());
+                List<Header> responseHeaders = getValidHeaders(response.getAllHeaders());
                 for (Header h : responseHeaders) {
                     os.write((h.toString() + "\r\n").getBytes());
                 }
@@ -516,6 +519,7 @@ public class HttpForwarder extends Thread {
             return connectionDescriptor;
         }
 
+        //TODO> copiar cabezeras al destino al inicio de la peticion
         long doConnectNoProxy(HttpParser parser, OutputStream os) {
             long bytes = 0;
             String[] uri = parser.getUri().split(":");
@@ -576,13 +580,17 @@ public class HttpForwarder extends Thread {
                 HttpHost proxyHost = new HttpHost(addr, inport);
                 HttpHost targetHost = new HttpHost(uri[0], Integer.parseInt(uri[1]));
 
-                Header[] arr = getValidHeaders(parser.getHeaders());
+                List<Header> requestHeaders = getValidHeaders(parser.getHeaders());
+                List<Header> modifiedHeaders = replaceOrAddHeaders(requestHeaders);
+//                for(Header h : modifiedHeaders){
+//                    Log.e("Header", h.getName() + " : " + h.getValue());
+//                }
 
                 remoteSocket = client.tunnel(
                         proxyHost,
                         targetHost,
                         credentials.getCredentials(AuthScope.ANY),
-                        arr
+                        modifiedHeaders.toArray(new Header[modifiedHeaders.size()])
                         );
 
                 inRemote = remoteSocket.getInputStream();
@@ -595,6 +603,7 @@ public class HttpForwarder extends Thread {
                 bytes += new Piper(inRemote, os).startCopy();
 
             } catch (Exception e) {
+                e.printStackTrace();
             } finally {
                 try {
                     if (inRemote != null) inRemote.close();

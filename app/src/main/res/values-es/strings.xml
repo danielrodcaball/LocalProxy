@@ -112,4 +112,14 @@
     <string name="port_not_available_title">Puerto no disponible</string>
     <string name="profile_details_title">Detalles</string>
     <string name="firewallrule_details_title">Detalles</string>
+    <string name="no_headers_all">No hay Cabeceras</string>
+    <string name="no_headers_add">Adicione una Cabecera +</string>
+    <string name="successfully_saved_header_message">Cabecera guardada</string>
+    <string name="header_removed_message">Cabecera eliminada</string>
+    <string name="header_name_already_exist_message">El nombre de la Cabezera ya existe</string>
+    <string name="headers_title">Cabeceras</string>
+    <string name="header_name_hint">nombre</string>
+    <string name="header_value_hint">valor</string>
+    <string name="new_h">Nuevo</string>
+    <string name="edit_h">Editar</string>
 </resources>

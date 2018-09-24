@@ -68,6 +68,12 @@
             tools:ignore="UnusedAttribute">
         </activity>
 
+        <activity
+            android:name="uci.localproxy.headerscreen.HeaderListActivity"
+            android:launchMode="singleTop"
+            tools:ignore="UnusedAttribute">
+        </activity>
+
         <service
             android:name="uci.localproxy.proxycore.ProxyService"
             android:icon="@mipmap/ic_launcher5"
