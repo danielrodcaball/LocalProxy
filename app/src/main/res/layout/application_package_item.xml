@@ -6,6 +6,7 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
     <ImageView
         android:id="@+id/application_package_item_logo"
         android:layout_width="45dp"
