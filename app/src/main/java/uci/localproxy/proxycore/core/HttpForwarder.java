@@ -582,9 +582,9 @@ public class HttpForwarder extends Thread {
 
                 List<Header> requestHeaders = getValidHeaders(parser.getHeaders());
                 List<Header> modifiedHeaders = replaceOrAddHeaders(requestHeaders);
-//                for(Header h : modifiedHeaders){
-//                    Log.e("Header", h.getName() + " : " + h.getValue());
-//                }
+                for(Header h : modifiedHeaders){
+                    Log.e("Header", h.getName() + " : " + h.getValue());
+                }
 
                 remoteSocket = client.tunnel(
                         proxyHost,
