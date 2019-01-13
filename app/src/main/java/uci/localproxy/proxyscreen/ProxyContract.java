@@ -25,6 +25,8 @@ public interface ProxyContract {
                                      @NonNull String localPort, @NonNull boolean rememberPass,
                                      @NonNull boolean setGlobalProxy, @NonNull boolean dontShowAgain);
 
+        void stopCredentialCheckTask();
+
         void stopProxy();
 
         void onDestroy();

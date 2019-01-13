@@ -407,10 +407,16 @@ public class ProxyFragment extends Fragment implements ProxyContract.View {
     public void showProgressDialog(boolean show) {
         if (show) {
             mProgressDialog.setMessage(getString(R.string.proxy_credentials_check_message));
-            mProgressDialog.setCancelable(false);
+            mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    mPresenter.stopCredentialCheckTask();
+                }
+            });
             mProgressDialog.show();
         }
         else {
+            mProgressDialog.setOnDismissListener(null);
             mProgressDialog.dismiss();
         }
     }

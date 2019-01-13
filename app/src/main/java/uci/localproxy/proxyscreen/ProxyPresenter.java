@@ -65,6 +65,8 @@ public class ProxyPresenter implements ProxyContract.Presenter {
     @NonNull
     private AppPreferencesHelper mPrefHelper;
 
+    private CredentialsCheckTask credentialsCheckTask;
+
 
     public ProxyPresenter(@NonNull ProxyContract.View proxyView,
                           @NonNull AppPreferencesHelper prefHelper) {
@@ -137,7 +139,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
                     user = username.substring(backSlashPos + 1, username.length());
                 }
 
-                CredentialsCheckTask task = new CredentialsCheckTask(
+                credentialsCheckTask = new CredentialsCheckTask(
                         user,
                         password,
                         profile.getHost(),
@@ -148,7 +150,7 @@ public class ProxyPresenter implements ProxyContract.Presenter {
                         setGlobalProxy
                 );
 
-                task.execute();
+                credentialsCheckTask.execute();
 
             }
 
@@ -157,6 +159,13 @@ public class ProxyPresenter implements ProxyContract.Presenter {
                 //never happens in this scenario
             }
         });
+    }
+
+    @Override
+    public void stopCredentialCheckTask() {
+        if (credentialsCheckTask != null){
+            credentialsCheckTask.cancel(true);
+        }
     }
 
     @Override
