@@ -13,6 +13,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Base.AppTheme" />
 
+    <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="AppTheme.MaterialAboutActivity" parent="Theme.Mal.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
