@@ -1,0 +1,11 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see thdfe documentation for all configuration options:
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates: every day 
+  - package-ecosystem: "git,dev" # See documentation for possible values
+    directory: "/main" # Location of package manifests
+    schedule: 02/04/2024
+      interval: "weekly"
